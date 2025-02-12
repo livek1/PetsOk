@@ -1,0 +1,86 @@
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 35px;
+
+  @media (max-width: 768px) {
+    margin: 10px;
+  }
+
+  > .footerWrapper {
+    border: 1px solid #f1f1f1;
+    border-radius: 30px;
+    padding: 40px;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .logo {
+      font-family: "Manrope";
+      font-weight: 600;
+      font-size: 30px;
+
+      @media (max-width: 768px) {
+        font-size: 30px;
+      }
+    }
+
+    nav {
+      display: flex;
+      align-items: flex-start;
+      gap: 60px;
+
+      @media (max-width: 768px) {
+        width: 100%;
+        gap: 0;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      > div {
+        display: flex;
+        gap: 20px;
+
+        flex-direction: column;
+
+        h3 {
+          font-weight: 500;
+          font-size: 13px;
+          line-height: 26px;
+          /* identical to box height, or 200% */
+          display: flex;
+          align-items: center;
+          letter-spacing: -0.0001em;
+
+          color: #083a5e;
+        }
+        > ul {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+
+          li {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 26px;
+
+            display: flex;
+            align-items: center;
+
+            color: #497696;
+          }
+        }
+      }
+    }
+
+    > ul {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+}

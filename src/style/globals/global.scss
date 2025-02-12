@@ -1,0 +1,13 @@
+@use "swiper/css";
+@use "./resets.scss";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
+body {
+  font-family: "Raleway", serif;
+  overflow-x: hidden;
+  background-color: #fff;
+}
+
+.wrapper {
+  max-width: 1440px;
+}

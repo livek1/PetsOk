@@ -1,0 +1,27 @@
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 1s ease-out, visibility 1s ease-out;
+}
+
+.paw-print {
+  width: 30px;
+  height: 30px;
+  background: url("../../assets/Frame.svg") no-repeat center;
+  background-size: contain;
+  position: absolute;
+  z-index: 9;
+}
+
+.preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}

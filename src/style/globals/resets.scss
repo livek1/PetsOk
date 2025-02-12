@@ -1,0 +1,58 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+/* Наследуем шрифты */
+html {
+	font-size: 16px;
+	font-family: sans-serif;
+	scroll-behavior: smooth;
+}
+
+/* Убираем стандартные стили ссылок */
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+/* Обнуляем списки */
+ul,
+ol {
+	list-style: none;
+}
+
+/* Обнуляем кнопки */
+button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-family: inherit;
+}
+
+/* Убираем обводку у фокусируемых элементов (если нужна, можно стилизовать) */
+*:focus {
+	outline: none;
+}
+
+/* Обнуляем изображения */
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+/* Убираем стандартные стили input и textarea */
+input,
+textarea {
+	font-family: inherit;
+	border: none;
+	outline: none;
+}
+
+/* Обновляем стиль таблиц */
+table {
+	border-collapse: collapse;
+	width: 100%;
+}

@@ -1,0 +1,132 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  > .headerWrapper {
+    display: flex;
+    align-items: center;
+    gap: 150px;
+
+    @media (max-width: 1024px) {
+      gap: 30px;
+    }
+
+    .logo {
+      font-family: "Manrope";
+      font-weight: 600;
+      font-size: 40px;
+      color: #fff;
+
+      @media (max-width: 768px) {
+        font-size: 30px;
+      }
+    }
+    > nav {
+      @media (max-width: 768px) {
+        display: none;
+      }
+      > ul {
+        display: flex;
+        align-items: center;
+        gap: 60px;
+
+        li {
+          font-weight: 600;
+          font-size: 18px;
+          color: #fff;
+
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+      }
+    }
+  }
+
+  > .btns {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+
+    @media (max-width: 1024px) {
+      gap: 10px;
+    }
+    > .laug {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 16px;
+
+      font-weight: 600;
+      font-size: 18px;
+      color: #fff;
+
+      background: rgba(248, 248, 248, 0.17);
+      border: 1px solid #82767b4a;
+
+      border-radius: 55px;
+
+      .Launguage {
+        position: absolute;
+        background-color: #fff;
+        padding: 5px;
+        border-radius: 10px;
+        top: 110%;
+        width: 70px;
+        opacity: 0;
+        z-index: -1;
+        transform: translateY(-10px);
+        transition: all 0.3s ease-in-out;
+
+        ul {
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+
+          li {
+            color: #000;
+            padding: 10px 0;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            &:hover {
+              background-color: #b9b9b9;
+            }
+          }
+        }
+
+        &.hide {
+          opacity: 1;
+          z-index: 3;
+          transform: translateY(0);
+        }
+      }
+    }
+
+    > .user {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 2px;
+      padding-left: 10px;
+      border-radius: 40px;
+      background-color: #fff;
+    }
+
+    > a {
+      font-weight: 600;
+      font-size: 18px;
+      color: #fff;
+
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
+  }
+}

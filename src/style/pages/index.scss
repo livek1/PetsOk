@@ -8,7 +8,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: 160px;
+  gap: 100px;
 
   @media (max-width: 768px) {
     gap: 170px;
@@ -23,18 +23,21 @@
     flex-direction: column;
     gap: 15px;
 
-    &:nth-child(2) {
-      margin-top: 50px;
-    }
+    margin: 100px 0;
 
     h1 {
       font-style: normal;
       font-weight: 700;
-      font-size: 85px;
+      font-size: 55px;
       line-height: 88.98%;
       text-align: center;
 
       color: #ffffff;
+
+      @media (min-width: 1440px) {
+        width: 70%;
+        margin: 0 auto;
+      }
 
       @media (max-width: 1024px) {
         font-size: 75px;
@@ -73,6 +76,10 @@
       padding: 20px 30px;
       margin: 0 auto;
 
+      .search-sitter__body {
+        position: relative;
+      }
+
       @media (max-width: 768px) {
         display: none;
       }
@@ -81,6 +88,7 @@
         display: flex;
         align-items: center;
         gap: 20px;
+        justify-content: center;
 
         > li {
           display: flex;
@@ -136,10 +144,15 @@
           align-items: stretch;
           gap: 30px;
           justify-content: space-between;
+          position: relative;
 
           h3 {
             font-size: 20px;
             font-weight: 500;
+          }
+
+          .inptDate {
+            position: relative;
           }
 
           .input {
@@ -161,7 +174,7 @@
               border: 1px solid #f1f1f1;
             }
 
-            div {
+            > div {
               display: flex;
               align-items: center;
               gap: 15px;
@@ -184,21 +197,23 @@
             }
           }
 
-          button {
-            background-color: #495068;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            justify-content: flex-start;
-            height: 50px;
-            padding: 12px 20px;
+          > .input {
+            > button {
+              background-color: #495068;
+              border-radius: 30px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              justify-content: flex-start;
+              height: 50px;
+              padding: 12px 20px;
 
-            span {
-              color: #fff;
-              transition: all 0.3s ease-in-out;
+              span {
+                color: #fff;
+                transition: all 0.3s ease-in-out;
 
-              font-weight: 500;
+                font-weight: 500;
+              }
             }
           }
 
@@ -289,6 +304,34 @@
           }
         }
       }
+    }
+  }
+
+  .dayPicker {
+    position: absolute;
+    top: 110%;
+
+    background-color: #fff;
+    box-shadow: 0 0 20px 0px #0e0d0d33;
+    padding: 10px !important;
+    border-radius: 10px;
+
+    opacity: 0;
+    z-index: -1;
+    transform: translateY(10px);
+    transition: all 0.3s ease-in-out;
+
+    &.picker1 {
+      left: 0;
+    }
+    &.picker2 {
+      right: 0px;
+    }
+
+    &.hide {
+      opacity: 1;
+      z-index: 5;
+      transform: translateY(0);
     }
   }
 }

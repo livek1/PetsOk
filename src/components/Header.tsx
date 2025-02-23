@@ -2,11 +2,13 @@ import { FC, useCallback, useState } from "react";
 import style from "../style/layouts/Header.module.scss";
 import User from "./popUp/User";
 import { Registration } from "./modals/Registration";
+import Language from "./modals/Language";
+import { t } from "i18next";
 
 const Header: FC = () => {
-  const [userModalOpen, setUserModalOpen] = useState(false);
-  const [registrModalOpen, setRegistrModalOpen] = useState(false);
-  const [langModalOpen, setLangModalOpen] = useState(false);
+  const [userModalOpen, setUserModalOpen] = useState<boolean>(false);
+  const [registrModalOpen, setRegistrModalOpen] = useState<boolean>(false);
+  const [langModalOpen, setLangModalOpen] = useState<boolean>(false);
 
   const handleOpenRegistModal = useCallback(() => {
     setRegistrModalOpen(true);
@@ -19,6 +21,10 @@ const Header: FC = () => {
     setUserModalOpen((prev) => !prev);
   }, []);
 
+  const closeLangModal = useCallback(() => {
+    setLangModalOpen(false);
+  }, []);
+
   return (
     <header>
       <div className={style.headerWrapper}>
@@ -26,7 +32,7 @@ const Header: FC = () => {
         <nav>
           <ul>
             <li>
-              Our Services{" "}
+              {t("header.link1")}
               <svg
                 width="13"
                 height="12"
@@ -40,7 +46,7 @@ const Header: FC = () => {
                 />
               </svg>
             </li>
-            <li>Search Sitters</li>
+            <li> {t("header.link2")}</li>
           </ul>
         </nav>
       </div>
@@ -50,9 +56,9 @@ const Header: FC = () => {
       />
 
       <div className={style.btns}>
-        <a href="">Стать ситтером</a>
+        <a href="">{t("header.buttonText")}</a>
         <button
-          onClick={() => setLangModalOpen((prev) => !prev)}
+          onClick={() => setLangModalOpen(true)}
           aria-label="Change language"
           className={style.laug}
         >
@@ -77,15 +83,6 @@ const Header: FC = () => {
             />
           </svg>
           EN
-          <div
-            className={`${style.Launguage} ${langModalOpen ? style.hide : ""}`}
-          >
-            <ul>
-              <li>EN</li>
-              <li>EN</li>
-              <li>EN</li>
-            </ul>
-          </div>
         </button>
         <button
           aria-label="User menu"
@@ -126,6 +123,8 @@ const Header: FC = () => {
           handleOpenRegistModal={handleOpenRegistModal}
         />
       </div>
+
+      <Language open={langModalOpen} closeLangModal={closeLangModal} />
     </header>
   );
 };

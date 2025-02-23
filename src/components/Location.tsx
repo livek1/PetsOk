@@ -1,7 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Map from "../UI/Map";
 import "../style/components/Location.scss";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { useTranslation } from "react-i18next";
 
 const listVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.9 },
@@ -9,6 +11,12 @@ const listVariants = {
 };
 
 const Location: React.FC = () => {
+  const { t } = useTranslation();
+  const locations = [
+    { name: "United States", position: [37.09024, -95.712891] },
+    { name: "Russia", position: [55.751244, 37.618423] },
+    { name: "Kazakhstan", position: [48.019573, 66.923684] },
+  ];
   return (
     <motion.div
       className="location wrapper"
@@ -22,7 +30,7 @@ const Location: React.FC = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        Where We Operate
+        {t("location.title")}
       </motion.h2>
       <motion.p
         initial={{ y: 20, opacity: 0, scale: 0.95 }}
@@ -30,10 +38,7 @@ const Location: React.FC = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        We provide trusted pet care services in multiple countries, ensuring
-        that every pet gets the love and attention they need. Our growing
-        community connects pet owners with verified caregivers for a safe and
-        stress-free experience.
+        {t("location.desc")}
       </motion.p>
 
       <motion.span
@@ -42,7 +47,7 @@ const Location: React.FC = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
       >
-        Our Locations:
+        {t("location.locations")}
       </motion.span>
 
       <motion.ul
@@ -80,8 +85,19 @@ const Location: React.FC = () => {
         whileInView={{ y: 0, opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
+        className="map"
       >
-        <Map />
+        <MapContainer center={[51.505, -0.09]} zoom={3} scrollWheelZoom={false}>
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          {locations.map((loc, index) => (
+            <Marker key={index} position={loc.position}>
+              <Popup>{loc.name}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
       </motion.div>
     </motion.div>
   );

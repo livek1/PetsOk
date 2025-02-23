@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import "../../style/components/modal/Registration.scss";
 import { useForm } from "react-hook-form";
 
@@ -13,7 +13,7 @@ type FormData = {
   day: string;
 };
 
-export const Registration: FC<RegistrationProp> = ({
+export const Registration: React.FC<RegistrationProp> = ({
   registrModalOpen,
   handleCloseRegistModal,
 }) => {

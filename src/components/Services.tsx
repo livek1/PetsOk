@@ -1,9 +1,11 @@
-import React, { FC } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import ServiceImg from "../assets/Service.svg";
 import "../style/components/Services.scss";
+import { useTranslation } from "react-i18next";
 
-const Services: FC = () => {
+const Services: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <motion.div
       className="services wrapper"
@@ -12,38 +14,11 @@ const Services: FC = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true, amount: 0.2 }}
     >
-      <h2>Services for every dog and cat</h2>
+      <h2>{t("service.serviceTitle")}</h2>
       <div>
         <ul className="services-list">
-          {[
-            {
-              title: "Boarding",
-              text: "Your pets stay overnight in your sitter’s home. They’ll be treated like part of the family in a comfortable environment.",
-            },
-            {
-              title: "House Sitting",
-              text: "Your sitter takes care of your pets and your house. Your pets will get all the attention they need from the comfort of home.",
-            },
-            {
-              title: "Dog Walking",
-              text: "Your dog gets a walk around your local area. Perfect for busy days and dogs with extra energy to burn.",
-            },
-            {
-              title: "Doggy Day Care",
-              text: "Your dog spends the day at your sitter’s home. Drop them off in the morning and pick up a happy pup in the evening.",
-            },
-            {
-              title: "Drop-In Visits",
-              text: "Your sitter drops by your home to play with your pets, offer food, and give toilet breaks or clean the litter tray.",
-            },
-          ].map((service, index) => (
-            <motion.li
-              key={index}
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true, amount: 0.3 }} // Элемент появится, когда будет видно 30%
-            >
+          {t("service.serviceList", { returnObjects: true }).map((service) => (
+            <motion.li key={service.key}>
               <svg
                 width="80"
                 height="80"
@@ -63,7 +38,7 @@ const Services: FC = () => {
 
               <div>
                 <h3>{service.title}</h3>
-                <p>{service.text}</p>
+                <p>{service.desc}</p>
               </div>
             </motion.li>
           ))}

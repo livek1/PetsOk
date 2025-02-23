@@ -1,8 +1,11 @@
-import React, { FC } from "react";
+import React from "react";
 import "../style/components/Application.scss";
 import { motion } from "framer-motion";
+import QRImg from "../assets/qr.png";
+import { useTranslation } from "react-i18next";
 
-const Application: FC = () => {
+const Application: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <>
       <motion.div
@@ -20,7 +23,7 @@ const Application: FC = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              Our app is a convenient way to find overexposure for your pet!
+              {t("application.title")}
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -28,7 +31,7 @@ const Application: FC = () => {
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
               viewport={{ once: true, amount: 0.2 }}
             >
-              Download now and be sure of your pet's safety!
+              {t("application.description")}
             </motion.p>
           </div>
           <motion.div
@@ -37,7 +40,9 @@ const Application: FC = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
             viewport={{ once: true, amount: 0.2 }}
-          />
+          >
+            <img src={QRImg} alt="" width={400} />
+          </motion.div>
         </div>
         <svg
           width="1919"
@@ -68,7 +73,7 @@ const Application: FC = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true, amount: 0.2 }}
           >
-            Need a consultation?
+            {t("application.consultation")}
           </motion.h3>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -76,8 +81,7 @@ const Application: FC = () => {
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
             viewport={{ once: true, amount: 0.2 }}
           >
-            If you couldn't find an answer on our website, please contact us and
-            we will give you a detailed answer to your question.
+            {t("application.consultationDescription")}
           </motion.p>
         </div>
         <motion.button
@@ -86,7 +90,7 @@ const Application: FC = () => {
           transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
           viewport={{ once: true, amount: 0.2 }}
         >
-          Ask a question
+          {t("application.consultationBtn")}
         </motion.button>
       </motion.div>
     </>

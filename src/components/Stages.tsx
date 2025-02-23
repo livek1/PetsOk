@@ -1,6 +1,7 @@
-import React, { FC } from "react";
+import React from "react";
 import "../style/components/Stages.scss";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const listItemVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -37,7 +38,9 @@ const stageinfoList = [
   },
 ];
 
-const Stages: FC = () => {
+const Stages: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       className="stages "
@@ -47,11 +50,8 @@ const Stages: FC = () => {
       viewport={{ once: true, amount: 0.2 }}
     >
       <div className="stages-wrapper wrapper">
-        <h2>How does our service work?</h2>
-        <p>
-          Our service helps you find a temporary owner for your pet when you
-          need to leave. Here's how it works:
-        </p>
+        <h2>{t("stages.stagesTitle")}</h2>
+        <p>{t("stages.stagesDescription")}</p>
 
         <div>
           <motion.ul
@@ -59,7 +59,7 @@ const Stages: FC = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {stageinfoList.map((item, i) => (
+            {t("stages.stagesList", { returnObjects: true }).map((item, i) => (
               <motion.li key={i} custom={i} variants={listItemVariants}>
                 <div></div>
                 <h2>{item.title}</h2>

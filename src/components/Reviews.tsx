@@ -1,10 +1,10 @@
-import React, { FC } from "react";
+import React from "react";
 import "../style/components/Reviews.scss";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
-const Reviews: FC = () => {
+const Reviews: React.FC = () => {
   const slides = [
     {
       date: "22 июля 2021",

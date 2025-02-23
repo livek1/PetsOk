@@ -1,6 +1,7 @@
 import React from "react";
 import "../../style/components/modal/Registration.scss";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 interface RegistrationProp {
   registrModalOpen: boolean;
@@ -17,6 +18,7 @@ export const Registration: React.FC<RegistrationProp> = ({
   registrModalOpen,
   handleCloseRegistModal,
 }) => {
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -30,7 +32,7 @@ export const Registration: React.FC<RegistrationProp> = ({
     <div className={`modal-reg ${registrModalOpen ? "hide" : ""}`}>
       <div className="modal-reg__wrapper">
         <div className="title">
-          <h2>Log in or register</h2>
+          <h2>{t("profile.logInTitle")}</h2>
           <button>
             <svg
               width="28"
@@ -56,7 +58,7 @@ export const Registration: React.FC<RegistrationProp> = ({
           <div className="input-group">
             <input
               type="email"
-              placeholder="Your mail"
+              placeholder={t("profile.email")}
               {...register("email", {
                 required: "Mail is required",
                 pattern: {
@@ -71,7 +73,7 @@ export const Registration: React.FC<RegistrationProp> = ({
           <div className="input-group">
             <input
               type="password"
-              placeholder="Your password"
+              placeholder={t("profile.password")}
               {...register("password", {
                 required: "A password is required",
                 minLength: {
@@ -85,13 +87,13 @@ export const Registration: React.FC<RegistrationProp> = ({
             )}
           </div>
 
-          <button type="submit">Submit</button>
+          <button type="submit">{t("profile.btn")}</button>
         </form>
 
-        <a href="">Forgot your password?</a>
+        <a href="">{t("profile.forgot")}</a>
         <hr />
         <div className="links">
-          <span>Don't forget to subscribe to us</span>
+          <span>{t("profile.links")}</span>
           <div>
             <button>
               <svg

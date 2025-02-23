@@ -6,6 +6,10 @@ import { useTranslation } from "react-i18next";
 
 const Services: React.FC = () => {
   const { t } = useTranslation();
+
+  const ServiceList = Object.values(
+    t("service.serviceList", { returnObjects: true })
+  );
   return (
     <motion.div
       className="services wrapper"
@@ -17,7 +21,7 @@ const Services: React.FC = () => {
       <h2>{t("service.serviceTitle")}</h2>
       <div>
         <ul className="services-list">
-          {t("service.serviceList", { returnObjects: true }).map((service) => (
+          {ServiceList.map((service) => (
             <motion.li key={service.key}>
               <svg
                 width="80"

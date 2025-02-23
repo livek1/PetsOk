@@ -11,7 +11,10 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ title }) => {
   const [dateInp, setDateInp] = useState("");
   const [dateInpMax, setDateInpMax] = useState("");
   const [search, setSearch] = useState("");
-  const dateNow = new Date().toDateString();
+  const dateNow = new Date();
+  dateNow.setDate(dateNow.getDate());
+  const futureDate = new Date();
+  futureDate.setDate(futureDate.getDate() + 5);
 
   const dateRef = useRef<HTMLDivElement>(null);
   const dateRefMax = useRef<HTMLDivElement>(null);
@@ -117,7 +120,7 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ title }) => {
 
                 <input
                   type="text"
-                  placeholder={dateNow}
+                  placeholder={dateNow.toISOString().split("T")[0]}
                   value={dateInp}
                   readOnly
                 />
@@ -164,7 +167,7 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ title }) => {
 
                 <input
                   type="text"
-                  placeholder="Выберите дату"
+                  placeholder={futureDate.toISOString().split("T")[0]}
                   value={dateInpMax}
                   readOnly
                 />

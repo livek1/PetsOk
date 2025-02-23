@@ -1,14 +1,26 @@
 import { useState } from "react";
-import SearchSitterItem from "./searchSitterItem";
 
-const tabs = [
-  { name: "Передержка", description: "Дома у догситтера" },
-  { name: "Дневная няня", description: "У вас дома" },
-  { name: "Выгул", description: "В вашем районе" },
-];
+import { useTranslation } from "react-i18next";
+import SearchSitterItem from "./SearchSitterItem";
 
 const SearchSitter = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const { t } = useTranslation();
+
+  const tabs = [
+    {
+      name: `${t("SearchSitter.InptWhere")}`,
+      description: `${t("SearchSitter.navsitterBoardingDesc")}`,
+    },
+    {
+      name: `${t("SearchSitter.navsitterDayNanny")}`,
+      description: `${t("SearchSitter.navsitterDayNannyDesc")}`,
+    },
+    {
+      name: `${t("SearchSitter.navsitterPaddock")}`,
+      description: `${t("SearchSitter.navsitterPaddockDesc")}`,
+    },
+  ];
 
   return (
     <div className="search-sitter">
@@ -27,9 +39,15 @@ const SearchSitter = () => {
 
       <div className="search-sitter__body">
         <div className="content">
-          {activeIndex === 0 && <SearchSitterItem title={"Даты передержки"} />}
-          {activeIndex === 1 && <SearchSitterItem title={"Дата"} />}
-          {activeIndex === 2 && <SearchSitterItem title={"Даты выгула"} />}
+          {activeIndex === 0 && (
+            <SearchSitterItem title={`${t("SearchSitter.InptWhere")}`} />
+          )}
+          {activeIndex === 1 && (
+            <SearchSitterItem title={`${t("SearchSitter.InptOverexposure")}`} />
+          )}
+          {activeIndex === 2 && (
+            <SearchSitterItem title={`${t("SearchSitter.InptWalking")}`} />
+          )}
         </div>
       </div>
     </div>

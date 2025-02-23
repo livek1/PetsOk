@@ -7,6 +7,36 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: {
+        recomLang: "Recommended languages and regions",
+
+        profile: {
+          profile: "Profile",
+          settings: "Settings",
+          support: "Support",
+
+          logIn: "Sign Up",
+          signIn: "Sign In",
+
+          logInTitle: "Sign in or register",
+          email: "Email",
+          password: "Password",
+          btn: "Sign In",
+
+          forgot: "Forgot your password?",
+          links: "Don't forget to follow us",
+        },
+        SearchSitter: {
+          navsitterBoarding: "Overexposure",
+          navsitterBoardingDesc: "Dogsitter's house",
+          navsitterDayNanny: "Day nanny",
+          navsitterDayNannyDesc: "At your place",
+          navsitterPaddock: "Paddock",
+          navsitterPaddockDesc: "In your area",
+
+          InptWhere: "Where to search?",
+          InptOverexposure: "Overexposure Dates",
+          InptWalking: "Walking dates",
+        },
         hero: {
           welcome: "  Loving Pet Care in Your Neighbourhood",
           heroDescription:
@@ -108,6 +138,35 @@ i18n.use(initReactI18next).init({
     },
     ru: {
       translation: {
+        recomLang: "Рекомендуемые языки и регионы",
+        profile: {
+          profile: "Профиль",
+          settings: "Настройки",
+          support: "Помощь",
+
+          logIn: "Зарегестрироваться",
+          signIn: "Войти",
+
+          logInTitle: "Войдите в систему или зарегистрируйтесь",
+          emal: "email",
+          password: "Пароль",
+          btn: "Войти",
+
+          forger: "Забыли свой пароль?",
+          links: "Не забудьте подписаться на нас",
+        },
+        SearchSitter: {
+          navsitterBoarding: "Передержка",
+          navsitterBoardingDesc: "В доме догситтера",
+          navsitterDayNanny: "Дневная няня",
+          navsitterDayNannyDesc: "У вас дома",
+          navsitterPaddock: "Выгул",
+          navsitterPaddockDesc: "В вашем районе",
+
+          InptWhere: "Где искать?",
+          InptOverexposure: "Даты передержки",
+          InptWalking: "Даты выгула",
+        },
         hero: {
           welcome: "Заботливый уход за домашними животными в Вашем районе",
           heroDescription:
@@ -211,6 +270,36 @@ i18n.use(initReactI18next).init({
     },
     kk: {
       translation: {
+        recomLang: "Ұсынылатын тілдер мен аймақтар",
+        profile: {
+          profile: "Профиль",
+          settings: "Баптаулар",
+          support: "Қолдау",
+
+          logIn: "Тіркелу",
+          signIn: "Кіру",
+
+          logInTitle: "Жүйеге кіріңіз немесе тіркеліңіз",
+          email: "Email",
+          password: "Құпиясөз",
+          btn: "Кіру",
+
+          forgot: "Құпиясөзді ұмыттыңыз ба?",
+          links: "Бізге жазылуды ұмытпаңыз",
+        },
+
+        SearchSitter: {
+          navsitterBoarding: "Уақытша ұстау",
+          navsitterBoardingDesc: "Ит бағып берушінің үйінде",
+          navsitterDayNanny: "Күндізгі күтуші",
+          navsitterDayNannyDesc: "Сіздің үйіңізде",
+          navsitterPaddock: "Жүріс",
+          navsitterPaddockDesc: "Сіздің ауданыңызда",
+
+          InptWhere: "Қай жерде іздейміз?",
+          InptOverexposure: "Уақытша ұстау күндері",
+          InptWalking: "Жүру күндері",
+        },
         hero: {
           welcome:
             "Сіздің Аймағыңыздағы Үй Жануарларына сүйіспеншілікпен Күтім жасау",

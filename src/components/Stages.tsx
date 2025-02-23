@@ -12,34 +12,11 @@ const listItemVariants = {
   }),
 };
 
-const stageinfoList = [
-  {
-    title: "Placing an application",
-    description:
-      "Pet owners submit a request with details about their pet and the required care.",
-  },
-  {
-    title: "Finding a temporary caregiver",
-    description:
-      "The system or community helps match pets with suitable temporary caregivers.",
-  },
-  {
-    title: "Discussing details",
-    description:
-      "Owners and caregivers communicate to clarify expectations and care instructions.",
-  },
-  {
-    title: "Pet handover",
-    description: "The pet is safely transferred to the temporary caregiver.",
-  },
-  {
-    title: "Monitoring & feedback",
-    description: "Owners receive updates, ensuring the pet's well-being.",
-  },
-];
-
 const Stages: React.FC = () => {
   const { t } = useTranslation();
+  const stagesList = Object.values(
+    t("stages.stagesList", { returnObjects: true })
+  );
 
   return (
     <motion.div
@@ -59,7 +36,7 @@ const Stages: React.FC = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {t("stages.stagesList", { returnObjects: true }).map((item, i) => (
+            {stagesList.map((item: any, i: any) => (
               <motion.li key={i} custom={i} variants={listItemVariants}>
                 <div></div>
                 <h2>{item.title}</h2>

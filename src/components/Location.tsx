@@ -1,22 +1,114 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import "../style/components/Location.scss";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTranslation } from "react-i18next";
+import geoJsonData from "../custom.geo.json";
+import L from "leaflet";
 
 const listVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.9 },
   visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5 } },
 };
 
+interface FitBoundsProps {
+  geoJsonData: {
+    type: string;
+    features: Array<{
+      properties: {
+        name: string;
+      };
+      [key: string]: any; // Дополнительные свойства, если есть
+    }>;
+  };
+  selectedCountry: string | null;
+}
+
+const FitBounds: React.FC<FitBoundsProps> = ({
+  geoJsonData,
+  selectedCountry,
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (geoJsonData.features.length > 0) {
+      if (selectedCountry) {
+        const selectedFeature = geoJsonData.features.find(
+          (f) => f.properties.name === selectedCountry
+        );
+        if (selectedFeature) {
+          const bounds = L.geoJSON(selectedFeature).getBounds();
+          map.fitBounds(bounds, { padding: [50, 50] });
+          console.log(`Zoomed to ${selectedCountry} bounds:`, bounds);
+        }
+      } else {
+        const bounds = L.geoJSON(geoJsonData).getBounds();
+        map.fitBounds(bounds, { padding: [50, 50] });
+        console.log("Fit to all countries bounds:", bounds);
+      }
+    }
+  }, [map, geoJsonData, selectedCountry]);
+
+  return null;
+};
+
 const Location: React.FC = () => {
   const { t } = useTranslation();
-  const locations = [
-    { name: "United States", position: [37.09024, -95.712891] },
-    { name: "Russia", position: [55.751244, 37.618423] },
-    { name: "Kazakhstan", position: [48.019573, 66.923684] },
-  ];
+  const mapRef = useRef(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+
+  console.log("Raw GeoJSON Data:", geoJsonData);
+
+  const targetCountries = ["United States of America", "Russia", "Kazakhstan"];
+  const filteredGeoJsonData = {
+    type: "FeatureCollection",
+    features: geoJsonData.features.filter((feature) => {
+      const name = feature.properties?.name;
+      const isTarget = targetCountries.includes(name);
+      console.log(`Feature Name: ${name}, Included: ${isTarget}`);
+      return isTarget;
+    }),
+  };
+
+  console.log("Filtered GeoJSON Data:", filteredGeoJsonData);
+
+  const geoJsonStyle = (feature: any) => {
+    const isSelected = feature.properties.name === selectedCountry;
+    return {
+      fillColor: isSelected ? "#4682B4" : "#87CEEB", // Steel blue for selected, light sky blue for active
+      weight: isSelected ? 4 : 2, // Thicker border for selected
+      opacity: 1,
+      color: "#FFFFFF", // White border for all
+      fillOpacity: isSelected ? 0.8 : 0.4, // More opaque when selected
+    };
+  };
+
+  const onEachFeature = (feature: any, layer: any) => {
+    if (feature.properties && feature.properties.name) {
+      layer.bindTooltip(
+        `${feature.properties.name}: ${t("location.serviceActive")}`,
+        { permanent: false, direction: "auto" }
+      );
+      console.log(`Tooltip added for: ${feature.properties.name}`);
+    }
+  };
+
+  useEffect(() => {
+    if (mapRef.current) {
+      const map = mapRef.current;
+      map?.invalidateSize();
+      console.log("Map initialized and invalidated size");
+    }
+  }, []);
+
+  const handleCountryClick = (country: string) => {
+    const geoJsonName =
+      country === "United States" ? "United States of America" : country;
+    setSelectedCountry(geoJsonName);
+    console.log(`Selected from list: ${geoJsonName}`);
+  };
+
   return (
     <motion.div
       className="location wrapper"
@@ -57,8 +149,20 @@ const Location: React.FC = () => {
           visible: { transition: { staggerChildren: 0.2, delayChildren: 0.5 } },
         }}
       >
-        {["United States", "Russia", "Kazakhstan"].map((country, index) => (
-          <motion.li key={index} variants={listVariants}>
+        {["United States", "Kazakhstan"].map((country, index) => (
+          <motion.li
+            key={index}
+            variants={listVariants}
+            onClick={() => handleCountryClick(country)}
+            className={
+              selectedCountry ===
+              (country === "United States"
+                ? "United States of America"
+                : country)
+                ? "selected"
+                : ""
+            }
+          >
             <svg
               width="34"
               height="34"
@@ -71,7 +175,7 @@ const Location: React.FC = () => {
                 fill="black"
               />
               <path
-                d="M16 11.1C16 8.61 14.1 7 12 7C9.9 7 8 8.61 8 11.1C8 12.61 9.1 14.38 11.31 16.4C11.7 16.76 12.29 16.76 12.69 16.4C14.9 14.37 16 12.61 16 11.1ZM12 12C11.7242 11.9881 11.4637 11.8701 11.2728 11.6708C11.0818 11.4714 10.9753 11.206 10.9753 10.93C10.9753 10.654 11.0818 10.3886 11.2728 10.1892C11.4637 9.98987 11.7242 9.87193 12 9.86C12.2758 9.87193 12.5363 9.98987 12.7272 10.1892C12.9182 10.3886 13.0247 10.654 13.0247 10.93C13.0247 11.206 12.9182 11.4714 12.7272 11.6708C12.5363 11.8701 12.2758 11.9881 12 12Z"
+                d="M16 11.1C16 8.61 14.1 7 12 7C9.9 7 8 8.61 8 11.1C8 12.61 9.1 14.38 11.31 16.4C11.7 16.76 12.29 16.76 12.69 16.4C14.9 14.37 16 12.61 16 11.1ZM12 12C11.7242 11.9881 11.4637 11.8701 11.2728 11.6708C11.0818 11.4714 11.9753 11.206 10.9753 10.93C10.9753 10.654 11.0818 10.3886 11.2728 10.1892C11.4637 9.98987 11.7242 9.87193 12 9.86C12.2758 9.87193 12.5363 9.98987 12.7272 10.1892C12.9182 10.3886 13.0247 10.654 13.0247 10.93C13.0247 11.206 12.9182 11.4714 12.7272 11.6708C12.5363 11.8701 12.2758 11.9881 12 12Z"
                 fill="black"
               />
             </svg>
@@ -87,16 +191,27 @@ const Location: React.FC = () => {
         transition={{ duration: 0.8 }}
         className="map"
       >
-        <MapContainer center={[51.505, -0.09]} zoom={3} scrollWheelZoom={false}>
+        <MapContainer
+          center={[55, 60]}
+          zoom={2}
+          scrollWheelZoom={false}
+          style={{ height: "500px", width: "100%" }}
+          ref={mapRef}
+        >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          {locations.map((loc, index) => (
-            <Marker key={index} position={loc.position}>
-              <Popup>{loc.name}</Popup>
-            </Marker>
-          ))}
+          <GeoJSON
+            data={filteredGeoJsonData}
+            style={geoJsonStyle}
+            onEachFeature={onEachFeature}
+            key={selectedCountry}
+          />
+          <FitBounds
+            geoJsonData={filteredGeoJsonData}
+            selectedCountry={selectedCountry}
+          />
         </MapContainer>
       </motion.div>
     </motion.div>

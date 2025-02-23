@@ -8,7 +8,7 @@ interface LanguageProp {
 }
 
 const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const changeLanguage = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -41,7 +41,7 @@ const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
         </div>
         <div className="language__body">
           <div>
-            <h2>Рекомендуемые языки и регионы</h2>
+            <h2>{t("recomLang")}</h2>
             <ul>
               <li onClick={() => changeLanguage("ru")}>
                 <span>Русский</span>

@@ -1,0 +1,185 @@
+// --- File: src/style/components/WhyPetsOkFeatures.scss (или OurServicesAndGuarantees.scss) ---
+@use '../variables' as *;
+
+.why-petsok-section {
+    // Изменил основной класс секции
+    padding: 70px 0;
+    background-color: $white; // Или $background-color-section-light для контраста с другими белыми блоками
+
+    &.wrapper {
+        width: 100%;
+        max-width: 1180px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+
+    &__main-title-wrapper {
+        text-align: center;
+        margin-bottom: 50px;
+
+        @media (max-width: $breakpoint-md) {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            // Заголовок всей секции
+            font-family: $font-family-headings;
+            font-weight: $font-weight-bold;
+            font-size: 36px; // Немного уменьшил, т.к. будут подзаголовки колонок
+            line-height: 1.3;
+            color: $text-color-base;
+            margin-bottom: 12px;
+
+            @media (max-width: $breakpoint-md) {
+                font-size: 30px;
+            }
+
+            @media (max-width: $breakpoint-sm) {
+                font-size: 26px;
+            }
+        }
+
+        .subtitle {
+            // Подзаголовок всей секции
+            font-family: $font-family-base;
+            font-size: 18px;
+            line-height: $line-height-base;
+            color: $text-color-secondary;
+            max-width: 750px; // Может быть чуть шире
+            margin: 0 auto;
+
+            @media (max-width: $breakpoint-md) {
+                font-size: 16px;
+            }
+        }
+    }
+
+    &__content {
+        display: flex;
+        // align-items: flex-start; // Выравнивание по верху колонок
+        gap: 40px; // Отступ между колонками
+
+        @media (max-width: $breakpoint-lg) {
+            flex-direction: column;
+            align-items: stretch; // Растягиваем колонки на всю ширину
+            gap: 50px; // Больше отступ на мобильных
+        }
+    }
+
+    &__column {
+        flex: 1; // Колонки занимают равное пространство
+        background-color: $gray-100; // Легкий фон для каждой колонки
+        padding: 30px;
+        border-radius: $border-radius-xl;
+
+        @media (max-width: $breakpoint-sm) {
+            padding: 20px;
+        }
+
+        >h3 {
+            // Заголовок колонки ("Наши Услуги" / "Наши Гарантии")
+            font-family: $font-family-headings;
+            font-size: 26px;
+            font-weight: $font-weight-bold;
+            color: $primary-color; // Фирменный цвет для заголовков колонок
+            margin: 0 0 25px 0;
+            text-align: center; // Центрируем заголовок колонки
+
+            @media (max-width: $breakpoint-sm) {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0; // Отступ под списком
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+
+            li {
+                display: flex;
+                align-items: flex-start;
+                gap: 15px;
+
+                .info-icon {
+                    color: $primary-color;
+                    flex-shrink: 0;
+                    margin-top: 3px;
+                    line-height: 1;
+                    // Можно убрать фон, если иконки достаточно выразительны
+                    // background-color: color.adjust($primary-color, $alpha: -0.9); 
+                    // border-radius: $border-radius-md;
+                    // padding: 8px;
+                    display: inline-flex;
+
+                    svg {
+                        width: 28px;
+                        height: 28px;
+                    }
+                }
+
+                .info-text {
+                    h4 {
+                        // Заголовок услуги/гарантии
+                        font-family: $font-family-base; // Можно оставить базовый для подзаголовков
+                        font-size: 17px;
+                        font-weight: $font-weight-semibold;
+                        color: $text-color-base;
+                        margin: 0 0 5px 0;
+                        line-height: 1.4;
+                    }
+
+                    p {
+                        // Описание услуги/гарантии
+                        font-family: $font-family-base;
+                        font-size: 14px; // Чуть меньше для описания
+                        line-height: 1.55;
+                        color: $text-color-secondary;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+
+        // Главная кнопка CTA, может быть в колонке гарантий или общей под секцией
+        .cta-button-main {
+            display: inline-block;
+            background-color: $primary-color;
+            color: $text-color-on-primary;
+            padding: 14px 32px;
+            border-radius: $border-radius-lg;
+            font-size: 16px;
+            font-weight: $font-weight-semibold;
+            text-decoration: none;
+            transition: $transition-base, box-shadow 0.2s ease-in-out;
+            box-shadow: $box-shadow-md;
+            text-align: center;
+            width: 100%; // Растянуть на всю ширину колонки на мобильных
+            max-width: 300px; // Ограничить максимальную ширину
+            margin: 10px auto 0 auto; // Отступ сверху и центрирование
+
+            @media (min-width: $breakpoint-lg) {
+                width: auto; // На десктопе не растягивать
+                margin-left: 0;
+                margin-right: 0;
+            }
+
+
+            &:hover {
+                background-color: $primary-color-darker;
+                transform: translateY(-2px);
+                box-shadow: $box-shadow-lg;
+            }
+
+            &:active {
+                transform: translateY(-1px);
+                box-shadow: $box-shadow-sm;
+            }
+        }
+    }
+}

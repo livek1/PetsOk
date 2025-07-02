@@ -1,337 +1,219 @@
+// --- File: src/style/pages/index.scss (ПОЛНАЯ ОБНОВЛЕННАЯ ВЕРСИЯ БЕЗ СКРУГЛЕНИЯ) ---
+@use 'sass:color';
+
+//--------------------------------------------------------------------------
+// DESIGN TOKENS & VARIABLES
+//--------------------------------------------------------------------------
+$font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+$font-family-headings: $font-family-base;
+
+// Colors
+$primary-500: #3598FE;
+$primary-600: color.scale($primary-500, $lightness: -10%);
+$primary-700: color.scale($primary-500, $lightness: -20%);
+$primary-100: color.scale($primary-500, $lightness: 90%, $saturation: -50%);
+$primary-50: color.scale($primary-500, $lightness: 95%, $saturation: -60%);
+
+$neutral-900: #1C1C1E;
+$neutral-700: #3A3A3C;
+$neutral-500: #8E8E93;
+$neutral-300: #C7C7CC;
+$neutral-200: #D1D1D6;
+$neutral-100: #E5E5EA;
+$neutral-50: #F2F2F7;
+$white: #FFFFFF;
+$black: #000000;
+
+$success-500: #34C759;
+$error-500: #FF3B30;
+
+// Typography
+$font-size-xs: 0.75rem; // 12px
+$font-size-sm: 0.875rem; // 14px
+$font-size-base: 1rem; // 16px
+$font-size-md: 1.125rem; // 18px
+$font-size-lg: 1.25rem; // 20px
+$font-size-xl: 1.5rem; // 24px
+$font-size-xxl: 2rem; // 32px
+$font-size-hero-title: 3.4375rem; // 55px
+$font-size-hero-title-lg: 4.6875rem; // 75px
+$font-size-hero-title-sm: 2.8125rem; // 45px
+$font-size-stats-value: 3rem; // 48px
+$font-size-stats-value-sm: 2.25rem; // 36px
+
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+$line-height-headings: 1.2;
+
+// Spacing
+$space-1: 0.25rem; // 4px
+$space-2: 0.5rem; // 8px
+$space-3: 0.75rem; // 12px
+$space-4: 1rem; // 16px
+$space-5: 1.25rem; // 20px
+$space-6: 1.5rem; // 24px
+$space-8: 2rem; // 32px
+$space-10: 2.5rem; // 40px
+$space-12: 3rem; // 48px
+$space-16: 4rem; // 64px
+$space-20: 5rem; // 80px
+$space-24: 6rem; // 96px
+
+// Borders & Shadows
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-radius-xxl: 30px;
+$border-radius-hero: 40px;
+$border-radius-round: 50%;
+
+$border-width-base: 1px;
+$border-width-thick: 2px;
+
+$shadow-sm: 0 1px 2px 0 rgba($black, 0.05);
+$shadow-md: 0 4px 6px -1px rgba($black, 0.1), 0 2px 4px -1px rgba($black, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba($black, 0.1), 0 4px 6px -2px rgba($black, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba($black, 0.1), 0 10px 10px -5px rgba($black, 0.04);
+$shadow-daypicker: 0 0 20px 0px rgba(14, 13, 13, 0.2);
+
+// Transitions
+$transition-duration-short: 150ms;
+$transition-duration-base: 250ms;
+$transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+// Breakpoints
+$breakpoint-xs: 425px;
+$breakpoint-sm: 550px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1440px;
+
+
+//--------------------------------------------------------------------------
+// GLOBAL STYLES & RESETS (Minimal)
+//--------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-family-base;
+  line-height: $line-height-normal;
+  color: $neutral-700;
+  background-color: $white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+//--------------------------------------------------------------------------
+// HERO SECTION
+//--------------------------------------------------------------------------
 .hero {
-  margin: 6px;
-  background-image: url(../../assets/hero-bg.svg);
   background-size: cover;
   background-repeat: no-repeat;
-  border-radius: 40px;
-  padding: 40px;
-
+  background-position: center;
+  /* --- ИЗМЕНЕНИЕ: Убираем скругление и отступы --- */
+  border-radius: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 100px;
+  position: relative;
+  min-height: 85vh;
+  justify-content: center;
 
-  @media (max-width: 768px) {
-    gap: 170px;
-    background-position: center;
+  @media (max-width: $breakpoint-md) {
+    padding: 100px $space-5 80px;
+    justify-content: flex-start;
   }
-  @media (max-width: 550px) {
-    padding: 30px;
-    gap: 30px;
+
+  @media (max-width: $breakpoint-xs) {
+    padding-left: $space-4;
+    padding-right: $space-4;
   }
-  > div {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+}
 
-    margin: 100px 0;
+.hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba($black, 0.5), rgba($black, 0.2));
+  z-index: 1;
+  border-radius: 0; // --- ИЗМЕНЕНИЕ: Убираем скругление и у оверлея ---
+}
 
-    h1 {
-      font-style: normal;
-      font-weight: 700;
-      font-size: 55px;
-      line-height: 88.98%;
-      text-align: center;
+.hero__main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-5;
+  position: relative;
+  z-index: 2;
 
-      color: #ffffff;
+  @media (max-width: $breakpoint-md) {
+    gap: $space-6;
+  }
 
-      @media (min-width: 1440px) {
-        width: 70%;
-        margin: 0 auto;
-      }
+  h1 {
+    font-family: $font-family-headings;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-hero-title;
+    line-height: $line-height-headings;
+    text-align: center;
+    color: $white;
+    text-shadow: 0 2px 8px rgba($black, 0.5);
+    max-width: 900px;
 
-      @media (max-width: 1024px) {
-        font-size: 75px;
-      }
-
-      @media (max-width: 768px) {
-        font-size: 55px;
-      }
-
-      @media (max-width: 425px) {
-        font-size: 45px;
-      }
+    @media (max-width: $breakpoint-lg) {
+      font-size: 3rem;
     }
 
-    p {
-      font-weight: 400;
-      font-size: 18px;
-      line-height: 23px;
-      text-align: center;
-      color: #ffffff;
-
-      width: 80%;
-      margin: 0 auto;
-
-      @media (max-width: 425px) {
-        font-size: 14px;
-        line-height: 18px;
-        width: 100%;
-      }
+    @media (max-width: $breakpoint-md) {
+      font-size: 2.5rem;
     }
 
-    > .search-sitter {
-      background-color: #fff;
-      border-radius: 30px;
-      width: 70%;
-      padding: 20px 30px;
-      margin: 0 auto;
-
-      .search-sitter__body {
-        position: relative;
-      }
-
-      @media (max-width: 768px) {
-        display: none;
-      }
-
-      > ul {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        justify-content: center;
-
-        > li {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 3px;
-          position: relative;
-          padding-bottom: 10px;
-          padding: 10px 15px;
-          cursor: pointer;
-          h3 {
-            font-size: 20px;
-            font-weight: 500;
-          }
-
-          span {
-            font-size: 13px;
-            font-weight: 400;
-            opacity: 0.7;
-          }
-
-          &::before {
-            transition: all 0.3s ease-in-out;
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 2px;
-            border-radius: 2px;
-            width: 0;
-            background-color: #495068;
-          }
-
-          &.active {
-            &::before {
-              content: "";
-              position: absolute;
-              bottom: 0;
-              left: 0;
-              height: 2px;
-              border-radius: 2px;
-              width: 100%;
-              background-color: #495068;
-            }
-          }
-        }
-      }
-
-      > div {
-        padding: 20px 0;
-        .input-group {
-          display: flex;
-          align-items: stretch;
-          gap: 30px;
-          justify-content: space-between;
-          position: relative;
-
-          h3 {
-            font-size: 20px;
-            font-weight: 500;
-          }
-
-          .inptDate {
-            position: relative;
-          }
-
-          .input {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 50%;
-
-            svg {
-              opacity: 0.5;
-            }
-
-            .input-place {
-              display: flex;
-              align-items: center;
-              gap: 10px;
-              padding: 12px;
-              border-radius: 20px;
-              border: 1px solid #f1f1f1;
-            }
-
-            > div {
-              display: flex;
-              align-items: center;
-              gap: 15px;
-
-              .input-data {
-                width: 50%;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 12px;
-                border-radius: 20px;
-                border: 1px solid #f1f1f1;
-              }
-            }
-
-            input {
-              outline: none;
-              background: none;
-              width: 100%;
-            }
-          }
-
-          > .input {
-            > button {
-              background-color: #495068;
-              border-radius: 30px;
-              display: flex;
-              align-items: center;
-              gap: 10px;
-              justify-content: flex-start;
-              height: 50px;
-              padding: 12px 20px;
-
-              span {
-                color: #fff;
-                transition: all 0.3s ease-in-out;
-
-                font-weight: 500;
-              }
-            }
-          }
-
-          .btn {
-            width: max-content;
-            justify-content: flex-end;
-            width: 58px;
-            transition: all 0.3s ease-in-out;
-            position: relative;
-            overflow: hidden;
-
-            span {
-              position: absolute;
-              opacity: 0;
-              right: -100%;
-              transform: translateX(5px);
-            }
-
-            svg {
-              position: absolute;
-              transition: all 0.3s ease-in-out;
-
-              right: 16px;
-            }
-            &.hide {
-              width: 135px;
-
-              svg {
-                position: absolute;
-                right: 20px;
-              }
-
-              span {
-                transform: translateX(0px);
-
-                position: inherit;
-                opacity: 1;
-              }
-            }
-          }
-        }
-      }
-    }
-
-    > ul {
-      display: flex;
-      align-items: center;
-      gap: 50px;
-
-      @media (max-width: 550px) {
-        isplay: flex;
-        align-items: flex-start;
-        gap: 20px;
-
-        flex-direction: column;
-      }
-
-      li {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-
-        span {
-          font-weight: 500;
-          font-size: 20px;
-          line-height: 88.98%;
-
-          text-align: center;
-
-          color: #ffffff;
-
-          @media (max-width: 550px) {
-            font-size: 18px;
-          }
-        }
-
-        h2 {
-          font-weight: 500;
-          font-size: 50px;
-          line-height: 88.98%;
-
-          text-align: left;
-          color: #ffffff;
-
-          @media (max-width: 550px) {
-            font-size: 40px;
-          }
-        }
-      }
+    @media (max-width: $breakpoint-sm) {
+      font-size: 2.125rem;
     }
   }
 
-  .dayPicker {
-    position: absolute;
-    top: 110%;
+  .hero__description {
+    font-weight: $font-weight-regular;
+    font-size: $font-size-md;
+    line-height: $line-height-relaxed;
+    text-align: center;
+    max-width: 650px;
+    color: $white;
+    opacity: 0.95;
+    text-shadow: 0 1px 6px rgba($black, 0.4);
 
-    background-color: #fff;
-    box-shadow: 0 0 20px 0px #0e0d0d33;
-    padding: 10px !important;
-    border-radius: 10px;
-
-    opacity: 0;
-    z-index: -1;
-    transform: translateY(10px);
-    transition: all 0.3s ease-in-out;
-
-    &.picker1 {
-      left: 0;
+    @media (max-width: $breakpoint-md) {
+      font-size: $font-size-base;
+      line-height: $line-height-normal;
+      max-width: 90%;
     }
-    &.picker2 {
-      right: 0px;
-    }
+  }
 
-    &.hide {
-      opacity: 1;
-      z-index: 5;
-      transform: translateY(0);
+  .search-sitter-wrapper {
+    margin-top: $space-6;
+    width: 100%;
+
+    @media (max-width: $breakpoint-md) {
+      display: none;
     }
   }
 }

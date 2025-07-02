@@ -1,0 +1,107 @@
+// --- File: src/style/components/becomeASitter/WhatYouCanOfferSection.scss ---
+@use '../../variables' as *;
+@use 'sass:color';
+
+.what-you-can-offer {
+    padding: 64px 0; // Используем px
+    background-color: $white;
+    text-align: center;
+
+    &.wrapper {
+        width: 100%;
+        max-width: 1180px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+
+    &__title {
+        font-family: $font-family-headings;
+        font-weight: $font-weight-bold;
+        font-size: 36px;
+        color: $text-color-base;
+        margin-bottom: 12px; // Используем px
+        line-height: $line-height-heading;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 30px;
+        }
+
+        @media (max-width: $breakpoint-sm) {
+            font-size: 26px;
+        }
+    }
+
+    &__subtitle {
+        font-family: $font-family-base;
+        font-size: 18px; // $font-size-md если бы был
+        color: $text-color-secondary;
+        line-height: $line-height-base; // Используем существующий
+        max-width: 750px;
+        margin: 0 auto 48px auto; // Используем px
+
+        @media (max-width: $breakpoint-md) {
+            font-size: $font-size-base; // 16px
+            margin-bottom: 40px; // Используем px
+        }
+    }
+
+    &__services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 32px; // Используем px
+
+        @media (max-width: $breakpoint-sm) {
+            grid-template-columns: 1fr;
+            gap: 24px; // Используем px
+        }
+    }
+}
+
+.service-card-offer {
+    background-color: $gray-100; // Используем существующий $gray-100
+    padding: 24px 20px; // Используем px
+    border-radius: $border-radius-lg;
+    border: 1px solid $border-color-light;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform $transition-base,
+        box-shadow $transition-base,
+        border-color $transition-base;
+
+    &:hover {
+        transform: translateY(-6px);
+        box-shadow: $box-shadow-md;
+        border-color: $primary-color-lighter;
+    }
+
+    &__icon {
+        color: $primary-color;
+        margin-bottom: 16px; // Используем px
+
+        svg {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    &__title {
+        font-family: $font-family-headings;
+        font-size: 20px; // $font-size-lg если бы был
+        font-weight: $font-weight-semibold;
+        color: $text-color-base;
+        margin-bottom: 8px; // Используем px
+        line-height: 1.25; // Пример
+    }
+
+    &__description {
+        font-family: $font-family-base;
+        font-size: 14px; // $font-size-sm если бы был
+        color: $text-color-muted;
+        line-height: $line-height-base; // Используем существующий
+        flex-grow: 1;
+    }
+}

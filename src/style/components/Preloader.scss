@@ -1,3 +1,5 @@
+@use '../../style/variables' as *;
+
 .preloader {
   position: fixed;
   top: 0;
@@ -15,10 +17,26 @@
 .paw-print {
   width: 30px;
   height: 30px;
-  background: url("../../assets/Frame.svg") no-repeat center;
-  background-size: contain;
   position: absolute;
   z-index: 9;
+
+  /* --- ИЗМЕНЕНИЯ ЗДЕСЬ --- */
+  /* Убираем старый фон */
+  // background: url("../../assets/Frame.svg") no-repeat center;
+  // background-size: contain;
+
+  /* Добавляем новый метод с использованием маски */
+  background-color: $primary-color; // <--- ЗАДАЕМ ЦВЕТ ИЗ ВАШИХ ПЕРЕМЕННЫХ
+
+  /* Используем SVG как маску */
+  -webkit-mask-image: url("../../assets/Frame.svg");
+  mask-image: url("../../assets/Frame.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
 }
 
 .preloader.hidden {

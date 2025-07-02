@@ -1,0 +1,128 @@
+// --- File: src/style/components/becomeASitter/HowItWorksForSittersSection.scss ---
+@use '../../variables' as *;
+@use 'sass:color';
+
+.how-it-works-sitters {
+    padding: 80px 0; // Используем px, $space-20 если бы был
+    background-color: $background-color-section-light;
+    text-align: center;
+
+    &.wrapper {
+        width: 100%;
+        max-width: 1180px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+
+    &__title {
+        font-family: $font-family-headings;
+        font-weight: $font-weight-bold;
+        font-size: 38px;
+        color: $text-color-base;
+        margin-bottom: 16px; // Используем px, $space-4 если бы был
+        line-height: $line-height-heading;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 32px;
+        }
+
+        @media (max-width: $breakpoint-sm) {
+            font-size: 28px;
+        }
+    }
+
+    &__subtitle {
+        font-family: $font-family-base;
+        font-size: 18px; // $font-size-md если бы был
+        color: $text-color-secondary;
+        line-height: $line-height-base; // Используем существующий
+        max-width: 700px;
+        margin: 0 auto 48px auto; // Используем px, $space-12 если бы был
+
+        @media (max-width: $breakpoint-md) {
+            font-size: $font-size-base; // 16px
+            margin-bottom: 40px; // Используем px, $space-10 если бы был
+        }
+    }
+
+    &__steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+        gap: 32px; // Используем px, $space-8 если бы был
+
+        @media (max-width: $breakpoint-md) {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px; // Используем px, $space-6 если бы был
+        }
+
+        @media (max-width: $breakpoint-sm) {
+            grid-template-columns: 1fr;
+        }
+    }
+}
+
+.sitter-step-card {
+    background-color: $white;
+    padding: 32px 24px; // Используем px, $space-8 $space-6 если бы были
+    border-radius: $border-radius-xl;
+    box-shadow: $box-shadow-subtle; // Используем существующий $box-shadow-subtle
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    transition: transform $transition-base,
+        box-shadow $transition-base,
+        border-color $transition-base;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: $box-shadow-lifted; // Используем существующий $box-shadow-lifted
+        border-color: $primary-color-lightest-bg;
+    }
+
+    &__icon {
+        margin-bottom: 20px; // Используем px, $space-5 если бы был
+        color: $primary-color;
+
+        svg {
+            width: 48px;
+            height: 48px;
+        }
+    }
+
+    &__number {
+        position: absolute;
+        top: 16px; // Используем px, $space-4 если бы был
+        left: 20px; // Используем px, $space-5 если бы был
+        font-size: 24px; // $font-size-xl если бы был
+        font-weight: $font-weight-bold;
+        line-height: 1;
+    }
+
+    &__title {
+        font-family: $font-family-headings;
+        font-weight: $font-weight-semibold;
+        font-size: 22px;
+        color: $text-color-base;
+        margin-bottom: 12px; // Используем px, $space-3 если бы был
+        line-height: 1.25; // Пример
+        min-height: 2.6em;
+
+        @media (max-width: $breakpoint-sm) {
+            font-size: 20px; // $font-size-lg если бы был
+            min-height: 0;
+        }
+    }
+
+    &__description {
+        font-family: $font-family-base;
+        font-size: 14px; // $font-size-sm если бы был
+        line-height: $line-height-base; // Используем существующий
+        color: $text-color-muted;
+        flex-grow: 1;
+    }
+}

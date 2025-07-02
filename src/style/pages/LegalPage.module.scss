@@ -1,0 +1,101 @@
+@use '../variables' as *;
+
+.legalPageContainer {
+    padding: $space-12 $space-6;
+    max-width: 840px;
+    margin: 0 auto;
+    font-family: $font-family-base;
+    color: $text-color-base;
+
+    @media (max-width: $breakpoint-md) {
+        padding: $space-8 $space-4;
+    }
+
+    // Главный заголовок страницы
+    >h1 {
+        font-family: $font-family-headings;
+        font-size: 36px;
+        font-weight: $font-weight-bold;
+        color: $text-color-base;
+        margin-bottom: $space-2;
+    }
+}
+
+.updateDate {
+    font-size: $font-size-sm;
+    color: $text-color-muted;
+    margin-bottom: $space-10;
+}
+
+.tableOfContents {
+    background-color: $neutral-50;
+    border-left: 3px solid $primary-color;
+    padding: $space-4 $space-5;
+    margin-bottom: $space-12;
+    border-radius: $border-radius-md;
+
+    h3 {
+        font-weight: $font-weight-semibold;
+        margin-bottom: $space-3;
+        font-size: $font-size-lg;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: $space-2;
+
+        li {
+            font-size: $font-size-base;
+            color: $text-color-secondary;
+        }
+    }
+}
+
+
+.legalPageContent {
+    display: flex;
+    flex-direction: column;
+    gap: $space-4; // Немного уменьшил гэп между параграфами
+
+    // Заголовки разделов (1., 2., 3. и т.д.)
+    h2 {
+        font-family: $font-family-headings;
+        font-weight: $font-weight-semibold;
+        font-size: $font-size-xl;
+        color: $text-color-base;
+        margin-top: $space-8; // Больший отступ перед новым разделом
+        margin-bottom: $space-3;
+        padding-bottom: $space-2;
+        border-bottom: 1px solid $border-color-light;
+    }
+
+    // Заголовки более низкого уровня
+    h3 {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-semibold;
+    }
+
+    p {
+        font-size: $font-size-base;
+        line-height: $line-height-relaxed;
+        color: $text-color-secondary;
+
+        strong {
+            font-weight: $font-weight-semibold;
+            color: $text-color-base;
+        }
+
+        a {
+            color: $primary-color;
+            text-decoration: underline;
+
+            &:hover {
+                color: $primary-color-darker;
+            }
+        }
+    }
+}

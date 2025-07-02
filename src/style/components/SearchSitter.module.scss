@@ -1,0 +1,119 @@
+// --- File: src/style/components/SearchSitter.module.scss ---
+@use '../variables' as *;
+
+.searchSitterWrapper {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.searchSitter {
+    background-color: #ffffff;
+    padding: $space-5 $space-6;
+    border-radius: $border-radius-xl;
+    box-shadow: 0 10px 35px rgba(8, 58, 94, 0.12);
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: $breakpoint-md) {
+        padding: $space-4;
+    }
+}
+
+.tabs {
+    display: flex;
+    align-items: center; // Выравниваем по центру по вертикали
+    list-style: none;
+    padding: 0;
+    margin: 0 0 $space-6 0;
+    border-bottom: 1px solid $border-color-light;
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.tabItem {
+    padding: $space-4 $space-5;
+    cursor: pointer;
+    position: relative;
+    color: $text-color-secondary;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+
+    &.active {
+        color: $primary-color;
+
+        .tabName {
+            color: $primary-color;
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: $primary-color;
+            border-radius: 3px 3px 0 0;
+        }
+    }
+
+    &:hover:not(.active) {
+        color: $neutral-900;
+    }
+}
+
+.tabName {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    margin: 0 0 4px 0;
+    transition: color 0.3s ease;
+
+    @media (max-width: $breakpoint-sm) {
+        font-size: $font-size-base;
+    }
+}
+
+.tabDescription {
+    font-size: $font-size-xs;
+    opacity: 0.9;
+
+    @media (max-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+.contentPanel {
+    display: none;
+
+    &.active {
+        display: block;
+    }
+}
+
+// --- НОВЫЙ СТИЛЬ ДЛЯ ПОДСКАЗКИ О НОВЫХ УСЛУГАХ ---
+.moreServicesHint {
+    margin-left: auto; // Прижимает элемент к правому краю
+    padding: $space-2 $space-4;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-color-muted;
+    background-color: $neutral-50;
+    border-radius: $border-radius-md;
+    white-space: nowrap;
+    align-self: center; // Вертикальное выравнивание по центру табов
+    margin-bottom: 15px; // Отступ, чтобы быть на одном уровне с табами до бордера
+
+    @media (max-width: $breakpoint-sm) {
+        display: none; // На маленьких экранах можно скрыть для экономии места
+    }
+}

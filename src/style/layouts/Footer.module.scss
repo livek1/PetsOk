@@ -1,86 +1,131 @@
-footer {
+@use "../../style/variables" as var;
+
+.footerContainer {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 35px;
+  width: 100%;
+  background-color: var.$white;
+  border-top: 1px solid var.$border-color-light;
+  padding: var.$space-10 var.$space-6; // 40px 24px
 
-  @media (max-width: 768px) {
-    margin: 10px;
+  @media (max-width: var.$breakpoint-md) {
+    padding: var.$space-8 var.$space-4; // 32px 16px
+  }
+}
+
+.footerWrapper {
+  width: 100%;
+  max-width: 1180px; // Стандартная ширина контейнера
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; // Выравнивание по верху
+  gap: var.$space-8; // 32px
+
+  @media (max-width: var.$breakpoint-lg) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var.$space-10; // 40px
+  }
+}
+
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var.$space-4; // 16px
+  align-items: flex-start;
+
+  @media (max-width: var.$breakpoint-lg) {
+    align-items: center;
+  }
+}
+
+.logo {
+  font-family: var.$font-family-headings;
+  font-weight: var.$font-weight-bold;
+  font-size: 32px;
+  color: var.$primary-color;
+  text-decoration: none;
+
+  @media (max-width: var.$breakpoint-md) {
+    font-size: 28px;
+  }
+}
+
+.copyrightText {
+  font-family: var.$font-family-base;
+  font-size: 14px;
+  color: var.$text-color-muted;
+  line-height: var.$line-height-base;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var.$space-6; // 24px
+  align-items: flex-end;
+
+  @media (max-width: var.$breakpoint-lg) {
+    align-items: center;
+  }
+}
+
+.navSection ul {
+  display: flex;
+  gap: var.$space-6; // 24px
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  @media (max-width: var.$breakpoint-sm) {
+    flex-direction: column;
+    gap: var.$space-4; // 16px
   }
 
-  > .footerWrapper {
-    border: 1px solid #f1f1f1;
-    border-radius: 30px;
-    padding: 40px;
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    gap: 30px;
-    justify-content: space-between;
-    flex-wrap: wrap;
+  li a {
+    font-family: var.$font-family-base;
+    font-weight: var.$font-weight-medium;
+    font-size: 14px;
+    color: var.$text-color-secondary;
+    text-decoration: none;
+    transition: color var.$transition-duration-base;
 
-    .logo {
-      font-family: "Manrope";
-      font-weight: 600;
-      font-size: 30px;
-
-      @media (max-width: 768px) {
-        font-size: 30px;
-      }
-    }
-
-    nav {
-      display: flex;
-      align-items: flex-start;
-      gap: 60px;
-
-      @media (max-width: 768px) {
-        width: 100%;
-        gap: 0;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-
-      > div {
-        display: flex;
-        gap: 20px;
-
-        flex-direction: column;
-
-        h3 {
-          font-weight: 500;
-          font-size: 13px;
-          line-height: 26px;
-          /* identical to box height, or 200% */
-          display: flex;
-          align-items: center;
-          letter-spacing: -0.0001em;
-
-          color: #083a5e;
-        }
-        > ul {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-
-          li {
-            font-weight: 500;
-            font-size: 13px;
-            line-height: 26px;
-
-            display: flex;
-            align-items: center;
-
-            color: #497696;
-          }
-        }
-      }
-    }
-
-    > ul {
-      display: flex;
-      align-items: center;
-      gap: 20px;
+    &:hover {
+      color: var.$primary-color;
+      text-decoration: underline;
     }
   }
+}
+
+.socialIcons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  a {
+    display: inline-block;
+    color: var.$text-color-muted; // Цвет по умолчанию
+    transition: color var.$transition-duration-base, transform var.$transition-duration-base;
+
+    &:hover {
+      color: var.$primary-color; // Цвет при наведении
+      transform: translateY(-2px);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+  }
+}
+
+// Селектор для fill внутри SVG
+.socialIconPath {
+  fill: currentColor; // Наследует цвет от родительской ссылки 'a'
 }

@@ -1,0 +1,212 @@
+// --- File: src/style/components/search/SearchSitterItem.module.scss ---
+@use '../../../style/variables' as *;
+@use 'sass:color';
+
+.searchItemForm {
+    // Styles for the main form container
+}
+
+.searchItemFormTitle {
+    font-family: $font-family-headings;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $neutral-900;
+    margin-bottom: $space-5;
+    text-align: center;
+
+    @media (max-width: $breakpoint-sm) {
+        font-size: $font-size-md;
+        margin-bottom: $space-4;
+    }
+}
+
+.inputGroup {
+    display: flex;
+    gap: $space-4;
+    align-items: center;
+
+    @media (max-width: $breakpoint-md) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: $space-3;
+    }
+}
+
+.inputField {
+    flex-grow: 1;
+    position: relative;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    background-color: $neutral-50;
+    border: $border-width-base solid $border-color-light;
+    border-radius: $border-radius-md;
+    padding-left: $space-3;
+    transition: border-color $transition-duration-base $transition-timing-function,
+        box-shadow $transition-duration-base $transition-timing-function;
+
+    &:hover {
+        border-color: $neutral-400;
+    }
+
+    &:focus-within {
+        border-color: $primary-500;
+        box-shadow: 0 0 0 2px color.scale($primary-500, $alpha: -75%);
+        background-color: $white;
+    }
+}
+
+.inputIcon {
+    color: $neutral-500;
+    margin-right: $space-2;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: $space-3;
+    font-size: $font-size-base;
+    color: $neutral-900;
+    width: 100%;
+
+    &::placeholder {
+        color: $neutral-500;
+    }
+}
+
+.buttonContainer {
+    flex-shrink: 0;
+
+    &.buttonIconOnly {
+        .buttonText {
+            opacity: 0;
+            max-width: 0;
+            margin-right: 0;
+            overflow: hidden;
+        }
+
+        .button {
+            padding: $space-3;
+            width: 50px;
+        }
+    }
+
+    &.buttonWithText {
+        .buttonText {
+            opacity: 1;
+            max-width: 200px;
+            margin-right: $space-2;
+        }
+
+        .button {
+            padding: 0 $space-5;
+        }
+    }
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $primary-500;
+    color: $white;
+    border: none;
+    border-radius: $border-radius-md;
+    height: 50px;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: all $transition-duration-base $transition-timing-function;
+
+    &:hover {
+        background-color: $primary-600;
+    }
+}
+
+.buttonText {
+    white-space: nowrap;
+    transition: opacity 0.2s ease, max-width 0.2s ease, margin-right 0.2s ease;
+}
+
+.buttonIcon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+@media (max-width: $breakpoint-md) {
+    .buttonContainer {
+        width: 100%;
+
+        &.buttonIconOnly,
+        &.buttonWithText {
+            .button {
+                width: 100%;
+                padding: 0 $space-5;
+            }
+
+            .buttonText {
+                opacity: 1;
+                max-width: 200px;
+                margin-right: $space-2;
+            }
+        }
+    }
+}
+
+.addressSuggestions {
+    position: absolute;
+    top: calc(100% + #{$space-1});
+    left: 0;
+    right: 0;
+    background-color: $white;
+    border: $border-width-base solid $border-color-light;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-lg;
+    z-index: 100;
+    list-style: none;
+    padding: $space-2 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.suggestionItem {
+    padding: $space-2 $space-4;
+    font-size: $font-size-sm;
+    color: $neutral-900;
+    cursor: pointer;
+    transition: background-color $transition-duration-short;
+
+    &:hover,
+    &:focus {
+        background-color: $primary-50;
+        outline: none;
+    }
+
+    &.loading,
+    &.noResults {
+        color: $neutral-500;
+        cursor: default;
+        font-style: italic;
+
+        &:hover {
+            background-color: transparent;
+        }
+    }
+}
+
+.searchError {
+    color: $error-500;
+    font-size: $font-size-sm;
+    margin-top: $space-2;
+    text-align: left;
+}

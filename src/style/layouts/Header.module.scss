@@ -1,131 +1,677 @@
-header {
+@use '../../style/variables' as *;
+@use 'sass:color';
+
+.visuallyHidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.headerContainer {
+  background-color: transparent;
+  padding: 0;
+  position: fixed; // <<--- Убедитесь, что это свойство не переопределяется
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: $z-index-header; // Убедитесь, что это значение достаточно высокое (например, 1000+)
+  height: $header-height-desktop;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  color: $header-text-color;
+  transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
 
-  > .headerWrapper {
+  &.lightBackground {
+    background-color: $white;
+    color: $text-color-base;
+    box-shadow: $box-shadow-subtle;
+
+    .logo a {
+      color: $primary-color;
+    }
+
+    .desktopNav .navItem>a,
+    .desktopNav .navItem>button,
+    .langButton,
+    .userMenuButtonDesktop,
+    .mobileMenuButton {
+      color: $text-color-secondary;
+
+      &:hover,
+      &:focus {
+        color: $primary-color;
+        background-color: $gray-100;
+      }
+    }
+
+    .userMenuButtonDesktop {
+      background-color: $gray-100;
+      border-color: $border-color-light;
+
+      &:hover,
+      &:focus,
+      &.active {
+        background-color: $gray-200;
+        border-color: $primary-color;
+      }
+    }
+  }
+
+  @media (max-width: $breakpoint-md) {
+    height: $header-height-mobile;
+  }
+}
+
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 30px;
+  padding-right: 30px;
+
+  @media (max-width: $breakpoint-lg) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.headerWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.logo a {
+  font-size: 30px;
+  font-weight: $font-weight-bold;
+  text-decoration: none;
+  transition: opacity 0.2s ease, color 0.25s ease-in-out;
+  color: inherit;
+
+  .headerContainer:not(.lightBackground) & {
+    color: $white;
+  }
+
+  .headerContainer.lightBackground & {
+    color: $primary-color;
+  }
+
+  &:hover,
+  &:focus {
+    opacity: 0.85;
+    outline: none;
+  }
+}
+
+.desktopNav {
+  display: none;
+
+  @media (min-width: calc($breakpoint-md + 1px)) {
     display: flex;
     align-items: center;
-    gap: 150px;
+    height: 100%;
+    margin-left: 30px;
+  }
 
-    @media (max-width: 1024px) {
-      gap: 30px;
-    }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 18px;
+  }
 
-    .logo {
-      font-family: "Manrope";
-      font-weight: 600;
-      font-size: 40px;
-      color: #fff;
+  .navItem {
+    display: flex;
+    align-items: center;
+    height: 100%;
 
-      @media (max-width: 768px) {
-        font-size: 30px;
+    >a,
+    >button {
+      text-decoration: none;
+      color: inherit;
+      font-weight: $font-weight-medium;
+      font-size: $header-link-font-size-desktop;
+      padding: 0 12px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s ease, color $transition-base;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 15px;
+        left: 12px;
+        right: 12px;
+        height: 2px;
+        background-color: currentColor;
+        opacity: 0;
+        transform: scaleX(0.8);
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        transform-origin: center;
       }
-    }
-    > nav {
-      @media (max-width: 768px) {
-        display: none;
-      }
-      > ul {
-        display: flex;
-        align-items: center;
-        gap: 60px;
 
-        li {
-          font-weight: 600;
-          font-size: 18px;
-          color: #fff;
+      &:hover,
+      &:focus {
+        .headerContainer:not(.lightBackground) & {
+          opacity: 0.8;
+        }
 
-          display: flex;
-          align-items: center;
-          gap: 10px;
+        outline: none;
+
+        &::after {
+          opacity: 1;
+          transform: scaleX(1);
         }
       }
     }
   }
 
-  > .btns {
+  .dropdown {
+    .chevronIcon {
+      width: 12px;
+      height: 12px;
+      margin-left: 6px;
+      transition: transform 0.2s ease-out;
+      color: inherit;
+    }
+
+    &.open>button {
+      .headerContainer:not(.lightBackground) & {
+        opacity: 1;
+      }
+
+      &::after {
+        opacity: 1;
+        transform: scaleX(1);
+      }
+
+      .chevronIcon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+.dropdownMenuPortalClass,
+.userPopupPortalClass {
+  position: fixed;
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow-lg;
+  padding: 10px 0;
+  z-index: $z-index-dropdown-portal;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.97);
+  transform-origin: top;
+  transition: opacity 0.22s cubic-bezier(0.25, 0.8, 0.25, 1),
+    visibility 0s linear 0.22s,
+    transform 0.22s cubic-bezier(0.25, 0.8, 0.25, 1);
+  min-width: 240px;
+
+  background-color: $white;
+  border: 1px solid $border-color;
+  color: $text-color-base;
+
+  li {
+    width: 100%;
+
+    a,
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px 22px;
+      text-align: left;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: $font-weight-medium;
+      text-decoration: none;
+      white-space: nowrap;
+      color: $text-color-secondary;
+
+      &:hover,
+      &:focus {
+        background-color: $primary-color-lightest-bg;
+        color: $primary-color;
+      }
+    }
+
+    &:first-child>a,
+    &:first-child>button {
+      font-weight: $font-weight-semibold;
+    }
+
+    &.separator {
+      height: 1px;
+      margin: 6px 15px;
+      padding: 0;
+      background-color: $border-color-light;
+    }
+  }
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    transition-delay: 0s, 0s, 0s;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.userPopupPortalClass {
+  min-width: 250px;
+  transform-origin: top right;
+}
+
+.dropdownMenuPortalClass {
+  min-width: 230px;
+
+  .headerContainer .desktopNav .navItem:first-child & {
+    transform-origin: top left;
+  }
+}
+
+.headerActionsDesktop {
+  display: none;
+
+  @media (min-width: calc($breakpoint-md + 1px)) {
     display: flex;
     align-items: center;
-    gap: 20px;
-    position: relative;
+    gap: 12px;
+  }
+}
 
-    @media (max-width: 1024px) {
-      gap: 10px;
+.langButton {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: $font-weight-medium;
+  padding: 10px;
+  border-radius: $border-radius-md;
+  transition: background-color 0.2s ease, opacity 0.2s ease, color $transition-base;
+
+  svg {
+    width: $header-icon-size-desktop - 4px;
+    height: $header-icon-size-desktop - 4px;
+    color: inherit;
+  }
+
+  span {
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .headerContainer:not(.lightBackground) &:hover,
+  .headerContainer:not(.lightBackground) &:focus {
+    background-color: rgba($white, 0.12);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.userMenuContainer {
+  position: relative;
+}
+
+.userMenuButtonDesktop {
+  background-color: rgba($white, 0.1);
+  border: 1px solid rgba($white, 0.25);
+  border-radius: 50px;
+  padding: 8px 10px 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, color $transition-base;
+  color: inherit;
+
+  .burgerIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .userAvatarIcon {
+    width: $header-icon-size-desktop - 2px;
+    height: $header-icon-size-desktop - 2px;
+
+    rect {
+      fill: transparent;
     }
-    > .laug {
+
+    path {
+      stroke: currentColor;
+      stroke-width: 1.3;
+    }
+  }
+
+  .headerContainer:not(.lightBackground) &:hover,
+  .headerContainer:not(.lightBackground) &:focus,
+  .headerContainer:not(.lightBackground) &.active {
+    border-color: rgba($white, 0.5);
+    background-color: rgba($white, 0.15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.mobileMenuTrigger {
+  display: none;
+
+  @media (max-width: $breakpoint-md) {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.mobileMenuButton {
+  background: none;
+  border: none;
+  padding: 10px;
+  margin: -10px;
+  cursor: pointer;
+  z-index: $z-index-mobile-menu-button;
+  color: inherit; // Наследует от .headerContainer
+
+  svg {
+    width: $header-icon-size-mobile;
+    height: $header-icon-size-mobile;
+    display: block;
+    transition: transform 0.2s ease;
+    color: inherit; // Иконка тоже наследует цвет
+  }
+
+  .headerContainer.lightBackground & {
+    // Если хедер светлый, кнопка темная
+    color: $text-color-secondary;
+
+    &:hover,
+    &:focus {
+      color: $primary-color;
+    }
+  }
+
+  .headerContainer:not(.lightBackground) & {
+    // Если хедер темный (прозрачный), кнопка белая
+    color: $white;
+
+    &:hover,
+    &:focus {
+      opacity: 0.8;
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// Mobile Navigation Panel
+.mobileNavPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  transform: translateX(100%);
+  width: 100%;
+  max-width: 300px;
+  height: 100vh;
+  background-color: $white; // --- ИЗМЕНЕНО НА БЕЛЫЙ ---
+  color: $text-color-base; // --- ОСНОВНОЙ ТЕМНЫЙ ТЕКСТ ---
+  box-shadow: -3px 0 20px rgba(0, 0, 0, 0.15); // Мягче тень
+  padding: $header-height-mobile + 15px 20px 20px 20px;
+  z-index: $z-index-mobile-panel;
+  transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  .mobileNavLinks {
+    flex-grow: 1;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 6px 16px;
+      flex-direction: column;
+    }
 
-      font-weight: 600;
-      font-size: 18px;
-      color: #fff;
+    .mobileNavItem {
+      border-bottom: 1px solid $border-color-light; // Светлее разделитель
 
-      background: rgba(248, 248, 248, 0.17);
-      border: 1px solid #82767b4a;
+      &:last-of-type:not(.mobileDropdown) {
+        border-bottom: none;
+      }
 
-      border-radius: 55px;
+      &.mobileDropdown.open+.mobileNavItem {
+        border-top: none;
+      }
 
-      .Launguage {
-        position: absolute;
-        background-color: #fff;
-        padding: 5px;
-        border-radius: 10px;
-        top: 110%;
-        width: 70px;
-        opacity: 0;
-        z-index: -1;
-        transform: translateY(-10px);
-        transition: all 0.3s ease-in-out;
+      >a,
+      >button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0; // Чуть больше вертикальный паддинг
+        text-decoration: none;
+        color: $text-color-link; // --- ЦВЕТ ССЫЛОК ИЗМЕНЕН НА ФИРМЕННЫЙ ---
+        font-size: 17px; // Немного крупнее
+        font-weight: $font-weight-medium;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: color 0.15s ease, background-color 0.15s ease;
 
-        ul {
-          display: flex;
-          flex-direction: column;
-          gap: 3px;
-
-          li {
-            color: #000;
-            padding: 10px 0;
-            background-color: #f1f1f1;
-            border-radius: 10px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            &:hover {
-              background-color: #b9b9b9;
-            }
-          }
+        &:hover,
+        &:focus {
+          color: $primary-color-darker; // --- ПРИ ХОВЕРЕ ТЕМНЕЕ ФИРМЕННЫЙ ---
+          background-color: $gray-100;
+          outline: none;
         }
 
-        &.hide {
-          opacity: 1;
-          z-index: 3;
-          transform: translateY(0);
+        .chevronIcon {
+          width: 13px;
+          height: 13px;
+          transition: transform 0.2s ease;
+          color: $primary-color; // --- ИКОНКА ШЕВРОНА ФИРМЕННОГО ЦВЕТА ---
+
+          &.open {
+            transform: rotate(180deg);
+          }
         }
       }
     }
 
-    > .user {
+    .mobileSubmenu {
+      list-style: none;
+      padding: 0 0 8px 15px; // Уменьшил отступы
+      margin: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.25s ease-out, opacity 0.2s ease-out, padding 0.25s ease-out;
+      background-color: $gray-100; // Очень светлый фон для подменю
+      border-radius: 0 0 $border-radius-sm $border-radius-sm;
+      margin-left: -20px;
+      margin-right: -20px;
+      padding-left: 35px;
+      padding-right: 20px;
+
+      &.open {
+        max-height: 400px;
+        opacity: 1;
+        padding-top: 8px;
+        padding-bottom: 12px;
+        transition: max-height 0.25s ease-out, opacity 0.25s ease-out 0.05s, padding 0.25s ease-out;
+      }
+
+      li a {
+        display: block;
+        padding: 10px 0; // Увеличил паддинг
+        font-size: 15px; // Чуть крупнее
+        color: $text-color-secondary; // Темно-серый для вложенных ссылок
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+          color: $primary-color; // Фирменный при ховере
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .mobileUserSection {
+    margin-top: auto;
+    padding-top: 20px; // Больше отступ
+    border-top: 1px solid $border-color-light;
+    display: flex;
+    flex-direction: column;
+    gap: 12px; // Больше гэп
+
+    .mobileLangButton {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 2px;
-      padding-left: 10px;
-      border-radius: 40px;
-      background-color: #fff;
+      gap: 10px; // Больше гэп
+      color: $text-color-secondary; // Темно-серый
+      width: 100%;
+      padding: 12px 0; // Больше паддинг
+      background: none;
+      border: none;
+      font-size: 16px; // Крупнее
+      font-weight: $font-weight-medium;
+      text-align: left;
+      cursor: pointer;
+      order: 1;
+
+      svg {
+        width: $header-icon-size-mobile - 6px; // Чуть больше иконка
+        height: $header-icon-size-mobile - 6px;
+        margin-right: 4px;
+        color: $text-color-secondary; // Иконка темно-серая
+      }
+
+      span {
+        color: inherit;
+      }
+
+      &:hover,
+      &:focus {
+        color: $primary-color; // Фирменный при ховере
+
+        svg {
+          color: $primary-color;
+        }
+
+        opacity: 1;
+        outline: none;
+      }
     }
 
-    > a {
-      font-weight: 600;
-      font-size: 18px;
-      color: #fff;
+    .authButton {
+      // Кнопка "Регистрация"
+      background-color: $primary-color;
+      color: $white;
+      border: 1px solid $primary-color;
+      font-weight: $font-weight-semibold; // Чуть менее жирный, чем bold
+      order: 2;
+      padding: 14px 20px; // Крупнее
+      font-size: 16px; // Крупнее
+      border-radius: $border-radius-md;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 
-      @media (max-width: 768px) {
-        display: none;
+      &:focus {
+        outline: none;
+      }
+
+      &:hover,
+      &:focus {
+        background-color: $primary-color-darker;
+        border-color: $primary-color-darker;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .authButtonSecondary {
+      // Кнопка "Войти"
+      background-color: $white;
+      color: $primary-color;
+      border: 1px solid $primary-color;
+      order: 3;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: $font-weight-semibold;
+      border-radius: $border-radius-md;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+
+      &:focus {
+        outline: none;
+      }
+
+      &:hover,
+      &:focus {
+        background-color: $primary-color-lightest-bg; // Очень светлый фирменный
+        border-color: $primary-color-darker;
+        color: $primary-color-darker;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
       }
     }
   }

@@ -1,0 +1,136 @@
+// --- File: src/style/components/becomeASitter/FlexibilitySection.scss ---
+@use '../../variables' as *;
+@use 'sass:color';
+
+.flexibility-section {
+    padding: 80px 0;
+    background-color: $white; // Чередуем с цветным/светло-серым фоном
+
+    &.wrapper {
+        width: 100%;
+        max-width: 1100px; // Чуть уже, чем 1180 для компактности
+        padding-left: 20px;
+        padding-right: 20px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        gap: 60px;
+
+        @media (max-width: $breakpoint-lg) {
+            // 992px
+            flex-direction: column;
+            text-align: center;
+            gap: 40px;
+        }
+    }
+
+    &__text-content {
+        flex: 1 1 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+
+        @media (max-width: $breakpoint-lg) {
+            align-items: center;
+        }
+
+        h2 {
+            font-family: $font-family-headings;
+            font-weight: $font-weight-bold;
+            font-size: 36px;
+            color: $text-color-base;
+            line-height: $line-height-heading;
+            margin-bottom: 10px;
+
+            @media (max-width: $breakpoint-md) {
+                font-size: 30px;
+            }
+        }
+    }
+
+    &__features-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px; // Отступ между пунктами
+
+        li {
+            display: flex;
+            align-items: center; // Выравнивание иконки и текста
+            gap: 12px;
+            font-size: 17px; // $font-size-base + 1px
+            color: $text-color-secondary;
+            line-height: $line-height-base;
+            font-weight: $font-weight-medium;
+
+            @media (max-width: $breakpoint-lg) {
+                justify-content: center; // Центрируем на мобильных, если текст по центру
+                text-align: left; // Но сам текст слева для удобства
+                max-width: 450px; // Ограничиваем ширину пункта
+            }
+
+            @media (max-width: $breakpoint-sm) {
+                font-size: $font-size-base; // 16px
+            }
+
+            .feature-icon {
+                color: $primary-color;
+                flex-shrink: 0; // Иконка не будет сжиматься
+
+                svg {
+                    width: 24px;
+                    height: 24px;
+                    display: block;
+                }
+            }
+        }
+    }
+
+    &__quote {
+        margin-top: 20px;
+        padding-left: 20px;
+        border-left: 3px solid $primary-color-lighter;
+        font-style: italic;
+        color: $text-color-muted;
+
+        p {
+            font-size: $font-size-base; // 16px
+            line-height: $line-height-base;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            font-size: 14px; // $font-size-sm
+            font-weight: $font-weight-medium;
+            color: $text-color-secondary;
+        }
+
+        @media (max-width: $breakpoint-lg) {
+            max-width: 450px;
+            text-align: left;
+        }
+    }
+
+    &__image-wrapper {
+        flex: 1 1 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: $border-radius-xl; // Скругление
+            box-shadow: $box-shadow-lg; // Тень для изображения
+            object-fit: cover; // Важно, если пропорции изображения не идеальны
+            max-height: 420px;
+
+            @media (max-width: $breakpoint-lg) {
+                max-height: 350px;
+            }
+        }
+    }
+}

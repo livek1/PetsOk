@@ -1,0 +1,491 @@
+@use '../../../style/variables' as *;
+@use 'sass:color';
+
+// --- Стили для react-phone-number-input ---
+// Глобальный селектор для стилизации компонента из библиотеки
+:global(.PhoneInput) {
+    // Этот контейнер теперь не нужен, так как мы используем свой .contactInputContainer
+}
+
+:global(.PhoneInputInput) {
+    // Стили для самого поля ввода внутри библиотеки
+    flex-grow: 1;
+    border: none !important; // Убираем границы самой библиотеки
+    outline: none !important;
+    background-color: transparent !important;
+    height: 100%;
+    font-size: $font-size-base;
+    color: $text-color-base;
+    padding-left: $space-3;
+
+    &::placeholder {
+        color: $neutral-500;
+    }
+
+    &:focus {
+        box-shadow: none !important; // Убираем стандартную тень фокуса
+    }
+}
+
+:global(.PhoneInputCountry) {
+    // Контейнер для флага и стрелки
+    display: flex;
+    align-items: center;
+    padding: 0 $space-2;
+    margin: 0;
+}
+
+:global(.PhoneInputCountryIcon) {
+    // Флаг
+    box-shadow: none; // Убираем тень, если есть
+    height: 20px;
+}
+
+:global(.PhoneInputCountrySelectArrow) {
+    // Стрелочка вниз
+    opacity: 0.8;
+    color: $text-color-secondary;
+    margin-left: $space-2;
+}
+
+
+// --- Основные стили модального окна ---
+.authModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($neutral-900, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    z-index: $zindex-modal;
+    transition: opacity 0.25s ease-out, visibility 0s linear 0.25s;
+
+    &.open {
+        opacity: 1;
+        visibility: visible;
+        transition-delay: 0s;
+
+        .authModalWrapper {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    }
+}
+
+.authModalOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.authModalWrapper {
+    background-color: $white;
+    padding: $space-8;
+    border-radius: $border-radius-xl;
+    box-shadow: $shadow-xl;
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    z-index: 2;
+    transform: scale(0.95) translateY(15px);
+    opacity: 0;
+    transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.modalTitle {
+    font-size: calc(#{$font-size-xl} + 2px);
+    font-weight: $font-weight-semibold;
+    color: $text-color-base;
+    text-align: center;
+    margin-bottom: $space-4;
+    padding: 0 $space-4;
+}
+
+.modalSubtitle {
+    font-size: $font-size-base;
+    color: $text-color-secondary;
+    text-align: center;
+    margin-bottom: $space-6;
+    line-height: $line-height-normal;
+    padding: 0 $space-2;
+
+    strong {
+        font-weight: $font-weight-medium;
+        color: $text-color-base;
+    }
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $space-5;
+    position: relative;
+}
+
+label.inputLabel {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-color-base;
+    margin-bottom: $space-2;
+    display: block;
+}
+
+// --- Стили для нового общего контейнера инпута ---
+.contactInputContainer {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid $neutral-300;
+    border-radius: $border-radius-md;
+    height: 58px;
+    background-color: $white;
+    transition: border-color $transition-base, box-shadow $transition-base;
+
+    &:focus-within {
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+
+    &.inputError {
+        border-color: $error-500;
+
+        &:focus-within {
+            box-shadow: 0 0 0 2px rgba($error-500, 0.2);
+        }
+    }
+}
+
+.contactInputPrefix {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 $space-4;
+    color: $text-color-secondary;
+    border-right: 1px solid $neutral-200;
+
+    svg {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+// --- Общие стили для инпутов внутри контейнера ---
+.contactInputFieldElement,
+.phoneInputFieldElement {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: $space-3 $space-4;
+    font-size: $font-size-base;
+    color: $text-color-base;
+    width: 100%;
+    height: 100%;
+
+    &::placeholder {
+        color: $neutral-500;
+    }
+}
+
+.phoneInputFieldElement {
+    padding: 0; // Для PhoneInput убираем внешний паддинг
+}
+
+input.inputField {
+    width: 100%;
+    height: 58px;
+    border: 1.5px solid $neutral-300;
+    border-radius: $border-radius-md;
+    padding: $space-3 $space-4;
+    font-size: $font-size-base;
+    color: $text-color-base;
+    transition: border-color $transition-base, box-shadow $transition-base;
+
+    &::placeholder {
+        color: $neutral-500;
+    }
+
+    &:focus {
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+
+    &.inputError {
+        border-color: $error-500;
+
+        &:focus {
+            box-shadow: 0 0 0 2px rgba($error-500, 0.2);
+        }
+    }
+}
+
+
+input.otpInput {
+    height: 58px;
+    text-align: center;
+    letter-spacing: 0.75em;
+    font-size: calc(#{$font-size-lg} + 2px);
+    padding: $space-3 $space-2;
+    border: 1.5px solid $neutral-400;
+    border-radius: $border-radius-md;
+    transition: border-color $transition-base, box-shadow $transition-base;
+
+    &:focus {
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+
+    &.inputError {
+        border-color: $error-500;
+
+        &:focus {
+            box-shadow: 0 0 0 2px rgba($error-500, 0.2);
+        }
+    }
+}
+
+.checkboxGroup {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: $space-3;
+    margin-bottom: $space-4;
+}
+
+input.checkboxInput {
+    margin-top: 5px;
+    width: 18px;
+    height: 18px;
+    accent-color: $primary-color;
+    border: 1.5px solid $neutral-500;
+    border-radius: calc(#{$border-radius-sm} - 1px);
+    flex-shrink: 0;
+
+    &:checked {
+        background-color: $primary-color;
+        border-color: $primary-color;
+    }
+}
+
+label.checkboxLabel {
+    font-size: $font-size-sm;
+    color: $text-color-secondary;
+    line-height: 1.5;
+    margin-bottom: 0;
+    font-weight: $font-weight-regular;
+
+    a.inlineLink {
+        color: $text-color-base;
+        text-decoration: underline;
+        font-weight: $font-weight-semibold;
+
+        &:hover {
+            color: $primary-color;
+        }
+    }
+}
+
+.checkboxError {
+    margin-left: calc(#{$space-3} + 18px);
+    margin-top: $space-1;
+    font-size: $font-size-xs;
+    color: $error-500;
+}
+
+.errorMessage,
+.apiError {
+    font-size: $font-size-sm;
+    color: $error-500;
+    margin-top: $space-2;
+}
+
+.apiError {
+    text-align: center;
+    margin-bottom: $space-3;
+}
+
+.submitButton {
+    color: $white;
+    border: none;
+    padding: 16px $space-6;
+    border-radius: $border-radius-md;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    cursor: pointer;
+    transition: background-color $transition-base, transform 0.1s ease-out;
+    width: 100%;
+    margin-top: $space-3;
+    height: 58px;
+
+    &.submitButtonPrimary {
+        background-color: $primary-color;
+
+        &:hover {
+            background-color: $primary-color-darker;
+        }
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+
+    &:disabled {
+        background-color: $neutral-200;
+        color: $neutral-500;
+        cursor: not-allowed;
+    }
+}
+
+.linkButton {
+    background: none;
+    border: none;
+    color: $text-color-base;
+    text-decoration: underline;
+    font-size: $font-size-sm;
+    padding: $space-2 0;
+    margin-top: $space-4;
+    cursor: pointer;
+    font-weight: $font-weight-semibold;
+
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.closeButton {
+    position: absolute;
+    top: $space-4;
+    left: $space-5;
+    background: $neutral-100;
+    border: none;
+    cursor: pointer;
+    padding: $space-2;
+    color: $text-color-base;
+    border-radius: $border-radius-round;
+    line-height: 0;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: $neutral-200;
+    }
+
+    svg {
+        display: block;
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.backButton {
+    position: absolute;
+    top: calc(#{$space-4} + 2px);
+    left: $space-5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: $space-2;
+    color: $text-color-base;
+    border-radius: $border-radius-round;
+    display: flex;
+    align-items: center;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+
+    &:hover {
+        background-color: $neutral-100;
+    }
+
+    svg {
+        margin-right: $space-1;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.visuallyHidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+}
+
+.socialLoginSection {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: $space-3;
+    margin-top: $space-5;
+    padding-top: $space-5;
+    border-top: 1px solid $border-color-light;
+
+    .orDivider {
+        font-size: $font-size-xs;
+        color: $text-color-muted;
+        position: relative;
+        text-align: center;
+        width: 100%;
+        margin-bottom: $space-1;
+
+        span {
+            background-color: $white;
+            padding: 0 $space-2;
+            position: relative;
+            z-index: 1;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: $border-color-light;
+            z-index: 0;
+        }
+    }
+
+    .socialButtonsContainer {
+        display: flex;
+        flex-direction: column;
+        gap: $space-3;
+    }
+
+    button.socialButton {
+        background-color: $white;
+        border: 1px solid $neutral-500;
+        border-radius: $border-radius-md;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: $space-2;
+        transition: background-color $transition-base, border-color $transition-base;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        color: $text-color-base;
+        padding: 0 $space-4;
+
+
+        &:hover {
+            border-color: $neutral-900;
+            background-color: $neutral-50;
+        }
+    }
+}

@@ -1,0 +1,132 @@
+// --- File: src/style/components/becomeASitter/SafetyFirstSection.scss ---
+@use '../../variables' as *;
+@use 'sass:color';
+
+.safety-first-section {
+    padding: 80px 0;
+    background-color: $white;
+
+    &.wrapper {
+        width: 100%;
+        max-width: 1100px;
+        padding-left: 20px;
+        padding-right: 20px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center; // Вертикальное выравнивание по центру
+        gap: 60px;
+
+        @media (max-width: $breakpoint-lg) {
+            // 992px
+            flex-direction: column;
+            gap: 40px;
+        }
+    }
+
+    &__text-content {
+        flex: 1 1 58%; // Текстовый блок немного больше
+        display: flex;
+        flex-direction: column;
+        gap: 20px; // Отступ между заголовком, подзаголовком и списком
+
+        @media (max-width: $breakpoint-lg) {
+            text-align: center;
+            align-items: center;
+        }
+
+        h2 {
+            font-family: $font-family-headings;
+            font-weight: $font-weight-bold;
+            font-size: 36px;
+            color: $text-color-base;
+            line-height: $line-height-heading;
+            margin-bottom: 8px; // Меньше отступ, если есть подзаголовок
+
+            @media (max-width: $breakpoint-md) {
+                font-size: 30px;
+            }
+        }
+
+        .safety-first-section__subtitle {
+            // Специфичность для подзаголовка
+            font-family: $font-family-base;
+            font-size: 18px; // $font-size-md
+            color: $text-color-secondary;
+            line-height: $line-height-base;
+            max-width: 550px; // Ограничение для читаемости
+            margin-bottom: 20px; // Отступ под подзаголовком
+
+            @media (max-width: $breakpoint-lg) {
+                max-width: 100%;
+            }
+
+            @media (max-width: $breakpoint-sm) {
+                font-size: $font-size-base;
+            }
+        }
+    }
+
+    &__points-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .safety-point-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 17px; // $font-size-base + 1px
+        color: $text-color-base; // Основной цвет текста для пунктов
+        line-height: $line-height-base;
+        font-weight: $font-weight-medium;
+
+        @media (max-width: $breakpoint-lg) {
+            text-align: left; // Даже если родитель по центру, пункты лучше слева
+            max-width: 480px;
+        }
+
+        @media (max-width: $breakpoint-sm) {
+            font-size: $font-size-base; // 16px
+        }
+
+        &__icon {
+            color: $primary-color; // Фирменный цвет для иконок
+            flex-shrink: 0;
+            background-color: $primary-color-lightest-bg; // Очень легкий фон
+            width: 44px; // Увеличенный размер кружка
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                width: 24px; // Размер иконки внутри
+                height: 24px;
+            }
+        }
+    }
+
+    &__image-wrapper {
+        flex: 1 1 42%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain; // Важно, если SVG или иллюстрация
+            max-height: 380px; // Ограничение высоты
+
+            @media (max-width: $breakpoint-lg) {
+                max-height: 300px;
+                margin-top: 30px; // Отступ сверху, если картинка под текстом
+            }
+        }
+    }
+}

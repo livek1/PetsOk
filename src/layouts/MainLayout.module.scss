@@ -1,0 +1,15 @@
+// --- File: src/layouts/MainLayout.module.scss ---
+@use '../style/variables' as *;
+
+.mainLayoutContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.mainContent {
+    flex-grow: 1;
+    // paddingTop будет установлен через inline-стиль из JS
+}
+
+// :global(.header-js-hook) {} // Не требуется, если класс уже есть на хедере

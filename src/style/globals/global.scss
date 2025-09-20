@@ -1,9 +1,76 @@
+/* --- File: src/style/globals/global.scss --- */
 @use "swiper/css";
 @use "./resets.scss";
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* --- ПОДКЛЮЧАЕМ ШРИФТЫ ЛОКАЛЬНО --- */
+
+/* raleway-regular - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  /* Tells the browser to show a fallback font while this one is loading */
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/fonts/raleway-v37-cyrillic_latin-regular.woff2') format('woff2');
+  /* Path from the public folder */
+}
+
+/* raleway-italic - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Raleway';
+  font-style: italic;
+  font-weight: 400;
+  src: url('/fonts/raleway-v37-cyrillic_latin-italic.woff2') format('woff2');
+}
+
+/* raleway-500 - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/raleway-v37-cyrillic_latin-500.woff2') format('woff2');
+}
+
+/* raleway-500italic - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Raleway';
+  font-style: italic;
+  font-weight: 500;
+  src: url('/fonts/raleway-v37-cyrillic_latin-500italic.woff2') format('woff2');
+}
+
+/* raleway-600 - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/raleway-v37-cyrillic_latin-600.woff2') format('woff2');
+}
+
+/* raleway-700 - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/fonts/raleway-v37-cyrillic_latin-700.woff2') format('woff2');
+}
+
+/* raleway-800 - cyrillic_latin */
+@font-face {
+  font-display: swap;
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 800;
+  src: url('/fonts/raleway-v37-cyrillic_latin-800.woff2') format('woff2');
+}
 
 body {
-  font-family: "Raleway", serif;
+  font-family: "Raleway", sans-serif;
   overflow-x: hidden;
   background-color: #fff;
 }

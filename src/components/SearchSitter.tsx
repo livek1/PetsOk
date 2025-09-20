@@ -1,6 +1,8 @@
-import { useState } from "react";
+// src/components/SearchSitter.tsx
+
+import { useState } from "react"; // <-- ИСПРАВЛЕНИЕ: Удален неиспользуемый импорт React
 import { useTranslation } from "react-i18next";
-import { enabledServicesForSearch } from "../config/appConfig";
+import { enabledServicesForSearch, comingSoonServices } from "../config/appConfig";
 import SearchSitterItem from "./search/SearchSitterItem";
 import style from '../style/components/SearchSitter.module.scss';
 import { motion } from 'framer-motion';
@@ -12,11 +14,16 @@ const SearchSitter = () => {
   const tabs = enabledServicesForSearch.map(service => ({
     id: service.id,
     name: t(service.nameKey),
-    description: t(service.descriptionKey),
+    description: t(service.descriptionKey, ''),
     itemTitle: t(service.itemTitleKey),
+    Icon: service.IconComponent,
   }));
 
-  if (tabs.length === 0) {
+  const hasComingSoonServices = comingSoonServices.length > 0;
+
+  const comingSoonNames = comingSoonServices.map(s => t(s.nameKey)).join(', ');
+
+  if (tabs.length === 0 && !hasComingSoonServices) {
     return null;
   }
 
@@ -35,16 +42,24 @@ const SearchSitter = () => {
               tabIndex={0}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveIndex(i); }}
             >
-              <h3 className={style.tabName}>{tab.name}</h3>
-              <span className={style.tabDescription}>{tab.description}</span>
+              <div className={style.tabContent}>
+                <tab.Icon className={style.tabIcon} width={22} height={22} color="currentColor" />
+                <div className={style.tabText}>
+                  <h3 className={style.tabName}>{tab.name}</h3>
+                  <span className={style.tabDescription}>{tab.description}</span>
+                </div>
+              </div>
             </li>
           ))}
 
-          {/* --- НОВАЯ ЛОГИКА ЗДЕСЬ --- */}
-          {/* Показываем подсказку, если всего одна услуга */}
-          {tabs.length === 1 && (
-            <li className={style.moreServicesHint}>
-              <span>{t("searchSitter.moreServicesSoon", "Скоро добавим новые услуги!")}</span>
+          {hasComingSoonServices && (
+            <li className={style.moreServicesTab}>
+              <span className={style.moreServicesHeader}>
+                {t("searchSitter.addingSoon", "Скоро добавим эти услуги:")}
+              </span>
+              <span className={style.comingSoonList}>
+                {comingSoonNames}
+              </span>
             </li>
           )}
         </ul>
@@ -60,7 +75,7 @@ const SearchSitter = () => {
             >
               {activeIndex === i && (
                 <motion.div
-                  key={tab.id} // Важно для переключения анимации
+                  key={tab.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}

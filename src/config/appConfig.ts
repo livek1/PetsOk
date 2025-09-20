@@ -1,10 +1,30 @@
 // --- File: config/appConfig.ts ---
+
+import { FC } from 'react';
+
+// Импортируем все компоненты иконок, которые будем использовать
+import BoardingIcon from '../components/icons/BoardingIcon';
+import DogWalkingIcon from '../components/icons/DogWalkingIcon';
+import DropInVisitsIcon from '../components/icons/DropInVisitsIcon';
+import DoggyDayCareIcon from '../components/icons/DoggyDayCareIcon';
+import HouseSittingIcon from '../components/icons/HouseSittingIcon';
+
+// Создаем "карту" (Map) для сопоставления строкового ключа и компонента
+const serviceIconMap: Record<string, FC<any>> = {
+    boarding: BoardingIcon,
+    walking: DogWalkingIcon,
+    homevisits: DropInVisitsIcon,
+    daycare: DoggyDayCareIcon,
+    'house-sitting': HouseSittingIcon,
+    default: BoardingIcon,
+};
+
 type ServiceID = 'boarding_sitter' | 'walking' | 'drop_in' | 'day_care' | 'house_sitting_owner' | 'puppy_nanny';
 
-// Полное описание каждого сервиса
 interface ServiceConfig {
     id: ServiceID;
     enabled: boolean;
+    iconKey: string;
     header: {
         translationKey: string;
         defaultText: string;
@@ -14,79 +34,64 @@ interface ServiceConfig {
         descKey: string;
         itemTitleKey: string;
     } | null;
-    // --- НОВАЯ СЕКЦИЯ ДЛЯ СТРАНИЦЫ СИТТЕРА ---
     sitterPage: {
         nameKey: string;
         descKey: string;
-        highlightKey?: string; // Опциональный ключ для ярлыка "Наибольший доход"
-        iconKey: string; // Ключ для выбора иконки в компоненте
+        highlightKey?: string;
     } | null;
 }
 
-// Конфигурация всех возможных сервисов. Чтобы включить/выключить, меняйте флаг 'enabled'.
 const ALL_SERVICES_CONFIG: Record<ServiceID, ServiceConfig> = {
     boarding_sitter: {
         id: 'boarding_sitter',
         enabled: true,
+        iconKey: 'boarding',
         header: { translationKey: 'header.services.boarding', defaultText: 'Передержка' },
         search: { nameKey: 'SearchSitter.tabs.service1.name', descKey: 'SearchSitter.tabs.service1.description', itemTitleKey: 'SearchSitter.itemTitle.service1' },
-        sitterPage: {
-            nameKey: 'sitterServices.boarding.title',
-            descKey: 'sitterServices.boarding.desc',
-            highlightKey: 'sitterServices.boarding.highlight',
-            iconKey: 'boarding'
-        }
+        sitterPage: { nameKey: 'sitterServices.boarding.title', descKey: 'sitterServices.boarding.desc', highlightKey: 'sitterServices.boarding.highlight' }
     },
     walking: {
         id: 'walking',
-        enabled: false, // <-- ВКЛЮЧАЕМ ДЛЯ ПРИМЕРА
+        enabled: false, // <-- ЭТА УСЛУГА ВЫКЛЮЧЕНА, ОНА ПОПАДЕТ В "СКОРО БУДУТ"
+        iconKey: 'walking',
         header: { translationKey: 'header.services.walking', defaultText: 'Выгул' },
         search: { nameKey: 'SearchSitter.tabs.service2.name', descKey: 'SearchSitter.tabs.service2.description', itemTitleKey: 'SearchSitter.itemTitle.service2' },
-        sitterPage: {
-            nameKey: 'sitterServices.walking.title',
-            descKey: 'sitterServices.walking.desc',
-            iconKey: 'walking'
-        }
+        sitterPage: { nameKey: 'sitterServices.walking.title', descKey: 'sitterServices.walking.desc' }
     },
     drop_in: {
         id: 'drop_in',
-        enabled: false, // <-- ВКЛЮЧАЕМ ДЛЯ ПРИМЕРА
+        enabled: false,
+        iconKey: 'homevisits',
         header: null,
         search: { nameKey: 'SearchSitter.tabs.service3.name', descKey: 'SearchSitter.tabs.service3.description', itemTitleKey: 'SearchSitter.itemTitle.service3' },
-        sitterPage: {
-            nameKey: 'sitterServices.homevisits.title', // Используем общий ключ для визитов на дом
-            descKey: 'sitterServices.homevisits.desc',
-            iconKey: 'homevisits'
-        }
+        sitterPage: { nameKey: 'sitterServices.homevisits.title', descKey: 'sitterServices.homevisits.desc' }
     },
     day_care: {
         id: 'day_care',
-        enabled: false, // <-- ВКЛЮЧАЕМ ДЛЯ ПРИМЕРА
+        enabled: false, // <-- ЭТА УСЛУГА ВЫКЛЮЧЕНА, ОНА ПОПАДЕТ В "СКОРО БУДУТ"
+        iconKey: 'daycare',
         header: { translationKey: 'header.services.daycare', defaultText: 'Дневной присмотр' },
         search: { nameKey: 'SearchSitter.tabs.service4.name', descKey: 'SearchSitter.tabs.service4.description', itemTitleKey: 'SearchSitter.itemTitle.service4' },
-        sitterPage: {
-            nameKey: 'sitterServices.daycare.title',
-            descKey: 'sitterServices.daycare.desc',
-            iconKey: 'daycare'
-        }
+        sitterPage: { nameKey: 'sitterServices.daycare.title', descKey: 'sitterServices.daycare.desc' }
     },
     house_sitting_owner: {
         id: 'house_sitting_owner',
-        enabled: false, // <-- Эту услугу можно скрыть со страницы ситтера, оставив null
+        enabled: false,
+        iconKey: 'house-sitting',
         header: { translationKey: 'header.services.houseSitting', defaultText: 'Присмотр на дому' },
         search: { nameKey: 'SearchSitter.tabs.service5.name', descKey: 'SearchSitter.tabs.service5.description', itemTitleKey: 'SearchSitter.itemTitle.service5' },
-        sitterPage: null // <-- НЕ ПОКАЗЫВАЕМ НА СТРАНИЦЕ СИТТЕРА
+        sitterPage: null
     },
     puppy_nanny: {
         id: 'puppy_nanny',
         enabled: false,
+        iconKey: 'default',
         header: { translationKey: 'header.services.puppyNanny', defaultText: 'Няня для щенка' },
         search: null,
-        sitterPage: null // <-- НЕ ПОКАЗЫВАЕМ НА СТРАНИЦЕ СИТТЕРА
+        sitterPage: null
     }
 };
 
-// Экспортируем отфильтрованные и готовые к использованию массивы
 export const enabledServicesForHeader = Object.values(ALL_SERVICES_CONFIG)
     .filter(service => service.enabled && service.header)
     .map(service => ({
@@ -102,21 +107,26 @@ export const enabledServicesForSearch = Object.values(ALL_SERVICES_CONFIG)
         nameKey: service.search!.nameKey,
         descriptionKey: service.search!.descKey,
         itemTitleKey: service.search!.itemTitleKey,
+        IconComponent: serviceIconMap[service.iconKey] || serviceIconMap.default,
     }));
 
-// --- НОВЫЙ ЭКСПОРТ ДЛЯ СТРАНИЦЫ СИТТЕРА ---
 export const enabledServicesForSitterPage = Object.values(ALL_SERVICES_CONFIG)
     .filter(service => service.enabled && service.sitterPage)
     .map(service => ({
         id: service.id,
-        ...service.sitterPage!, // Используем !, так как filter гарантирует наличие sitterPage
+        IconComponent: serviceIconMap[service.iconKey] || serviceIconMap.default,
+        ...service.sitterPage!,
     }));
 
+// --- НОВЫЙ ЭКСПОРТ ДЛЯ ПОЛУЧЕНИЯ СПИСКА БУДУЩИХ УСЛУГ ---
+export const comingSoonServices = Object.values(ALL_SERVICES_CONFIG)
+    .filter(service => !service.enabled && service.search) // Логика: сервис выключен, но у него есть конфигурация для поиска
+    .map(service => ({
+        nameKey: service.search!.nameKey,
+    }));
 
 export const config = {
-    // --- ИЗМЕНЕНИЕ: ДОБАВЛЕН НОВЫЙ ФЛАГ ---
-    enablePhoneAuth: false, // <-- Установите true, чтобы включить ввод телефона на вебе
-
+    enablePhoneAuth: false,
     siteUrl: 'https://petsok.ru',
     referralParamName: 'ref',
     apiBaseUrl: 'https://petsok.ru/api/v1',

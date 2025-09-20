@@ -22,7 +22,7 @@
 
 .tabs {
     display: flex;
-    align-items: center; // Выравниваем по центру по вертикали
+    align-items: center;
     list-style: none;
     padding: 0;
     margin: 0 0 $space-6 0;
@@ -36,7 +36,7 @@
 }
 
 .tabItem {
-    padding: $space-4 $space-5;
+    padding: $space-3 $space-4;
     cursor: pointer;
     position: relative;
     color: $text-color-secondary;
@@ -67,14 +67,30 @@
     }
 }
 
+.tabContent {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+}
+
+.tabIcon {
+    flex-shrink: 0;
+}
+
+.tabText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .tabName {
-    font-size: $font-size-md;
+    font-size: $font-size-base;
     font-weight: $font-weight-semibold;
     margin: 0 0 4px 0;
     transition: color 0.3s ease;
 
     @media (max-width: $breakpoint-sm) {
-        font-size: $font-size-base;
+        font-size: $font-size-sm;
     }
 }
 
@@ -100,20 +116,33 @@
     }
 }
 
-// --- НОВЫЙ СТИЛЬ ДЛЯ ПОДСКАЗКИ О НОВЫХ УСЛУГАХ ---
-.moreServicesHint {
-    margin-left: auto; // Прижимает элемент к правому краю
-    padding: $space-2 $space-4;
+// --- ИЗМЕНЕНИЕ: Стили для статичного, центрированного информационного блока без иконок ---
+.moreServicesTab {
+    margin-left: auto;
+    padding: $space-3 $space-4;
+    display: flex;
+    flex-direction: column;
+    align-items: center; // Центрируем дочерние элементы по горизонтали
+    gap: $space-1;
+    white-space: nowrap;
+    align-self: center;
+    margin-bottom: $space-3;
+    cursor: default;
+}
+
+.moreServicesHeader {
     font-size: $font-size-sm;
     font-weight: $font-weight-medium;
-    color: $text-color-muted;
-    background-color: $neutral-50;
-    border-radius: $border-radius-md;
-    white-space: nowrap;
-    align-self: center; // Вертикальное выравнивание по центру табов
-    margin-bottom: 15px; // Отступ, чтобы быть на одном уровне с табами до бордера
-
-    @media (max-width: $breakpoint-sm) {
-        display: none; // На маленьких экранах можно скрыть для экономии места
-    }
+    color: $text-color-secondary;
 }
+
+.comingSoonList {
+    font-size: $font-size-sm;
+    color: $text-color-muted;
+    max-width: 250px;
+    white-space: normal;
+    line-height: $line-height-tight;
+    text-align: center; // Центрируем сам текст, если он переносится на новую строку
+}
+
+// --- УДАЛЕНО: Вся секция с анимацией ---

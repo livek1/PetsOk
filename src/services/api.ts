@@ -1,5 +1,5 @@
 // --- File: services/api.ts ---
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'; // <-- ИСПРАВЛЕНИЕ ЗДЕСЬ
 import { config as appConfig } from '../config/appConfig';
 
 const API_BASE_URL = appConfig.apiBaseUrl;
@@ -23,21 +23,21 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(
-    (config) => {
+    (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
         const token = localStorage.getItem('authToken');
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
-    (error) => {
+    (error: any) => {
         return Promise.reject(error);
     }
 );
 
 apiClient.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    (response: AxiosResponse): AxiosResponse => response,
+    (error: AxiosError) => {
         if (error.response) {
             console.error('API Error Response:', error.response.data);
             if (error.response.status === 401) {
@@ -91,7 +91,6 @@ export interface CheckOtpResponse {
     message?: string;
 }
 
-// --- ИЗМЕНЕНИЕ ЗДЕСЬ: ДОБАВЛЕНО ПОЛЕ registration_type ---
 export interface RegistrationPayload {
     first_name?: string;
     fullName?: string;
@@ -107,7 +106,7 @@ export interface RegistrationPayload {
     utm_campaign?: string;
     utm_term?: string;
     utm_content?: string;
-    registration_type?: 'client' | 'sitter'; // <-- НОВОЕ ПОЛЕ
+    registration_type?: 'client' | 'sitter';
 }
 
 export interface AuthApiResponse {
@@ -253,9 +252,12 @@ export const fetchAddressSuggestions = async (query: string): Promise<string[]> 
     try {
         const response = await apiClient.get<string[]>('/address/suggest', { params: { query } });
         return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) console.error('Axios error fetching address suggestions:', error.message);
-        else console.error('Unexpected error fetching address suggestions:', error);
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            console.error('Axios error fetching address suggestions:', error.message);
+        } else {
+            console.error('Unexpected error fetching address suggestions:', error);
+        }
         throw error;
     }
 };

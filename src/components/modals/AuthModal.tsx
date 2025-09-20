@@ -1,5 +1,5 @@
 // --- File: src/components/modals/AuthModal.tsx ---
-import React, { useState, useEffect, useMemo, FC, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import AppleSignin from 'react-apple-signin-auth';
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
-import 'react-phone-number-input/style.css'; // Базовые стили для инпута
+import 'react-phone-number-input/style.css';
 
 import {
     checkContactExists, sendOtp, verifyOtp, register as registerAction,
@@ -42,13 +42,11 @@ const generateNonce = (length: number = 32): string => {
     return result;
 };
 
-// Иконка почты
 const MailIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
     </svg>
 );
-
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'register', registrationType = 'client' }) => {
     const { t } = useTranslation();
@@ -222,14 +220,25 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 {detailsErrors.password_confirmation && <p className={style.errorMessage}>{detailsErrors.password_confirmation.message}</p>}
             </div>
 
-            {/* --- ИЗМЕНЕННЫЙ БЛОК СОГЛАСИЯ --- */}
             <div className={`${style.inputGroup} ${style.checkboxGroup}`}>
-                <Controller name="termsAccepted" control={detailsControl} defaultValue={false} rules={{ required: t('validation.termsRequiredShort') }}
-                    render={({ field }) => (
-                        <input id="termsAccepted" type="checkbox" {...field} checked={field.value || false}
-                            className={`${style.checkboxInput} ${detailsErrors.termsAccepted ? style.inputError : ""}`}
-                        />
-                    )} />
+                <Controller
+                    name="termsAccepted"
+                    control={detailsControl}
+                    defaultValue={false}
+                    rules={{ required: t('validation.termsRequiredShort') }}
+                    render={({ field }) => {
+                        const { value, ...rest } = field; // <-- ИСПРАВЛЕНИЕ ЗДЕСЬ
+                        return (
+                            <input
+                                id="termsAccepted"
+                                type="checkbox"
+                                {...rest} // <-- Передаем все, кроме value
+                                checked={!!value} // <-- Используем !!value для преобразования в boolean
+                                className={`${style.checkboxInput} ${detailsErrors.termsAccepted ? style.inputError : ""}`}
+                            />
+                        );
+                    }}
+                />
                 <label htmlFor="termsAccepted" className={style.checkboxLabel}>
                     {t('registration.agreeToTermsPrefixAirbnb')}
                     <a href="/terms" target="_blank" rel="noopener noreferrer" className={style.inlineLink}>

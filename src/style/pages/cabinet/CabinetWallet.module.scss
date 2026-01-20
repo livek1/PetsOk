@@ -1,0 +1,332 @@
+// --- File: src/style/pages/cabinet/CabinetWallet.module.scss ---
+@use '../../../style/variables' as *;
+
+.container {
+    width: 100%;
+}
+
+.topGrid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; // Баланс занимает меньше, карты больше
+    gap: $space-6;
+    margin-bottom: $space-8;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: 1fr; // На планшетах одна колонка
+    }
+}
+
+// --- Карточка Баланса ---
+.balanceCard {
+    background: linear-gradient(135deg, $primary-color 0%, $primary-color-darker 100%);
+    color: $white;
+    border-radius: $border-radius-xl;
+    padding: $space-8;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 200px;
+    box-shadow: 0 10px 30px rgba($primary-color, 0.3);
+    position: relative;
+    overflow: hidden;
+
+    // Декоративный круг
+    &::after {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+        font-weight: 500;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .amount {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: $space-4 0;
+        font-family: $font-family-headings;
+    }
+
+    .balanceFooter {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+}
+
+// --- Секция Карт ---
+.cardsSection {
+    background: $white;
+    border-radius: $border-radius-xl;
+    padding: $space-6;
+    border: 1px solid $border-color-light;
+    box-shadow: $box-shadow-sm;
+    display: flex;
+    flex-direction: column;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $space-4;
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: $text-color-base;
+            margin: 0;
+        }
+    }
+}
+
+.addCardBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $primary-color;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+        background-color: $primary-color-lightest-bg;
+    }
+}
+
+.cardsList {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+}
+
+.cardItem {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid $border-color-light;
+    border-radius: $border-radius-lg;
+    transition: all 0.2s;
+    background-color: $white;
+
+    &:hover {
+        border-color: $primary-color-lighter;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    &.default {
+        border-color: $primary-color;
+        background-color: rgba($primary-color, 0.02);
+    }
+}
+
+.cardIcon {
+    width: 40px;
+    height: 40px;
+    background-color: $neutral-50;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    color: $text-color-base;
+}
+
+.cardInfo {
+    flex: 1;
+
+    h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: $text-color-base;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .defaultBadge {
+        font-size: 0.7rem;
+        background-color: $primary-color;
+        color: $white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+
+    p {
+        margin: 4px 0 0 0;
+        font-size: 0.85rem;
+        color: $text-color-secondary;
+    }
+}
+
+.cardActions {
+    display: flex;
+    gap: 8px;
+}
+
+.actionBtn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: $text-color-muted;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: $neutral-100;
+        color: $text-color-base;
+    }
+
+    &.delete:hover {
+        background-color: rgba($error-500, 0.1);
+        color: $error-500;
+    }
+}
+
+// --- История транзакций ---
+.historySection {
+    background: $white;
+    border-radius: $border-radius-xl;
+    padding: $space-6;
+    border: 1px solid $border-color-light;
+    box-shadow: $box-shadow-sm;
+
+    h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $text-color-base;
+        margin-bottom: $space-4;
+    }
+}
+
+.transactionsList {
+    display: flex;
+    flex-direction: column;
+}
+
+.transactionItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid $border-color-light;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+.txLeft {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.txIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    &.credit {
+        background-color: #F0FDF4; // Green light
+        color: $success-500;
+    }
+
+    &.debit {
+        background-color: #FEF2F2; // Red light
+        color: $error-500;
+    }
+
+    &.neutral {
+        background-color: $neutral-50;
+        color: $text-color-secondary;
+    }
+}
+
+.txInfo {
+    h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: $text-color-base;
+    }
+
+    span {
+        font-size: 0.85rem;
+        color: $text-color-muted;
+    }
+}
+
+.txRight {
+    text-align: right;
+
+    @media (max-width: $breakpoint-sm) {
+        text-align: left;
+        padding-left: 64px; // Отступ под иконку
+    }
+
+    .txAmount {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 700;
+
+        &.credit {
+            color: $success-500;
+        }
+
+        &.debit {
+            color: $text-color-base;
+        }
+
+        // Или красный, по вкусу
+    }
+
+    .txDate {
+        font-size: 0.85rem;
+        color: $text-color-muted;
+    }
+}
+
+.emptyState {
+    text-align: center;
+    padding: 40px;
+    color: $text-color-muted;
+    font-style: italic;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    color: $text-color-muted;
+}

@@ -1,16 +1,32 @@
-// --- File: style/components/becomeASitter/FinalSitterCTA.scss ---
 @use '../../variables' as *;
 @use 'sass:color';
 
 .final-sitter-cta {
-    padding: 80px 20px;
+    // Внутренние отступы (воздух внутри синего блока)
+    padding-top: 80px;
+    padding-bottom: 80px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    // ИСПРАВЛЕНИЕ: Внешний отступ сверху, чтобы отделить синий блок от предыдущего контента
+    margin-top: 80px;
+
     background-color: $primary-color;
     color: $white;
     text-align: center;
     position: relative;
     overflow: hidden;
 
+    @media (max-width: $breakpoint-md) {
+        // Мобильные отступы
+        padding-top: 60px;
+        padding-bottom: 60px;
+        margin-top: 60px;
+    }
+
     &__content {
+        position: relative;
+        z-index: 2;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -19,19 +35,31 @@
         margin: 0 auto;
     }
 
-    h2 {
+    &__title {
         font-family: $font-family-headings;
         font-weight: $font-weight-bold;
         font-size: 40px;
         line-height: 1.25;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 34px;
+        }
+
+        @media (max-width: $breakpoint-sm) {
+            font-size: 30px;
+        }
     }
 
-    p {
+    &__subtitle {
         font-family: $font-family-base;
         font-size: 20px;
         line-height: $line-height-base;
         opacity: 0.9;
-        max-width: 650px;
+        max-width: 600px;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 18px;
+        }
     }
 
     &__button {
@@ -45,16 +73,21 @@
         font-weight: $font-weight-bold;
         text-decoration: none;
         text-align: center;
-        transition: background-color $transition-base, color $transition-base, transform $transition-base, box-shadow $transition-base;
+        transition: all 0.3s;
         box-shadow: $box-shadow-lg;
-        margin-top: 15px;
+        border: none;
+        cursor: pointer;
 
         &:hover,
         &:focus {
             background-color: color.scale($white, $lightness: -8%);
-            transform: translateY(-4px) scale(1.03);
+            transform: translateY(-4px);
             box-shadow: 0 15px 35px rgba($black, 0.25);
-            outline: none;
+        }
+
+        @media (max-width: $breakpoint-sm) {
+            padding: 16px 32px;
+            font-size: 18px;
         }
     }
 }

@@ -1,0 +1,15 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "T5M6K6P95F.ru.petsok.pet",
+                "paths": [
+                    "/sitter/*",
+                    "/s/*",
+                    "/app"
+                ]
+            }
+        ]
+    }
+}

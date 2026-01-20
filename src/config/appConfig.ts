@@ -1,15 +1,14 @@
-// --- File: config/appConfig.ts ---
+// --- File: src/config/appConfig.ts ---
 
 import { FC } from 'react';
 
-// Импортируем все компоненты иконок, которые будем использовать
+// Импортируем все компоненты иконок
 import BoardingIcon from '../components/icons/BoardingIcon';
 import DogWalkingIcon from '../components/icons/DogWalkingIcon';
 import DropInVisitsIcon from '../components/icons/DropInVisitsIcon';
 import DoggyDayCareIcon from '../components/icons/DoggyDayCareIcon';
 import HouseSittingIcon from '../components/icons/HouseSittingIcon';
 
-// Создаем "карту" (Map) для сопоставления строкового ключа и компонента
 const serviceIconMap: Record<string, FC<any>> = {
     boarding: BoardingIcon,
     walking: DogWalkingIcon,
@@ -19,7 +18,8 @@ const serviceIconMap: Record<string, FC<any>> = {
     default: BoardingIcon,
 };
 
-type ServiceID = 'boarding_sitter' | 'walking' | 'drop_in' | 'day_care' | 'house_sitting_owner' | 'puppy_nanny';
+// Исправленные ключи согласно ответу API
+type ServiceID = 'boarding' | 'walking' | 'drop_in_visit' | 'doggy_day_care' | 'house_sitting' | 'puppy_nanny';
 
 interface ServiceConfig {
     id: ServiceID;
@@ -41,9 +41,10 @@ interface ServiceConfig {
     } | null;
 }
 
+// ВАЖНО: Ключи объекта и поля id теперь совпадают с ответом API
 const ALL_SERVICES_CONFIG: Record<ServiceID, ServiceConfig> = {
-    boarding_sitter: {
-        id: 'boarding_sitter',
+    boarding: { // Было boarding_sitter
+        id: 'boarding',
         enabled: true,
         iconKey: 'boarding',
         header: { translationKey: 'header.services.boarding', defaultText: 'Передержка' },
@@ -52,41 +53,42 @@ const ALL_SERVICES_CONFIG: Record<ServiceID, ServiceConfig> = {
     },
     walking: {
         id: 'walking',
-        enabled: false, // <-- ЭТА УСЛУГА ВЫКЛЮЧЕНА, ОНА ПОПАДЕТ В "СКОРО БУДУТ"
+        enabled: true,
         iconKey: 'walking',
         header: { translationKey: 'header.services.walking', defaultText: 'Выгул' },
         search: { nameKey: 'SearchSitter.tabs.service2.name', descKey: 'SearchSitter.tabs.service2.description', itemTitleKey: 'SearchSitter.itemTitle.service2' },
         sitterPage: { nameKey: 'sitterServices.walking.title', descKey: 'sitterServices.walking.desc' }
     },
-    drop_in: {
-        id: 'drop_in',
-        enabled: false,
+    drop_in_visit: { // Было drop_in
+        id: 'drop_in_visit',
+        enabled: true,
         iconKey: 'homevisits',
-        header: null,
+        header: null, // Обычно визиты не выносят в хедер, но если нужно - добавьте
         search: { nameKey: 'SearchSitter.tabs.service3.name', descKey: 'SearchSitter.tabs.service3.description', itemTitleKey: 'SearchSitter.itemTitle.service3' },
         sitterPage: { nameKey: 'sitterServices.homevisits.title', descKey: 'sitterServices.homevisits.desc' }
     },
-    day_care: {
-        id: 'day_care',
-        enabled: false, // <-- ЭТА УСЛУГА ВЫКЛЮЧЕНА, ОНА ПОПАДЕТ В "СКОРО БУДУТ"
+    doggy_day_care: { // Было day_care
+        id: 'doggy_day_care',
+        enabled: true,
         iconKey: 'daycare',
         header: { translationKey: 'header.services.daycare', defaultText: 'Дневной присмотр' },
         search: { nameKey: 'SearchSitter.tabs.service4.name', descKey: 'SearchSitter.tabs.service4.description', itemTitleKey: 'SearchSitter.itemTitle.service4' },
         sitterPage: { nameKey: 'sitterServices.daycare.title', descKey: 'sitterServices.daycare.desc' }
     },
-    house_sitting_owner: {
-        id: 'house_sitting_owner',
+    // Дополнительные услуги, которых может не быть в активных, но они есть в коде
+    house_sitting: {
+        id: 'house_sitting',
         enabled: false,
         iconKey: 'house-sitting',
-        header: { translationKey: 'header.services.houseSitting', defaultText: 'Присмотр на дому' },
+        header: { translationKey: 'header.services.houseSitting', defaultText: 'Присмотр дома' },
         search: { nameKey: 'SearchSitter.tabs.service5.name', descKey: 'SearchSitter.tabs.service5.description', itemTitleKey: 'SearchSitter.itemTitle.service5' },
-        sitterPage: null
+        sitterPage: { nameKey: 'sitterServices.housevisits.title', descKey: 'sitterServices.homevisits.desc' }
     },
     puppy_nanny: {
         id: 'puppy_nanny',
         enabled: false,
         iconKey: 'default',
-        header: { translationKey: 'header.services.puppyNanny', defaultText: 'Няня для щенка' },
+        header: null,
         search: null,
         sitterPage: null
     }
@@ -118,9 +120,8 @@ export const enabledServicesForSitterPage = Object.values(ALL_SERVICES_CONFIG)
         ...service.sitterPage!,
     }));
 
-// --- НОВЫЙ ЭКСПОРТ ДЛЯ ПОЛУЧЕНИЯ СПИСКА БУДУЩИХ УСЛУГ ---
 export const comingSoonServices = Object.values(ALL_SERVICES_CONFIG)
-    .filter(service => !service.enabled && service.search) // Логика: сервис выключен, но у него есть конфигурация для поиска
+    .filter(service => !service.enabled && service.search)
     .map(service => ({
         nameKey: service.search!.nameKey,
     }));
@@ -133,6 +134,7 @@ export const config = {
     googleClientIdWeb: "568554314984-7c6ar6adjkq4qoj50djjeqp4ih7qi00n.apps.googleusercontent.com",
     appleServiceId: "ru.petsok.signin",
     appleRedirectUri: "https://petsok.ru/api/v1/auth/apple/callback",
+    // Дефолтные ссылки, если конфиг еще не загрузился
     appStoreUrl: "https://apps.apple.com/app/example",
     googlePlayUrl: "https://play.google.com/store/apps/details?id=com.example",
     appUniversalUrl: "https://petsok.ru/app",

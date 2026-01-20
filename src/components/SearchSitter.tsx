@@ -1,44 +1,53 @@
-// src/components/SearchSitter.tsx
-
-import { useState } from "react"; // <-- ИСПРАВЛЕНИЕ: Удален неиспользуемый импорт React
+// --- File: src/components/SearchSitter.tsx ---
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { enabledServicesForSearch, comingSoonServices } from "../config/appConfig";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
+import { enabledServicesForSearch } from "../config/appConfig"; // Убрали comingSoonServices из импорта
 import SearchSitterItem from "./search/SearchSitterItem";
 import style from '../style/components/SearchSitter.module.scss';
-import { motion } from 'framer-motion';
 
 const SearchSitter = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const { t } = useTranslation();
 
-  const tabs = enabledServicesForSearch.map(service => ({
-    id: service.id,
-    name: t(service.nameKey),
-    description: t(service.descriptionKey, ''),
-    itemTitle: t(service.itemTitleKey),
-    Icon: service.IconComponent,
-  }));
+  // Получаем список активных сервисов из Redux
+  const { activeServices, isConfigLoaded } = useSelector((state: RootState) => state.config);
 
-  const hasComingSoonServices = comingSoonServices.length > 0;
+  // Фильтруем статический конфиг на основе данных с сервера
+  const tabs = enabledServicesForSearch
+    .filter(service => {
+      // Если конфиг еще не загружен, показываем все или базовые.
+      if (!isConfigLoaded) return true;
+      return activeServices.includes(service.id);
+    })
+    .map(service => ({
+      id: service.id,
+      name: t(service.nameKey),
+      description: t(service.descriptionKey, ''),
+      itemTitle: t(service.itemTitleKey),
+      Icon: service.IconComponent,
+    }));
 
-  const comingSoonNames = comingSoonServices.map(s => t(s.nameKey)).join(', ');
+  // --- УДАЛЕНО: Логика формирования списка "Скоро" ---
 
-  if (tabs.length === 0 && !hasComingSoonServices) {
-    return null;
-  }
+  if (tabs.length === 0) return null; // Убрали проверку на hasComingSoonServices
+
+  // Безопасно получаем activeServiceId
+  const activeServiceId = tabs[activeIndex]?.id || (tabs.length > 0 ? tabs[0].id : 'boarding');
 
   return (
     <div className={style.searchSitterWrapper}>
       <div className={style.searchSitter}>
+        {/* --- Верхние табы (выбор услуги) --- */}
         <ul className={style.tabs}>
           {tabs.map((tab, i) => (
             <li
               key={tab.id}
-              className={`${style.tabItem} ${activeIndex === i ? style.active : ""}`}
+              className={`${style.tabItem} ${tabs[activeIndex]?.id === tab.id ? style.active : ""}`}
               onClick={() => setActiveIndex(i)}
               role="tab"
-              aria-selected={activeIndex === i}
-              aria-controls={`tabpanel-${tab.id}`}
+              aria-selected={tabs[activeIndex]?.id === tab.id}
               tabIndex={0}
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setActiveIndex(i); }}
             >
@@ -52,42 +61,12 @@ const SearchSitter = () => {
             </li>
           ))}
 
-          {hasComingSoonServices && (
-            <li className={style.moreServicesTab}>
-              <span className={style.moreServicesHeader}>
-                {t("searchSitter.addingSoon", "Скоро добавим эти услуги:")}
-              </span>
-              <span className={style.comingSoonList}>
-                {comingSoonNames}
-              </span>
-            </li>
-          )}
+          {/* --- УДАЛЕНО: Блок рендеринга <li> с текстом "Скоро:" --- */}
         </ul>
 
+        {/* --- Тело формы --- */}
         <div className={style.body}>
-          {tabs.map((tab, i) => (
-            <div
-              key={`tabpanel-content-${tab.id}`}
-              role="tabpanel"
-              id={`tabpanel-${tab.id}`}
-              aria-labelledby={tab.name}
-              className={`${style.contentPanel} ${activeIndex === i ? style.active : ""}`}
-            >
-              {activeIndex === i && (
-                <motion.div
-                  key={tab.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <SearchSitterItem
-                    key={tab.id + "-item"}
-                    title={tab.itemTitle}
-                  />
-                </motion.div>
-              )}
-            </div>
-          ))}
+          <SearchSitterItem serviceType={activeServiceId} />
         </div>
       </div>
     </div>

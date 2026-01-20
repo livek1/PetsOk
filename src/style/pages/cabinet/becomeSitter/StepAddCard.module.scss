@@ -1,0 +1,157 @@
+@use '../../../../style/variables' as *;
+
+.cardContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.headerBlock {
+    text-align: center;
+    margin-bottom: 20px;
+
+    .iconCircle {
+        width: 80px;
+        height: 80px;
+        background-color: $primary-color-lightest-bg;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        color: $primary-color;
+
+        svg {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    p {
+        color: $text-color-secondary;
+        font-size: 1rem;
+    }
+}
+
+.cardsList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cardItem {
+    display: flex;
+    align-items: center;
+    background: $white;
+    border: 1px solid $border-color-light;
+    padding: 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color-lighter;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    &.default {
+        border-color: $primary-color;
+        background-color: $primary-color-lightest-bg;
+    }
+
+    &.inactive {
+        opacity: 0.6;
+        background-color: $neutral-50;
+    }
+}
+
+.cardIcon {
+    margin-right: 15px;
+    color: $text-color-base;
+
+    svg {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.cardInfo {
+    flex: 1;
+
+    h4 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    span {
+        font-size: 0.85rem;
+        color: $text-color-muted;
+    }
+}
+
+.cardActions {
+    margin-left: 10px;
+
+    .radio {
+        width: 20px;
+        height: 20px;
+        border: 2px solid $border-color-medium;
+        border-radius: 50%;
+        position: relative;
+
+        &.checked {
+            border-color: $primary-color;
+            background-color: $primary-color;
+
+            &::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 8px;
+                height: 8px;
+                background: $white;
+                border-radius: 50%;
+            }
+        }
+    }
+}
+
+.addCardBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    border: 1px dashed $border-color-medium;
+    border-radius: 12px;
+    background: $neutral-50;
+    color: $primary-color;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background: $primary-color-lightest-bg;
+        border-color: $primary-color;
+    }
+}
+
+.errorMessage {
+    color: $error-500;
+    background: #FFF5F5;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+}

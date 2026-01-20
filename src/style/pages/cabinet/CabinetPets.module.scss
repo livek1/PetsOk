@@ -1,0 +1,121 @@
+@use '../../../style/variables' as *;
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $space-6;
+
+    h1 {
+        font-family: $font-family-headings;
+        font-size: 1.75rem;
+        font-weight: $font-weight-bold;
+        color: $text-color-base;
+        margin: 0;
+    }
+}
+
+.addButton {
+    background-color: $primary-color;
+    color: $white;
+    padding: 10px 20px;
+    border-radius: $border-radius-md;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+        background-color: $primary-color-darker;
+    }
+}
+
+.petsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: $space-6;
+}
+
+.petCard {
+    background-color: $white;
+    border: 1px solid $border-color-light;
+    border-radius: $border-radius-lg;
+    padding: $space-5;
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+    box-shadow: $box-shadow-sm;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $box-shadow-md;
+        border-color: $primary-color-lighter;
+    }
+}
+
+.petAvatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: $neutral-100;
+    flex-shrink: 0;
+}
+
+.petAvatarPlaceholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: $primary-50;
+    color: $primary-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.petInfo {
+    flex-grow: 1;
+    overflow: hidden;
+
+    h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 4px 0;
+        color: $text-color-base;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: $text-color-secondary;
+    }
+
+    .petMeta {
+        font-size: 0.85rem;
+        color: $text-color-muted;
+        margin-top: 4px;
+    }
+}
+
+.emptyState {
+    text-align: center;
+    padding: 60px 20px;
+    background: $white;
+    border-radius: $border-radius-xl;
+    border: 1px dashed $border-color-medium;
+    color: $text-color-secondary;
+
+    h3 {
+        margin-top: 20px;
+        font-size: 1.2rem;
+    }
+}

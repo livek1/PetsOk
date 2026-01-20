@@ -1,152 +1,129 @@
-// src/components/search/SearchSitterItem.tsx
-
-import React, { useState, useEffect, useCallback } from "react";
+// --- File: src/components/search/SearchSitterItem.tsx ---
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { fetchAddressSuggestions } from "../../services/api";
 import style from '../../style/components/search/SearchSitterItem.module.scss';
-
-// --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
-// Путь '../' верен, если папка 'icons' лежит внутри 'components'
 import LocationPinIcon from '../icons/LocationPinIcon';
 import SearchIcon from '../icons/SearchIcon';
-
-interface SearchSitterItemProp {
-  title: string;
-}
+// Удален импорт TargetIcon, так как кнопка убрана
+import { useDispatch } from "react-redux";
 
 const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
   let timeout: ReturnType<typeof setTimeout> | null = null;
   return (...args: Parameters<F>): Promise<ReturnType<F>> =>
     new Promise(resolve => {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
+      if (timeout) clearTimeout(timeout);
       timeout = setTimeout(() => resolve(func(...args)), waitFor);
     });
 };
 
-const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ title }) => {
+interface SearchSitterItemProp {
+  serviceType: string;
+}
+
+const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  // dispatch не используется напрямую здесь, но оставлен, если понадобится расширение
+  const dispatch = useDispatch();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
   const [locationInput, setLocationInput] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
+  const [isActive, setIsActive] = useState(false);
 
-  const debouncedFetchSuggestions = useCallback(
-    debounce(async (query: string) => {
-      if (query.length < 2) {
-        setSuggestions([]);
-        setShowSuggestions(false);
-        setIsLoadingSuggestions(false);
-        return;
-      }
-      setIsLoadingSuggestions(true);
-      setShowSuggestions(true);
-      try {
-        const results = await fetchAddressSuggestions(query);
-        setSuggestions(results);
-      } catch (error) {
-        console.error("Failed to fetch address suggestions:", error);
-        setSuggestions([]);
-      } finally {
-        setIsLoadingSuggestions(false);
-      }
-    }, 700),
-    []
-  );
-
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setLocationInput(newValue);
-    setSearchError(null);
-
-    if (newValue.trim() === "") {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      setIsLoadingSuggestions(false);
-    } else {
-      debouncedFetchSuggestions(newValue);
+  // --- ЛОГИКА ДИНАМИЧЕСКОГО ПЛЕЙСХОЛДЕРА ---
+  const getPlaceholder = (service: string) => {
+    switch (service) {
+      case 'boarding':
+        return t('search.placeholders.boarding', 'В каком районе искать ситтера?');
+      case 'walking':
+        return t('search.placeholders.walking', 'В каком районе нужен выгул?');
+      case 'doggy_day_care':
+        return t('search.placeholders.doggy_day_care', 'Где нужна дневная няня?');
+      case 'drop_in_visit':
+        return t('search.placeholders.drop_in_visit', 'Куда должен приехать ситтер?');
+      case 'house_sitting':
+        return t('search.placeholders.house_sitting', 'Где требуется присмотр?');
+      default:
+        return t('search.location_placeholder', 'Поиск по району или адресу');
     }
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setLocationInput(suggestion);
+  const debouncedFetch = useMemo(() => debounce(async (query: string) => {
+    if (query.length < 3) { setSuggestions([]); return; }
+    try {
+      const results = await fetchAddressSuggestions(query);
+      setSuggestions(results);
+    } catch (e) { setSuggestions([]); }
+  }, 400), []);
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+
+    const params = new URLSearchParams();
+    if (locationInput) params.append('address', locationInput);
+    params.append('service_key', serviceType);
+
+    // Переход на страницу поиска с параметрами в URL
+    navigate(`/search?${params.toString()}`);
+  };
+
+  const handleSuggestionClick = (s: string) => {
+    setLocationInput(s);
     setSuggestions([]);
-    setShowSuggestions(false);
-  };
-
-  const handleSearchSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setShowSuggestions(false);
-
-    if (!locationInput.trim()) {
-      setSearchError("Пожалуйста, укажите местоположение.");
-      return;
-    }
-    console.log("Инициирован поиск ситтеров для:", locationInput);
+    setIsActive(false);
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest(`.${style.inputWrapper}`) && !target.closest(`.${style.addressSuggestions}`)) {
-        setShowSuggestions(false);
+    const clickOut = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setIsActive(false);
+        setSuggestions([]);
       }
     };
-    if (showSuggestions) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showSuggestions]);
-
-  const areInputsEmpty = !locationInput.trim();
+    document.addEventListener('mousedown', clickOut);
+    return () => document.removeEventListener('mousedown', clickOut);
+  }, []);
 
   return (
-    <form className={style.searchItemForm} onSubmit={handleSearchSubmit}>
-      <h3 className={style.searchItemFormTitle}>{title}</h3>
-      <div className={style.inputGroup}>
-        <div className={style.inputField}>
-          <div className={style.inputWrapper}>
-            <LocationPinIcon className={style.inputIcon} />
-            <input
-              id={`search-location-${title.replace(/\s+/g, '-')}`}
-              type="text"
-              className={style.input}
-              placeholder={t("SearchSitterItem.locationPlaceholder", "Например, Москва или м. Арбатская")}
-              value={locationInput}
-              onChange={handleLocationChange}
-              onFocus={() => { if (locationInput.length >= 2 && (suggestions.length > 0 || isLoadingSuggestions)) setShowSuggestions(true); }}
-              autoComplete="off"
-            />
-            {showSuggestions && (locationInput.length >= 2) && (
-              <ul className={style.addressSuggestions}>
-                {isLoadingSuggestions ? (
-                  <li className={`${style.suggestionItem} ${style.loading}`}>{t("loading", "Загрузка...")}</li>
-                ) : suggestions.length > 0 ? (
-                  suggestions.map((suggestion, index) => (
-                    <li key={index} className={style.suggestionItem} onClick={() => handleSuggestionClick(suggestion)} onMouseDown={(e) => e.preventDefault()}>
-                      {suggestion}
-                    </li>
-                  ))
-                ) : (
-                  !isLoadingSuggestions && <li className={`${style.suggestionItem} ${style.noResults}`}>{t("SearchSitterItem.noSuggestions", "Нет совпадений")}</li>
-                )}
-              </ul>
-            )}
-          </div>
+    <div className={style.searchContainer} ref={wrapperRef}>
+      <form className={`${style.searchBar} ${isActive ? style.activeBar : ''}`} onSubmit={handleSearch} onClick={() => setIsActive(true)}>
+        <div className={style.inputWrapper}>
+          <input
+            type="text"
+            // Используем динамический плейсхолдер
+            placeholder={getPlaceholder(serviceType)}
+            value={locationInput}
+            onChange={(e) => { setLocationInput(e.target.value); debouncedFetch(e.target.value); }}
+            className={style.inputTransparent}
+          />
         </div>
-        <div className={`${style.buttonContainer} ${areInputsEmpty ? style.buttonIconOnly : style.buttonWithText}`}>
-          <button type="submit" className={style.button} disabled={isLoadingSuggestions}>
-            <span className={style.buttonText}>{t("SearchSitterItem.searchButtonText", "Найти")}</span>
-            <SearchIcon className={style.buttonIcon} />
+
+        {/* 
+           --- УДАЛЕНО: Кнопка "Моя геолокация" ---
+           Раньше здесь был блок {locationInput === '' && ... button with TargetIcon ...}
+        */}
+
+        <div className={style.searchBtnWrapper}>
+          <button type="submit" className={style.searchBtn}>
+            <SearchIcon width={24} height={24} />
+            <span className={style.searchBtnText}>{t('SearchSitterItem.searchButtonText', 'Найти')}</span>
           </button>
         </div>
-      </div>
-      {searchError && <p className={style.searchError}>{searchError}</p>}
-    </form>
+
+        {isActive && suggestions.length > 0 && (
+          <div className={style.dropdownMenu}>
+            {suggestions.map((s, i) => (
+              <div key={i} className={style.dropdownItem} onClick={(e) => { e.stopPropagation(); handleSuggestionClick(s); }}>
+                <LocationPinIcon width={20} /> <span className={style.mainText}>{s}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </form>
+    </div>
   );
 };
 

@@ -1,0 +1,529 @@
+@use '../../../../style/variables' as *;
+
+// Helper variables
+$primary-color: #3598FE !default;
+$text-color-base: #1A202C !default;
+$text-color-secondary: #718096 !default;
+$border-color-light: #E2E8F0 !default;
+$white: #FFFFFF !default;
+
+.wizardContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background: $white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid $border-color-light;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 20px;
+    }
+}
+
+.centerLoader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: $text-color-secondary;
+}
+
+// --- Header ---
+.headerBlock {
+    text-align: center;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.iconCircle {
+    width: 80px;
+    height: 80px;
+    background-color: #EBF4FF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    color: $primary-color;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $text-color-base;
+    margin: 0 0 8px 0;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    color: $text-color-secondary;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+    max-width: 90%;
+}
+
+.testsBtn {
+    background: #EBF4FF;
+    border: none;
+    color: $primary-color;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+
+    &:hover {
+        background: darken(#EBF4FF, 5%);
+    }
+}
+
+// --- Service Card Component ---
+.servicesList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card {
+    background: $white;
+    border: 1px solid #F3F4F6;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+
+    &.cardActive {
+        border-color: $primary-color;
+        box-shadow: 0 4px 12px rgba(53, 152, 254, 0.15);
+        background-color: #FFFFFF;
+        border-width: 1.5px;
+    }
+
+    &.cardCollapsed {
+        box-shadow: none;
+        border-color: #F3F4F6;
+
+        .header {
+            padding: 12px 16px;
+        }
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: $white;
+    user-select: none;
+    transition: padding 0.3s ease;
+}
+
+.headerTitleContainer {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.iconContainer {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+
+    &.iconActive {
+        background-color: #EFF6FF;
+        color: $primary-color;
+    }
+
+    &.iconInactive {
+        background-color: #F3F4F6;
+        color: $text-color-secondary;
+    }
+}
+
+.headerTextCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: $text-color-secondary;
+
+    &.titleActive {
+        color: $text-color-base;
+        font-weight: 700;
+    }
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+// Switch
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    flex-shrink: 0;
+    cursor: pointer;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #E2E8F0;
+        transition: .4s;
+        border-radius: 30px;
+
+        &:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    input:checked+.slider {
+        background-color: $primary-color;
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(22px);
+    }
+}
+
+// --- Warning (Yellow Box) ---
+.warningContainer {
+    display: flex;
+    background-color: #FFF9E6; // Светло-желтый как на скрине
+    border: 1px solid #FEF3C7;
+    margin: 0 16px 20px; // Отступы внутри карточки
+    padding: 16px;
+    border-radius: 12px;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.warningIcon {
+    color: #F59E0B; // Оранжевая иконка
+    display: flex;
+    align-items: flex-start;
+    padding-top: 2px;
+    flex-shrink: 0;
+}
+
+.warningContent {
+    flex: 1;
+}
+
+.warningText {
+    font-size: 0.9rem;
+    color: #92400E; // Темно-коричневый текст
+    margin: 0 0 8px 0;
+    line-height: 1.5;
+}
+
+.linkText {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.95rem;
+    color: $primary-color; // Синяя ссылка
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+// Content
+.content {
+    padding: 0 16px 20px;
+    border-top: 1px solid #F3F4F6;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+    }
+}
+
+// Inputs (остальное без изменений)
+.inputsRow {
+    display: flex;
+    margin-top: 16px;
+}
+
+.inputGroupFull {
+    flex: 1;
+}
+
+.inputGroupHalf {
+    flex: 0.48;
+
+    &:first-child {
+        margin-right: 4%;
+    }
+}
+
+.inputLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $text-color-secondary;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.inputLabelSmall {
+    @extend .inputLabel;
+    font-size: 0.75rem;
+}
+
+.priceInputWrapper,
+.smallInputWrapper {
+    display: flex;
+    align-items: center;
+    background-color: #F9FAFB;
+    border: 1px solid #F3F4F6;
+    border-radius: 12px;
+    padding: 0 12px;
+    height: 50px;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+        border-color: $primary-color;
+        background-color: $white;
+    }
+}
+
+.smallInputWrapper {
+    height: 44px;
+    padding: 0 10px;
+}
+
+.currencyPrefix {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text-color-secondary;
+    margin-right: 6px;
+}
+
+.currencyPrefixSmall {
+    @extend .currencyPrefix;
+    font-size: 0.9rem;
+}
+
+.priceInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text-color-base;
+    width: 100%;
+    outline: none;
+
+    &::placeholder {
+        color: #CBD5E0;
+    }
+}
+
+.smallInput {
+    @extend .priceInput;
+    font-size: 0.95rem;
+}
+
+.selectWrapper {
+    position: relative;
+    height: 50px;
+    background-color: #F9FAFB;
+    border: 1px solid #F3F4F6;
+    border-radius: 12px;
+
+    &:hover {
+        border-color: darken(#F3F4F6, 10%);
+    }
+}
+
+.nativeSelect {
+    appearance: none;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    padding: 0 35px 0 12px;
+    font-size: 0.95rem;
+    color: $text-color-base;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+}
+
+.selectIcon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: $text-color-secondary;
+}
+
+.readOnlyUnit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    background-color: #F3F4F6;
+    border-radius: 12px;
+    color: $text-color-secondary;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.recommendationBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #ECFDF5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+
+    span {
+        font-size: 0.75rem;
+        color: #10B981;
+        font-weight: 600;
+    }
+
+    svg {
+        color: #10B981;
+    }
+}
+
+.sectionSpacer {
+    margin-top: 20px;
+}
+
+.selectOptionContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.chipsWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 14px;
+    background-color: #F7FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+
+    &:hover {
+        background-color: #EDF2F7;
+    }
+
+    &.selected {
+        background-color: #EBF4FF;
+        border-color: $primary-color;
+
+        .chipLabel {
+            color: $primary-color;
+            font-weight: 700;
+        }
+
+        .chipDesc {
+            color: darken($primary-color, 10%);
+        }
+    }
+}
+
+.chipLabel {
+    font-size: 0.9rem;
+    color: $text-color-secondary;
+    font-weight: 500;
+}
+
+.chipDesc {
+    font-size: 0.75rem;
+    color: #A0AEC0;
+    margin-top: 2px;
+}
+
+.btnPrimary {
+    width: 100%;
+    background-color: $primary-color;
+    color: $white;
+    padding: 18px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+
+    &:hover {
+        background-color: darken($primary-color, 5%);
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        background-color: #CBD5E0;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+}

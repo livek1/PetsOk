@@ -1,0 +1,162 @@
+@use '../../../../style/variables' as *;
+
+.pageWrapper {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.animationContainer {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+}
+
+.title {
+    font-family: $font-family-headings;
+    font-weight: 800;
+    font-size: 24px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.message {
+    font-size: 16px;
+    color: $text-color-secondary;
+    line-height: 1.5;
+    text-align: center;
+    margin-bottom: 30px;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.adminMessageCard {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 30px;
+    border-left: 5px solid;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    width: 100%;
+}
+
+.adminHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.adminText {
+    font-size: 15px;
+    color: $text-color-base;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.secondaryBtn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    background: #F7FAFC;
+    color: $primary-color;
+    border: 1px solid $primary-color;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #EFF6FF;
+    }
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+}
+
+// Social Card
+.socialCard {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FDFDFD 100%);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    border: 1px solid $border-color-light;
+
+    h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: $text-color-base;
+    }
+
+    p {
+        font-size: 14px;
+        color: $text-color-secondary;
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+}
+
+.socialButtons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.socialBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: $white;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    &.telegram {
+        background-color: #2AABEE;
+    }
+
+    &.instagram {
+        background-color: #E1306C;
+    }
+
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.disclaimer {
+    font-size: 10px;
+    color: $text-color-muted;
+    font-style: italic;
+    display: block;
+    margin-top: 10px;
+}

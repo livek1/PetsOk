@@ -1,0 +1,95 @@
+@use '../../../style/variables' as *;
+
+.wizardContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.centerLoader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    color: $text-color-secondary;
+}
+
+// Общие стили карточки шага
+.stepCard {
+    background: $white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid $border-color-light;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 20px;
+    }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    h1 {
+        font-family: $font-family-headings;
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        color: $text-color-base;
+    }
+
+    p {
+        color: $text-color-secondary;
+    }
+}
+
+.formGroup {
+    margin-bottom: 20px;
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: $text-color-base;
+    }
+}
+
+.input,
+.select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid $border-color-medium;
+    border-radius: 8px;
+    font-size: 16px;
+
+    &:focus {
+        border-color: $primary-color;
+        outline: none;
+    }
+}
+
+.btnPrimary {
+    width: 100%;
+    background-color: $primary-color;
+    color: $white;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s;
+
+    &:hover {
+        background-color: $primary-color-darker;
+    }
+
+    &:disabled {
+        background-color: $neutral-300;
+        cursor: not-allowed;
+    }
+}

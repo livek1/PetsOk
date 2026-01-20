@@ -1,0 +1,345 @@
+@use '../../variables' as *;
+@use 'sass:color';
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h1 {
+        font-family: $font-family-headings;
+        font-size: 24px;
+        font-weight: 800;
+        color: $text-color-base;
+    }
+}
+
+.createBtn {
+    background-color: $primary-color;
+    color: $white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+        background-color: $primary-color-darker;
+    }
+}
+
+.loader {
+    text-align: center;
+    padding: 40px;
+    color: $text-color-muted;
+}
+
+.emptyState {
+    background: $white;
+    border-radius: 16px;
+    padding: 60px 20px;
+    text-align: center;
+    border: 1px solid $border-color-light;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h3 {
+        margin: 20px 0 10px;
+        font-size: 1.2rem;
+    }
+
+    p {
+        color: $text-color-secondary;
+        margin-bottom: 24px;
+    }
+}
+
+.ordersList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.loadMoreBtn {
+    background: transparent;
+    border: 1px solid $border-color-medium;
+    padding: 12px;
+    border-radius: 12px;
+    color: $text-color-secondary;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+        background: $neutral-50;
+    }
+}
+
+// --- Order Item Card Styles ---
+.orderCard {
+    background: $white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid $border-color-light;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    }
+}
+
+.cardHeader {
+    padding: 16px;
+    border-bottom: 1px solid $border-color-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.serviceInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.serviceType {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: $text-color-base;
+}
+
+.statusBadge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.statusWarning {
+    background: #FFFAF0;
+    color: #DD6B20;
+}
+
+.statusSuccess {
+    background: #F0FFF4;
+    color: #38A169;
+}
+
+.statusError {
+    background: #FFF5F5;
+    color: #E53E3E;
+}
+
+.statusInfo {
+    background: #EBF8FF;
+    color: #3182CE;
+}
+
+.statusDefault {
+    background: #F7FAFC;
+    color: #718096;
+}
+
+// --- SMART BANNERS (Новое) ---
+.smartBanner {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 1px solid transparent;
+}
+
+.bannerContent {
+    margin-left: 12px;
+}
+
+.bannerTitle {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.bannerText {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.bannerIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $white;
+    flex-shrink: 0;
+
+    &.blue {
+        color: #3182CE;
+    }
+
+    &.green {
+        color: #38A169;
+    }
+
+    &.orange {
+        color: #DD6B20;
+    }
+
+    &.grey {
+        color: #718096;
+    }
+
+    &.purple {
+        color: #805AD5;
+    }
+}
+
+.bannerBlue {
+    background-color: #EBF8FF;
+    border-color: #BEE3F8;
+
+    .bannerTitle,
+    .bannerText {
+        color: #2B6CB0;
+    }
+}
+
+.bannerGreen {
+    background-color: #F0FFF4;
+    border-color: #C6F6D5;
+
+    .bannerTitle,
+    .bannerText {
+        color: #2F855A;
+    }
+}
+
+.bannerOrange {
+    background-color: #FFFAF0;
+    border-color: #FEEBC8;
+
+    .bannerTitle,
+    .bannerText {
+        color: #C05621;
+    }
+}
+
+.bannerGrey {
+    background-color: #F7FAFC;
+    border-color: #EDF2F7;
+
+    .bannerTitle,
+    .bannerText {
+        color: #4A5568;
+    }
+}
+
+.bannerPurple {
+    background-color: #FAF5FF;
+    border-color: #E9D8FD;
+
+    .bannerTitle,
+    .bannerText {
+        color: #6B46C1;
+    }
+}
+
+// ----------------
+
+.cardBody {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.infoRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $text-color-secondary;
+    font-size: 0.95rem;
+
+    svg {
+        color: $text-color-muted;
+    }
+}
+
+.timerAlert {
+    margin-top: 10px;
+    background: #FFF5F5;
+    color: #C53030;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.cardFooter {
+    padding: 12px 16px;
+    background: #FAFAFA;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.payBtn,
+.detailsBtn,
+.offersBtn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.payBtn {
+    background: $success-500;
+    color: $white;
+
+    &:hover {
+        background: color.adjust($success-500, $lightness: -5%);
+    }
+}
+
+.detailsBtn {
+    background: $white;
+    border: 1px solid $border-color-medium;
+    color: $text-color-base;
+
+    &:hover {
+        background: $neutral-50;
+    }
+}
+
+.offersBtn {
+    background: $primary-color;
+    color: $white;
+
+    &:hover {
+        background: $primary-color-darker;
+    }
+}

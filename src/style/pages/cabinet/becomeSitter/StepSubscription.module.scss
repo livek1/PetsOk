@@ -1,0 +1,194 @@
+@use '../../../../style/variables' as *;
+
+// Градиенты для карточек
+$gold-gradient: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+$blue-gradient: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+
+.headerBlock {
+    text-align: center;
+    margin-bottom: 30px;
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+}
+
+.benefitCard {
+    background: $gold-gradient;
+    border: 1px solid #FCD34D;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+
+    .topRow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #B45309;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .value {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: $text-color-base;
+        line-height: 1;
+    }
+
+    p {
+        color: $text-color-secondary;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+}
+
+.toggleContainer {
+    display: flex;
+    background: $neutral-100;
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.toggleOption {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+
+    h4 {
+        font-size: 0.9rem;
+        margin: 0;
+        color: $text-color-secondary;
+    }
+
+    .price {
+        font-size: 1rem;
+        font-weight: 700;
+        color: $text-color-base;
+    }
+
+    &.active {
+        background: $white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border-color: $border-color-light;
+
+        h4 {
+            color: $primary-color;
+        }
+
+        .price {
+            color: $primary-color;
+        }
+    }
+}
+
+.totalBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-top: 1px solid $border-color-light;
+    margin-bottom: 20px;
+
+    .oldPrice {
+        text-decoration: line-through;
+        color: $text-color-muted;
+        margin-right: 10px;
+    }
+
+    .finalPrice {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: $text-color-base;
+    }
+}
+
+.skipButton {
+    background: none;
+    border: none;
+    color: $text-color-secondary;
+    text-decoration: underline;
+    width: 100%;
+    margin-top: 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+
+    &:hover {
+        color: $text-color-base;
+    }
+}
+
+.featuresList {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 30px;
+
+    .feature {
+        background: $white;
+        border: 1px solid $border-color-light;
+        padding: 15px 10px;
+        border-radius: 12px;
+        text-align: center;
+
+        .icon {
+            color: $primary-color;
+            margin-bottom: 8px;
+
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        h5 {
+            font-size: 0.85rem;
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            font-size: 0.75rem;
+            color: $text-color-muted;
+            margin: 0;
+            line-height: 1.2;
+        }
+    }
+}
+
+.discountBanner {
+    background-color: #FF5252;
+    color: white;
+    text-align: center;
+    padding: 8px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,652 @@
+// --- File: src/style/pages/SitterPage.module.scss ---
+@use '../variables' as *;
+
+.pageWrapper {
+    background-color: $neutral-50;
+    padding-bottom: 100px;
+    padding-top: 30px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 0 16px;
+    }
+}
+
+.loadingState,
+.errorState {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: $text-color-secondary;
+}
+
+// --- Layout ---
+.contentLayout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 40px;
+    align-items: start;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: 320px 1fr;
+        gap: 24px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+}
+
+// --- LEFT SIDEBAR ---
+.leftSidebar {
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    z-index: 10;
+
+    @media (max-width: $breakpoint-md) {
+        position: static;
+        order: 2;
+    }
+}
+
+// === CARD PROFILE REDESIGN (MATCHING IMAGE) ===
+.profileCard {
+    background: $white;
+    border: 1px solid $border-color-light;
+    border-radius: 20px;
+    padding: 32px 24px; // Больше воздуха сверху
+    box-shadow: $box-shadow-sm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.avatarCenteredWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.avatarBox {
+    position: relative;
+    width: 120px;
+    height: 120px;
+
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        // Легкая тень, но без бордюра (как на фото)
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.shieldBadge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // Белая обводка чтобы отделить от фото
+    background-color: $white;
+    border-radius: 50%;
+    padding: 2px; // Отступ для обводки
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+
+    svg {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.profileInfoCentered {
+    margin-bottom: 24px;
+}
+
+.profileName {
+    // Шрифт с засечками или жирный, крупный
+    font-family: 'Times New Roman', serif; // Пример для похожести на фото
+    font-size: 32px;
+    font-weight: 800;
+    color: $neutral-900;
+    margin-bottom: 4px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.profileLocation {
+    font-size: 16px;
+    color: $text-color-base; // Темный, не серый
+    margin-bottom: 12px;
+}
+
+.profileRatingRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 15px;
+    color: $text-color-base;
+}
+
+.ratingScore {
+    font-weight: 800;
+}
+
+.ratingDot {
+    color: $text-color-base;
+}
+
+.ratingReviews {
+    color: $text-color-secondary;
+    font-weight: 400;
+}
+
+// CTA Button
+.ctaButton {
+    width: 100%;
+    background-color: $primary-color;
+    color: $white;
+    border: none;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    margin-bottom: 32px; // Отступ до блока верификации
+
+    &:hover {
+        background-color: $primary-color-darker;
+        transform: translateY(-2px);
+    }
+}
+
+// Verification Block
+.verificationBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    border-top: 1px solid $border-color-light;
+    padding-top: 24px;
+}
+
+.verificationItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: $text-color-base;
+    font-weight: 500;
+    text-align: left;
+}
+
+.iconBox {
+    width: 32px;
+    height: 32px;
+    // background-color: $primary-color-lightest-bg;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-color-base; // Или primary color
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+// --- SERVICES LIST ---
+.servicesCard {
+    background: $white;
+    border: 1px solid $border-color-light;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: $box-shadow-sm;
+
+    h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: $text-color-base;
+    }
+}
+
+.servicesList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.serviceRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $neutral-100;
+
+    &:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+}
+
+.serviceIconWrapper {
+    width: 44px;
+    height: 44px;
+    background-color: $primary-color-lightest-bg;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 12px;
+    color: $primary-color;
+}
+
+.serviceInfo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-right: 8px;
+}
+
+.serviceTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: $text-color-base;
+    line-height: 1.2;
+}
+
+.serviceDesc {
+    font-size: 12px;
+    color: $text-color-muted;
+    margin-top: 2px;
+}
+
+.servicePriceBlock {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+.priceLabel {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: $text-color-muted;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.priceValue {
+    font-size: 16px;
+    font-weight: 800;
+    color: $primary-color;
+    white-space: nowrap;
+}
+
+// --- RIGHT CONTENT ---
+.rightContent {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    @media (max-width: $breakpoint-md) {
+        order: 1;
+        gap: 32px;
+    }
+}
+
+// --- GALLERY (FIXED GRID, NO JUMPING) ---
+.gallerySection {
+    // Фиксированная высота и жесткая сетка
+    height: 400px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    background-color: $neutral-100; // Фон пока грузится
+
+    @media (max-width: $breakpoint-lg) {
+        height: 320px;
+    }
+
+    @media (max-width: $breakpoint-md) {
+        display: block;
+        height: 250px;
+    }
+}
+
+.mainMediaContainer {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    position: relative; // Для абсолютного позиционирования внутри
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.subMediaItem {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+.subMediaItemEmpty {
+    background-color: $neutral-200;
+    width: 100%;
+    height: 100%;
+
+    @media (max-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+// Медиа обертка - занимает 100% родительской ячейки
+.mediaWrapper {
+    position: absolute; // КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ: Абсолют, чтобы не распирать
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $black;
+    cursor: pointer;
+}
+
+.photoImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Заполняет контейнер, обрезая лишнее
+    display: block;
+    transition: transform 0.4s ease;
+
+    .mediaWrapper:hover & {
+        transform: scale(1.05);
+    }
+}
+
+// Video Styling (Fixed Size)
+.videoContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: $black;
+}
+
+.videoBlurBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(20px);
+    opacity: 0.6;
+    transform: scale(1.2);
+    z-index: 0;
+}
+
+.videoElement {
+    position: absolute; // Абсолют внутри контейнера
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; // Видео целиком, черные полосы (закрыты блюром)
+    z-index: 1;
+}
+
+.videoPreviewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.playIconOverlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+
+    // Эффект увеличения при ховере на родителя
+    transition: transform 0.2s;
+
+    .mediaWrapper:hover & {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+.viewAllOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: $white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 5;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    span {
+        font-weight: 700;
+        font-size: 15px;
+        margin-top: 8px;
+    }
+}
+
+.mobileShowAllBtn {
+    display: none;
+
+    @media (max-width: $breakpoint-md) {
+        display: flex;
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        background-color: $white;
+        color: $text-color-base;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        align-items: center;
+        gap: 6px;
+        box-shadow: $box-shadow-md;
+        z-index: 10;
+        border: none;
+    }
+}
+
+// Контент
+.headlineSection {
+    margin-bottom: 20px;
+
+    h1 {
+        font-family: $font-family-headings;
+        font-size: 32px;
+        font-weight: 800;
+        color: $text-color-base;
+        margin-bottom: 24px;
+        line-height: 1.2;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 26px;
+        }
+    }
+}
+
+.aboutSection {
+    h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: $text-color-base;
+    }
+}
+
+.descriptionText {
+    font-size: 16px;
+    line-height: 1.7;
+    color: $text-color-base;
+    white-space: pre-line;
+}
+
+.contentSection {
+    margin-bottom: 30px;
+
+    h2 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: $text-color-base;
+    }
+}
+
+.petsGrid {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.petCard {
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px;
+    border: 1px solid $border-color-light;
+    border-radius: 16px;
+    background: $white;
+
+    img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+        background-color: $neutral-100;
+    }
+
+    .petName {
+        font-weight: 700;
+        font-size: 15px;
+        margin-bottom: 4px;
+    }
+
+    .petBreed {
+        font-size: 12px;
+        color: $text-color-muted;
+    }
+}
+
+// Карта
+.mapWrapper {
+    width: 100%;
+    height: 350px;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: $neutral-200;
+    border: 1px solid $border-color-light;
+
+    .yandexMapInstance {
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+    }
+}
+
+.mapPrivacyText {
+    margin-top: 12px;
+    font-size: 13px;
+    color: $text-color-muted;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mobileFooter {
+    display: none;
+
+    @media (max-width: $breakpoint-md) {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: $white;
+        padding: 16px 20px;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+        border-top: 1px solid $border-color-light;
+    }
+
+    .mobilePrice {
+        display: flex;
+        flex-direction: column;
+
+        .val {
+            font-size: 18px;
+            font-weight: 800;
+            color: $text-color-base;
+        }
+    }
+
+    .mobileBookBtn {
+        background-color: $primary-color;
+        color: $white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        border: none;
+        font-size: 15px;
+    }
+}

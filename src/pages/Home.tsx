@@ -1,18 +1,23 @@
 // --- File: src/pages/Home.tsx ---
-
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from "react-i18next";
+import { useOutletContext, useNavigate } from 'react-router-dom'; // Импортируем хуки
 import Hero from "../components/home/Hero";
 import HowItWorksSimple from "../components/home/HowItWorksSimple";
 import MobileAppPromoSection from "../components/home/MobileAppSection";
 import WhyPetsOkFeatures from "../components/home/WhyPetsOkFeatures";
 import { config } from '../config/appConfig';
 
-// Удаляем импорт изображения из assets, так как теперь оно будет в папке /public
-// import heroBgOptimized from '../assets/hero-bg.webp';
+// Добавляем интерфейс для контекста, чтобы получить функцию открытия модалки
+interface PageContextType {
+  onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter') => void;
+}
 
 const Home = ({ isPreloading }: { isPreloading: boolean }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  // Получаем функцию открытия модалки из контекста (Layout)
+  const { onAuthClick } = useOutletContext<PageContextType>();
 
   const organizationSchema = {
     "@context": "https://schema.org",
@@ -29,6 +34,18 @@ const Home = ({ isPreloading }: { isPreloading: boolean }) => {
 
   // Определяем постоянный путь к фоновому изображению в папке /public
   const heroBackgroundImageUrl = '/hero-bg.webp';
+
+  // Функция для обработки клика "Создать заказ"
+  const handleCreateOrderClick = () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      // Если авторизован, идем создавать заказ
+      navigate('/cabinet/orders/create');
+    } else {
+      // Если не авторизован - открываем регистрацию (тип 'client' по умолчанию)
+      onAuthClick('register', 'client');
+    }
+  };
 
   return (
     <>
@@ -48,8 +65,12 @@ const Home = ({ isPreloading }: { isPreloading: boolean }) => {
         </script>
       </Helmet>
 
-      {/* Передаем isPreloading и прямой URL изображения в компонент Hero */}
-      <Hero isPreloading={isPreloading} backgroundImage={heroBackgroundImageUrl} />
+      {/* Передаем isPreloading, URL изображения и обработчик клика в компонент Hero */}
+      <Hero
+        isPreloading={isPreloading}
+        backgroundImage={heroBackgroundImageUrl}
+        onCreateOrderClick={handleCreateOrderClick}
+      />
 
       <WhyPetsOkFeatures />
       <HowItWorksSimple />

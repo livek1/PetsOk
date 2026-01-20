@@ -1,0 +1,322 @@
+@use '../../variables' as *;
+
+.sitter-app-preview {
+    padding-top: 100px;
+    // Оставляем большой паддинг, но основной отступ сделаем через margin у элемента
+    padding-bottom: 100px;
+
+    background-color: $white;
+    // Убираем overflow: hidden, чтобы тени не обрезались, и чтобы мы видели реальные границы
+    overflow: visible;
+
+    @media (max-width: $breakpoint-md) {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+
+    &__content {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+
+        @media (max-width: $breakpoint-lg) {
+            flex-direction: column;
+            gap: 40px;
+        }
+    }
+
+    &__text {
+        flex: 1;
+
+        h2 {
+            font-family: $font-family-headings;
+            font-weight: 800;
+            font-size: 36px;
+            color: $text-color-base;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        p {
+            font-family: $font-family-base;
+            font-size: 18px;
+            color: $text-color-secondary;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .app-features-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            li {
+                display: flex;
+                gap: 15px;
+                align-items: flex-start;
+
+                .check-icon {
+                    flex-shrink: 0;
+                    margin-top: 3px;
+                }
+
+                strong {
+                    display: block;
+                    font-size: 18px;
+                    color: $text-color-base;
+                    margin-bottom: 4px;
+                }
+
+                span {
+                    font-size: 15px;
+                    color: $text-color-muted;
+                }
+            }
+        }
+    }
+
+    &__visual {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        padding: 20px 0;
+
+        // --- ИСПРАВЛЕНИЕ: ЯВНЫЙ ОТСТУП СНИЗУ ДЛЯ БЛОКА С ТЕЛЕФОНОМ ---
+        // Это гарантирует, что следующий блок не наедет на него
+        margin-bottom: 60px;
+
+        @media (max-width: $breakpoint-lg) {
+            margin-bottom: 40px;
+        }
+
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+            background: #1A202C;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.25);
+            border: 4px solid #4A5568;
+            position: relative;
+            z-index: 2;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background-color: #F7F9FC;
+            border-radius: 30px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            font-family: sans-serif;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 120px;
+                height: 25px;
+                background-color: #1A202C;
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
+                z-index: 10;
+            }
+        }
+
+        .app-top-bar {
+            padding: 40px 20px 20px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #1A202C;
+
+            b {
+                font-size: 20px;
+            }
+
+            .avatar {
+                width: 40px;
+                height: 40px;
+                background: #3598FE;
+                border-radius: 50%;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+            }
+        }
+
+        .metrics-row {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px;
+            margin-bottom: 20px;
+
+            .metric-card {
+                flex: 1;
+                background: #FFF;
+                border-radius: 12px;
+                padding: 12px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+                .icon {
+                    font-size: 16px;
+                    margin-bottom: 5px;
+                }
+
+                .val {
+                    font-weight: 800;
+                    font-size: 15px;
+                    margin-bottom: 2px;
+                }
+
+                .lbl {
+                    font-size: 10px;
+                    color: #718096;
+                }
+
+                &.green {
+                    .val {
+                        color: #38A169;
+                    }
+                }
+
+                &.blue {
+                    .val {
+                        color: #3182CE;
+                    }
+                }
+            }
+        }
+
+        .tabs-row {
+            display: flex;
+            background: #FFF;
+            margin: 0 20px 15px 20px;
+            border-radius: 12px;
+            padding: 4px;
+
+            .tab {
+                flex: 1;
+                text-align: center;
+                padding: 8px;
+                font-size: 13px;
+                font-weight: 600;
+                color: #718096;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+
+                &.active {
+                    background: #EBF8FF;
+                    color: #3598FE;
+                    border-radius: 8px;
+                }
+            }
+        }
+
+        .feed-list {
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feed-item {
+            background: #FFF;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid transparent;
+
+            &.invite {
+                border-left-color: #3598FE;
+            }
+
+            &.payout {
+                border-left-color: #38A169;
+            }
+
+            .feed-header {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                font-size: 10px;
+
+                .badge {
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+
+                    &.blue {
+                        background: #EBF8FF;
+                        color: #3598FE;
+                    }
+
+                    &.green {
+                        background: #F0FFF4;
+                        color: #38A169;
+                    }
+                }
+
+                .time {
+                    color: #A0AEC0;
+                }
+            }
+
+            .feed-body {
+                margin-bottom: 8px;
+
+                h4 {
+                    margin: 0 0 2px 0;
+                    font-size: 14px;
+                    color: #1A202C;
+                }
+
+                p {
+                    margin: 0;
+                    font-size: 12px;
+                    color: #718096;
+                }
+            }
+
+            .feed-price {
+                font-size: 16px;
+                font-weight: 800;
+                color: #1A202C;
+                margin-bottom: 10px;
+
+                &.success {
+                    color: #38A169;
+                    margin-bottom: 0;
+                }
+            }
+
+            .btn-row {
+                display: flex;
+                gap: 8px;
+
+                .btn-sml {
+                    background: #3598FE;
+                    color: #fff;
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}

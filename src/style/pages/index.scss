@@ -1,219 +1,223 @@
-// --- File: src/style/pages/index.scss (ПОЛНАЯ ОБНОВЛЕННАЯ ВЕРСИЯ БЕЗ СКРУГЛЕНИЯ) ---
-@use 'sass:color';
+/* --- File: src/style/pages/index.scss --- */
+@use '../variables' as *;
 
-//--------------------------------------------------------------------------
-// DESIGN TOKENS & VARIABLES
-//--------------------------------------------------------------------------
-$font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-$font-family-headings: $font-family-base;
-
-// Colors
-$primary-500: #3598FE;
-$primary-600: color.scale($primary-500, $lightness: -10%);
-$primary-700: color.scale($primary-500, $lightness: -20%);
-$primary-100: color.scale($primary-500, $lightness: 90%, $saturation: -50%);
-$primary-50: color.scale($primary-500, $lightness: 95%, $saturation: -60%);
-
-$neutral-900: #1C1C1E;
-$neutral-700: #3A3A3C;
-$neutral-500: #8E8E93;
-$neutral-300: #C7C7CC;
-$neutral-200: #D1D1D6;
-$neutral-100: #E5E5EA;
-$neutral-50: #F2F2F7;
-$white: #FFFFFF;
-$black: #000000;
-
-$success-500: #34C759;
-$error-500: #FF3B30;
-
-// Typography
-$font-size-xs: 0.75rem; // 12px
-$font-size-sm: 0.875rem; // 14px
-$font-size-base: 1rem; // 16px
-$font-size-md: 1.125rem; // 18px
-$font-size-lg: 1.25rem; // 20px
-$font-size-xl: 1.5rem; // 24px
-$font-size-xxl: 2rem; // 32px
-$font-size-hero-title: 3.4375rem; // 55px
-$font-size-hero-title-lg: 4.6875rem; // 75px
-$font-size-hero-title-sm: 2.8125rem; // 45px
-$font-size-stats-value: 3rem; // 48px
-$font-size-stats-value-sm: 2.25rem; // 36px
-
-
-$font-weight-regular: 400;
-$font-weight-medium: 500;
-$font-weight-semibold: 600;
-$font-weight-bold: 700;
-
-$line-height-tight: 1.25;
-$line-height-normal: 1.5;
-$line-height-relaxed: 1.75;
-$line-height-headings: 1.2;
-
-// Spacing
-$space-1: 0.25rem; // 4px
-$space-2: 0.5rem; // 8px
-$space-3: 0.75rem; // 12px
-$space-4: 1rem; // 16px
-$space-5: 1.25rem; // 20px
-$space-6: 1.5rem; // 24px
-$space-8: 2rem; // 32px
-$space-10: 2.5rem; // 40px
-$space-12: 3rem; // 48px
-$space-16: 4rem; // 64px
-$space-20: 5rem; // 80px
-$space-24: 6rem; // 96px
-
-// Borders & Shadows
-$border-radius-sm: 4px;
-$border-radius-md: 8px;
-$border-radius-lg: 12px;
-$border-radius-xl: 16px;
-$border-radius-xxl: 30px;
-$border-radius-hero: 40px;
-$border-radius-round: 50%;
-
-$border-width-base: 1px;
-$border-width-thick: 2px;
-
-$shadow-sm: 0 1px 2px 0 rgba($black, 0.05);
-$shadow-md: 0 4px 6px -1px rgba($black, 0.1), 0 2px 4px -1px rgba($black, 0.06);
-$shadow-lg: 0 10px 15px -3px rgba($black, 0.1), 0 4px 6px -2px rgba($black, 0.05);
-$shadow-xl: 0 20px 25px -5px rgba($black, 0.1), 0 10px 10px -5px rgba($black, 0.04);
-$shadow-daypicker: 0 0 20px 0px rgba(14, 13, 13, 0.2);
-
-// Transitions
-$transition-duration-short: 150ms;
-$transition-duration-base: 250ms;
-$transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-
-// Breakpoints
-$breakpoint-xs: 425px;
-$breakpoint-sm: 550px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 1024px;
-$breakpoint-xl: 1200px;
-$breakpoint-xxl: 1440px;
-
-
-//--------------------------------------------------------------------------
-// GLOBAL STYLES & RESETS (Minimal)
-//--------------------------------------------------------------------------
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: $font-family-base;
-  line-height: $line-height-normal;
-  color: $neutral-700;
-  background-color: $white;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-//--------------------------------------------------------------------------
-// HERO SECTION
-//--------------------------------------------------------------------------
 .hero {
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  /* --- ИЗМЕНЕНИЕ: Убираем скругление и отступы --- */
-  border-radius: 0;
-  margin: 0;
+  position: relative;
+  min-height: 95vh; // Чуть увеличим высоту первого экрана
+  height: auto;
   display: flex;
   flex-direction: column;
-  position: relative;
-  min-height: 85vh;
-  justify-content: center;
+  justify-content: flex-end; // Прижимаем контент ближе к низу, но...
+  align-items: center;
+
+  // --- UX FIX: ОТСТУПЫ ---
+  // Верхний отступ, чтобы текст не наезжал на хедер
+  padding-top: 180px;
+  // Нижний отступ ОЧЕНЬ большой, чтобы плашка поиска имела воздух снизу 
+  // и не касалась заголовка следующей секции
+  padding-bottom: 180px;
+
+  background-color: $neutral-900; // Фолбек цвет пока грузится картинка
 
   @media (max-width: $breakpoint-md) {
-    padding: 100px $space-5 80px;
-    justify-content: flex-start;
-  }
-
-  @media (max-width: $breakpoint-xs) {
-    padding-left: $space-4;
-    padding-right: $space-4;
+    min-height: auto;
+    padding-top: 120px;
+    padding-bottom: 100px;
+    justify-content: center;
   }
 }
 
-.hero__overlay {
+.hero__bg-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, rgba($black, 0.5), rgba($black, 0.2));
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hero__bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center bottom; // Фокусируемся на нижней части фото
+  background-repeat: no-repeat;
   z-index: 1;
-  border-radius: 0; // --- ИЗМЕНЕНИЕ: Убираем скругление и у оверлея ---
+  will-change: transform;
+
+  // Затемнение фото средствами CSS, чтобы текст читался лучше
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35); // 35% затемнения
+  }
+}
+
+.hero__overlay {
+  // Этот слой можно убрать, если используем ::after выше, или оставить для градиента
+  display: none;
 }
 
 .hero__main-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 1320px;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $space-5;
-  position: relative;
-  z-index: 2;
-
-  @media (max-width: $breakpoint-md) {
-    gap: $space-6;
-  }
+  text-align: center;
+  gap: 40px; // Расстояние между Заголовком и Поиском
 
   h1 {
     font-family: $font-family-headings;
-    font-weight: $font-weight-bold;
-    font-size: $font-size-hero-title;
-    line-height: $line-height-headings;
-    text-align: center;
+    font-weight: 800; // ExtraBold
+    font-size: 4rem; // Крупный, уверенный заголовок
+    line-height: 1.1;
     color: $white;
-    text-shadow: 0 2px 8px rgba($black, 0.5);
-    max-width: 900px;
+    // Мягкая тень для читаемости
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    max-width: 950px;
+    letter-spacing: -0.03em;
+    margin: 0;
 
     @media (max-width: $breakpoint-lg) {
       font-size: 3rem;
     }
 
     @media (max-width: $breakpoint-md) {
-      font-size: 2.5rem;
-    }
-
-    @media (max-width: $breakpoint-sm) {
-      font-size: 2.125rem;
+      font-size: 2.2rem;
     }
   }
 
   .hero__description {
-    font-weight: $font-weight-regular;
-    font-size: $font-size-md;
-    line-height: $line-height-relaxed;
-    text-align: center;
-    max-width: 650px;
-    color: $white;
-    opacity: 0.95;
-    text-shadow: 0 1px 6px rgba($black, 0.4);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.95);
+    max-width: 700px;
+    font-weight: 500;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 
     @media (max-width: $breakpoint-md) {
-      font-size: $font-size-base;
-      line-height: $line-height-normal;
-      max-width: 90%;
+      font-size: 1.1rem;
+      max-width: 100%;
+    }
+  }
+}
+
+.search-sitter-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 100;
+  // Сдвигаем поиск немного вниз, чтобы он визуально "заходил" на границу секций, если нужно,
+  // но лучше держать его внутри паддинга для чистоты.
+  margin-top: 20px;
+}
+
+// --- НОВЫЕ СТИЛИ ДЛЯ АЛЬТЕРНАТИВНОГО CTA ---
+.hero__alternative-cta {
+  margin-top: 24px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 90; // Чуть ниже поиска, чтобы выпадающий список перекрывал
+
+  .divider-with-text {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    gap: 15px;
+
+    &::before,
+    &::after {
+      content: '';
+      height: 1px;
+      flex: 1;
+      background-color: rgba(255, 255, 255, 0.3);
     }
   }
 
-  .search-sitter-wrapper {
-    margin-top: $space-6;
+  .btn-create-request {
     width: 100%;
+    background: rgba(255, 255, 255, 0.15); // Полупрозрачный фон
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    color: #fff;
+    margin-bottom: 20px;
 
-    @media (max-width: $breakpoint-md) {
-      display: none;
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .icon {
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .text-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      .btn-title {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 1.2;
+      }
+
+      .btn-sub {
+        font-size: 13px;
+        opacity: 0.9;
+        font-weight: 400;
+        margin-top: 2px;
+      }
+    }
+
+    .arrow {
+      font-size: 20px;
+      transition: transform 0.2s;
+      opacity: 0.8;
+    }
+
+    &:hover .arrow {
+      transform: translateX(4px);
+      opacity: 1;
     }
   }
 }

@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #f7fafc;
+    background-color: $neutral-100;
     font-family: $font-family-base;
     gap: 20px;
 
@@ -36,17 +36,17 @@
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: #f0f4f8;
+    background-color: $neutral-100;
     padding: 40px 20px;
     text-align: center;
     font-family: $font-family-base;
 }
 
 .fallbackContent {
-    background: #fff;
+    background: $white;
     padding: 40px;
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: $box-shadow-lg;
     max-width: 500px;
 
     .logo {
@@ -71,9 +71,10 @@
 .qrCodeWrapper {
     margin-bottom: 2rem;
     padding: 10px;
-    background: #fff;
+    background: $white;
     border-radius: 8px;
     display: inline-block;
+    border: 1px solid $border-color-light;
 }
 
 .storeButtons {
@@ -100,18 +101,18 @@
     justify-content: center;
 
     &.apple {
-        background-color: #000;
-        color: #fff;
+        background-color: $black;
+        color: $white;
     }
 
     &.google {
-        background-color: #fff;
+        background-color: $white;
         color: #333;
         border: 1px solid #ccc;
     }
 
     &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: $box-shadow-md;
     }
 }

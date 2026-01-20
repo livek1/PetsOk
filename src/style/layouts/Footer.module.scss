@@ -1,4 +1,4 @@
-@use "../../style/variables" as var;
+@use "../../style/variables" as *;
 
 .footerContainer {
   display: flex;
@@ -6,126 +6,175 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: var.$white;
-  border-top: 1px solid var.$border-color-light;
-  padding: var.$space-10 var.$space-6; // 40px 24px
+  background-color: $white;
+  border-top: 1px solid $border-color-light;
+  padding: $space-10 $space-6;
 
-  @media (max-width: var.$breakpoint-md) {
-    padding: var.$space-8 var.$space-4; // 32px 16px
+  @media (max-width: $breakpoint-md) {
+    padding: $space-8 $space-4;
   }
 }
 
 .footerWrapper {
   width: 100%;
-  max-width: 1180px; // Стандартная ширина контейнера
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start; // Выравнивание по верху
-  gap: var.$space-8; // 32px
+  max-width: 1200px;
+  display: grid;
+  // Три колонки: Логотип (узкая), Города (широкая), Ссылки (средняя)
+  grid-template-columns: 250px 1fr 280px;
+  gap: 40px;
 
-  @media (max-width: var.$breakpoint-lg) {
-    flex-direction: column;
-    align-items: center;
+  @media (max-width: $breakpoint-lg) {
+    grid-template-columns: 1fr; // На планшетах и мобильных - одна колонка
+    gap: 40px;
     text-align: center;
-    gap: var.$space-10; // 40px
   }
 }
 
+// --- ЗАГОЛОВКИ КОЛОНОК ---
+.columnTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: $text-color-base;
+}
+
+// --- 1. ЛЕВАЯ КОЛОНКА ---
 .leftColumn {
   display: flex;
   flex-direction: column;
-  gap: var.$space-4; // 16px
+  gap: $space-4;
   align-items: flex-start;
 
-  @media (max-width: var.$breakpoint-lg) {
+  @media (max-width: $breakpoint-lg) {
     align-items: center;
   }
 }
 
 .logo {
-  font-family: var.$font-family-headings;
-  font-weight: var.$font-weight-bold;
+  font-family: $font-family-headings;
+  font-weight: $font-weight-bold;
   font-size: 32px;
-  color: var.$primary-color;
+  color: $primary-color;
   text-decoration: none;
 
-  @media (max-width: var.$breakpoint-md) {
+  @media (max-width: $breakpoint-md) {
     font-size: 28px;
   }
 }
 
 .copyrightText {
-  font-family: var.$font-family-base;
+  font-family: $font-family-base;
   font-size: 14px;
-  color: var.$text-color-muted;
-  line-height: var.$line-height-base;
+  color: $text-color-muted;
+  line-height: $line-height-base;
 }
 
-.rightColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var.$space-6; // 24px
-  align-items: flex-end;
-
-  @media (max-width: var.$breakpoint-lg) {
-    align-items: center;
+// --- 2. ЦЕНТРАЛЬНАЯ КОЛОНКА (ГОРОДА) ---
+.centerColumn {
+  @media (max-width: $breakpoint-lg) {
+    order: 2; // На мобильных города могут быть посередине или в конце
   }
 }
 
-.navSection ul {
-  display: flex;
-  gap: var.$space-6; // 24px
+.popularCitiesList {
+  display: grid;
+  grid-template-columns: 1fr 1fr; // Два столбика
+  column-gap: 20px;
+  row-gap: 12px;
   list-style: none;
   padding: 0;
   margin: 0;
+  text-align: left;
 
-  @media (max-width: var.$breakpoint-sm) {
-    flex-direction: column;
-    gap: var.$space-4; // 16px
+  @media (max-width: $breakpoint-lg) {
+    // На мобильных можно центрировать текст, но грид лучше оставить
+    text-align: center;
+    justify-content: center;
   }
 
   li a {
-    font-family: var.$font-family-base;
-    font-weight: var.$font-weight-medium;
+    font-family: $font-family-base;
+    font-weight: 500;
     font-size: 14px;
-    color: var.$text-color-secondary;
+    color: $text-color-secondary;
     text-decoration: none;
-    transition: color var.$transition-duration-base;
+    transition: color 0.2s;
+    white-space: nowrap;
 
     &:hover {
-      color: var.$primary-color;
+      color: $primary-color;
       text-decoration: underline;
     }
   }
 }
 
-.socialIcons {
+// --- 3. ПРАВАЯ КОЛОНКА (МЕНЮ + СОЦСЕТИ) ---
+.rightColumn {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  flex-direction: column;
+  align-items: flex-start; // Выравнивание по левому краю внутри колонки
+  gap: 24px;
 
-  a {
-    display: inline-block;
-    color: var.$text-color-muted; // Цвет по умолчанию
-    transition: color var.$transition-duration-base, transform var.$transition-duration-base;
+  @media (max-width: $breakpoint-lg) {
+    align-items: center;
+    order: 3;
+  }
+}
 
-    &:hover {
-      color: var.$primary-color; // Цвет при наведении
-      transform: translateY(-2px);
+.legalNav {
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+
+    @media (max-width: $breakpoint-lg) {
+      align-items: center;
+      text-align: center;
     }
 
-    svg {
-      width: 24px;
-      height: 24px;
-      display: block;
+    li a {
+      font-family: $font-family-base;
+      font-weight: 500;
+      font-size: 14px;
+      color: $text-color-secondary;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $primary-color;
+      }
     }
   }
 }
 
-// Селектор для fill внутри SVG
-.socialIconPath {
-  fill: currentColor; // Наследует цвет от родительской ссылки 'a'
+.socialsWrapper {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+
+  a {
+    color: $text-color-secondary;
+    transition: all 0.2s;
+
+    &:hover {
+      color: $primary-color;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.disclaimer {
+  font-size: 10px;
+  color: $text-color-muted;
+  line-height: 1.4;
+  max-width: 250px;
+  margin: 0;
+
+  @media (max-width: $breakpoint-lg) {
+    text-align: center;
+  }
 }

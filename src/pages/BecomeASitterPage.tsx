@@ -1,45 +1,50 @@
-// --- File: pages/BecomeASitterPage.tsx ---
+// --- File: src/pages/BecomeASitterPage.tsx ---
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 import BecomeSitterHero from '../components/becomeASitter/BecomeASitterHero';
 import WhyBecomeSitterSection from '../components/becomeASitter/WhyBecomeSitterSection';
 import HowItWorksSitterSteps from '../components/becomeASitter/HowItWorksSitterSteps';
-import OfferableServicesSection from '../components/becomeASitter/OfferableServicesSection';
-import SupportAndSafetySection from '../components/becomeASitter/SupportAndSafetySection';
 import FinalSitterCTA from '../components/becomeASitter/FinalSitterCTA';
-
-import { config } from '../config/appConfig';
+import OfferableServicesSection from '../components/becomeASitter/OfferableServicesSection';
+import SitterAppPreviewSection from '../components/becomeASitter/SitterAppPreviewSection'; // <--- ИМПОРТ
 
 interface BecomeASitterPageProps {
     isPreloading?: boolean;
 }
 
-// Контекст, который мы получаем от PageLayout
 interface PageContextType {
     onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter') => void;
 }
 
 const BecomeASitterPage: React.FC<BecomeASitterPageProps> = ({ isPreloading = false }) => {
     const { t } = useTranslation();
-
-    // Получаем функцию из контекста родительского роута
+    const navigate = useNavigate();
     const { onAuthClick } = useOutletContext<PageContextType>();
 
-    // Обработчик для всех кнопок "Начать" на этой странице
+    // Проверка авторизации из Redux
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+
     const handleGetStarted = () => {
-        // Вызываем функцию с типом 'sitter'
-        if (onAuthClick) {
-            onAuthClick('register', 'sitter');
+        if (isAuthenticated) {
+            // Если авторизован -> идем в кабинет заполнять заявку
+            navigate('/cabinet/become-sitter');
+        } else {
+            // Если нет -> открываем модалку регистрации (тип sitter)
+            if (onAuthClick) {
+                onAuthClick('register', 'sitter');
+            }
         }
     };
 
     const serviceSchema = {
         "@context": "https://schema.org",
         "@type": "Service",
-        "serviceType": "Работа для ситтеров",
+        "serviceType": "Pet Sitting Job",
         "provider": { "@type": "Organization", "name": "PetsOk" },
         "description": t('seo.becomeASitter.description'),
         "name": t('seo.becomeASitter.title')
@@ -50,18 +55,22 @@ const BecomeASitterPage: React.FC<BecomeASitterPageProps> = ({ isPreloading = fa
             <Helmet>
                 <title>{t('seo.becomeASitter.title')}</title>
                 <meta name="description" content={t('seo.becomeASitter.description')} />
-                <meta property="og:title" content={t('seo.becomeASitter.title')} />
-                <meta property="og:description" content={t('seo.becomeASitter.description')} />
-                <meta property="og:url" content={`${config.siteUrl}/become-a-sitter`} />
                 <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
             </Helmet>
 
             <BecomeSitterHero isPreloading={isPreloading} onGetStartedClick={handleGetStarted} />
             <WhyBecomeSitterSection />
             <HowItWorksSitterSteps />
+
+            {/* --- НОВАЯ СЕКЦИЯ С ПРЕВЬЮ ПРИЛОЖЕНИЯ --- */}
+            <SitterAppPreviewSection />
+
             <OfferableServicesSection />
-            <SupportAndSafetySection />
             <FinalSitterCTA onGetStartedClick={handleGetStarted} />
+
+            <div style={{ textAlign: 'center', padding: '20px', color: '#718096', fontSize: '14px', backgroundColor: '#F8F9FB' }}>
+                {t('becomeSitter.trustFooter')}
+            </div>
         </>
     );
 };

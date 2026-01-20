@@ -1,21 +1,17 @@
 /* --- File: src/style/globals/global.scss --- */
 @use "swiper/css";
 @use "./resets.scss";
+@use "../variables" as *;
 
-/* --- ПОДКЛЮЧАЕМ ШРИФТЫ ЛОКАЛЬНО --- */
-
-/* raleway-regular - cyrillic_latin */
+/* Шрифты */
 @font-face {
   font-display: swap;
-  /* Tells the browser to show a fallback font while this one is loading */
   font-family: 'Raleway';
   font-style: normal;
   font-weight: 400;
   src: url('/fonts/raleway-v37-cyrillic_latin-regular.woff2') format('woff2');
-  /* Path from the public folder */
 }
 
-/* raleway-italic - cyrillic_latin */
 @font-face {
   font-display: swap;
   font-family: 'Raleway';
@@ -24,7 +20,6 @@
   src: url('/fonts/raleway-v37-cyrillic_latin-italic.woff2') format('woff2');
 }
 
-/* raleway-500 - cyrillic_latin */
 @font-face {
   font-display: swap;
   font-family: 'Raleway';
@@ -33,7 +28,6 @@
   src: url('/fonts/raleway-v37-cyrillic_latin-500.woff2') format('woff2');
 }
 
-/* raleway-500italic - cyrillic_latin */
 @font-face {
   font-display: swap;
   font-family: 'Raleway';
@@ -42,7 +36,6 @@
   src: url('/fonts/raleway-v37-cyrillic_latin-500italic.woff2') format('woff2');
 }
 
-/* raleway-600 - cyrillic_latin */
 @font-face {
   font-display: swap;
   font-family: 'Raleway';
@@ -51,7 +44,6 @@
   src: url('/fonts/raleway-v37-cyrillic_latin-600.woff2') format('woff2');
 }
 
-/* raleway-700 - cyrillic_latin */
 @font-face {
   font-display: swap;
   font-family: 'Raleway';
@@ -60,7 +52,6 @@
   src: url('/fonts/raleway-v37-cyrillic_latin-700.woff2') format('woff2');
 }
 
-/* raleway-800 - cyrillic_latin */
 @font-face {
   font-display: swap;
   font-family: 'Raleway';
@@ -70,11 +61,43 @@
 }
 
 body {
-  font-family: "Raleway", sans-serif;
+  font-family: $font-family-base;
+  color: $text-color-base;
   overflow-x: hidden;
-  background-color: #fff;
+  background-color: $background-color-body;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 5px;
+
+    &:hover {
+      background: #a0aec0;
+    }
+  }
+}
+
+::selection {
+  background-color: rgba($primary-color, 0.2);
+  color: $primary-color-darker;
 }
 
 .wrapper {
-  max-width: 1440px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+:focus-visible {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
 }

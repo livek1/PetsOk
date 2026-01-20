@@ -1,19 +1,19 @@
-@use '../../../style/variables' as *; // Убедитесь, что путь к _variables.scss правильный
+@use '../../../style/variables' as *;
 
 .cookieConsentBanner {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: $gray-900; // Темный фон для контраста
-    color: $gray-100; // Светлый текст
+    background-color: $gray-900;
+    color: $gray-100;
     padding: 15px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    z-index: $zindex-cookie-banner; // Используем переменную
+    z-index: $zindex-cookie-banner;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
     font-size: 14px;
 
@@ -36,7 +36,7 @@
 }
 
 .cookieLink {
-    color: $primary-color-lighter; // Светлый фирменный цвет для ссылки
+    color: $primary-color-lighter;
     text-decoration: underline;
     font-weight: $font-weight-medium;
 
@@ -57,7 +57,7 @@
     font-size: 14px;
     white-space: nowrap;
     transition: background-color $transition-base;
-    flex-shrink: 0; // Чтобы кнопка не сжималась
+    flex-shrink: 0;
 
     &:hover {
         background-color: $primary-color-darker;
@@ -65,6 +65,6 @@
 
     @media (max-width: calc($breakpoint-md - 1px)) {
         width: 100%;
-        max-width: 280px; // Ограничиваем ширину на мобильных
+        max-width: 280px;
     }
 }

@@ -1,18 +1,23 @@
-// --- File: src/style/components/HowItWorksSimple.scss ---
 @use '../variables' as *;
 
 .how-it-works-simple {
-    // ИСПРАВЛЕНО: Убран серый фон, теперь используется фон body
     background-color: #ffffff;
-    padding: $space-20 0; // 80px
+    // Убираем верхний отступ, так как предыдущая секция белая и имеет отступ снизу
+    padding-top: 0;
+    padding-bottom: 80px;
     overflow: hidden;
 
-    &.wrapper {
+    @media (max-width: $breakpoint-md) {
+        padding-top: 0;
+        padding-bottom: 50px;
+    }
+
+    .wrapper {
         width: 100%;
-        max-width: 960px;
-        padding-left: $space-5; // 20px
-        padding-right: $space-5; // 20px
+        max-width: 1000px;
         margin: 0 auto;
+        padding-left: 20px;
+        padding-right: 20px;
         box-sizing: border-box;
     }
 
@@ -21,19 +26,19 @@
         font-weight: $font-weight-bold;
         font-size: 38px;
         color: $text-color-base;
-        margin: 0 auto $space-16 auto; // 64px
+        margin: 0 auto 70px auto;
         line-height: $line-height-heading;
         text-align: center;
         max-width: 700px;
 
         @media (max-width: $breakpoint-md) {
             font-size: 32px;
-            margin-bottom: $space-12; // 48px
+            margin-bottom: 50px;
         }
 
         @media (max-width: $breakpoint-sm) {
             font-size: 28px;
-            margin-bottom: $space-10; // 40px
+            margin-bottom: 40px;
         }
     }
 
@@ -46,7 +51,7 @@
         @media (max-width: $breakpoint-md) {
             flex-direction: column;
             align-items: center;
-            gap: $space-8; // 32px
+            gap: 40px;
         }
     }
 
@@ -56,8 +61,8 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 0 $space-4; // 16px
-        max-width: 250px;
+        padding: 0 16px;
+        max-width: 280px;
 
         @media (max-width: $breakpoint-md) {
             max-width: 320px;
@@ -67,18 +72,18 @@
 
         .step-image {
             display: block;
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             object-fit: contain;
-            margin: 0 auto $space-5 auto; // 20px
+            margin: 0 auto 24px auto;
         }
 
         h3 {
             font-family: $font-family-headings;
-            font-size: $font-size-lg; // 20px
+            font-size: 20px;
             font-weight: $font-weight-semibold;
             color: $text-color-base;
-            margin-bottom: $space-2; // 8px
+            margin-bottom: 12px;
             line-height: 1.35;
         }
 
@@ -96,16 +101,16 @@
         height: 0;
         border-top: 2px dashed $primary-color;
         opacity: 0.6;
-        margin: 0 $space-2; // 8px
+        margin: 0 15px;
         position: relative;
-        top: 64px;
+        top: 70px;
 
         @media (max-width: $breakpoint-md) {
             width: 2px;
-            height: 40px;
+            height: 50px;
             border-top: none;
             border-left: 2px dashed $primary-color;
-            margin: $space-4 0; // 16px
+            margin: 10px 0;
             top: 0;
             align-self: center;
             flex-grow: 0;

@@ -1,14 +1,15 @@
-// --- File: components/becomeASitter/OfferableServicesSection.tsx ---
+// --- File: src/components/becomeASitter/OfferableServicesSection.tsx ---
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import '../../style/components/becomeASitter/OfferableServicesSection.scss';
-import { enabledServicesForSitterPage } from '../../config/appConfig'; // <-- ИМПОРТ ДИНАМИЧЕСКИХ ДАННЫХ
-
-// --- Локальные иконки и хелпер getIconByKey удалены, так как компонент иконки теперь передается напрямую в объекте service ---
+import { enabledServicesForSitterPage } from '../../config/appConfig';
 
 const OfferableServicesSection: React.FC = () => {
     const { t } = useTranslation();
+    const { activeServices, isConfigLoaded } = useSelector((state: RootState) => state.config);
 
     const sectionVariants = {
         hidden: { opacity: 0 },
@@ -16,12 +17,17 @@ const OfferableServicesSection: React.FC = () => {
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 25, scale: 0.98 },
-        visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" } },
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
     };
 
-    // --- Если нет включенных сервисов для этой страницы, не рендерим секцию ---
-    if (!enabledServicesForSitterPage || enabledServicesForSitterPage.length === 0) {
+    // Фильтрация
+    const displayedServices = enabledServicesForSitterPage.filter(service => {
+        if (!isConfigLoaded) return true;
+        return activeServices.includes(service.id);
+    });
+
+    if (displayedServices.length === 0) {
         return null;
     }
 
@@ -34,29 +40,39 @@ const OfferableServicesSection: React.FC = () => {
             variants={sectionVariants}
         >
             <motion.h2 variants={itemVariants}>{t('offerableServicesSection.sectionTitle')}</motion.h2>
-            <motion.p className="offerable-services-section__subtitle" variants={itemVariants}>{t('offerableServicesSection.sectionSubtitle')}</motion.p>
+            <motion.p className="offerable-services-section__subtitle" variants={itemVariants}>
+                {t('offerableServicesSection.sectionSubtitle')}
+            </motion.p>
 
             <div className="offerable-services-section__grid">
-                {/* --- РЕНДЕРИМ КАРТОЧКИ НА ОСНОВЕ ДАННЫХ ИЗ КОНФИГА --- */}
-                {enabledServicesForSitterPage.map((service, index) => (
+                {displayedServices.map((service, index) => (
                     <motion.div
                         key={service.id}
                         className={`service-item-card ${service.highlightKey ? 'highlighted' : ''}`}
                         custom={index}
                         variants={itemVariants}
                     >
-                        <div className="service-item-card__icon">
-                            {/* 
-                              ИСПРАВЛЕНИЕ: 
-                              Рендерим компонент иконки напрямую из service.IconComponent,
-                              а не ищем его по ключу service.iconKey.
-                            */}
-                            {service.IconComponent && <service.IconComponent />}
-                        </div>
-                        <h3 className="service-item-card__title">{t(service.nameKey)}</h3>
+                        {/* Бейдж */}
                         {service.highlightKey && (
                             <span className="service-item-card__highlight-badge">{t(service.highlightKey)}</span>
                         )}
+
+                        <div className="service-item-card__icon">
+                            {/* 
+                                ИСПРАВЛЕНИЕ ЗДЕСЬ: 
+                                Добавляем color="currentColor" 
+                            */}
+                            {service.IconComponent && (
+                                <service.IconComponent
+                                    width={28}
+                                    height={28}
+                                    color="currentColor"
+                                />
+                            )}
+                        </div>
+
+                        <h3 className="service-item-card__title">{t(service.nameKey)}</h3>
+
                         <p className="service-item-card__description">{t(service.descKey)}</p>
                     </motion.div>
                 ))}

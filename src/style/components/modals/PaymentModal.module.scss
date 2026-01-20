@@ -1,0 +1,175 @@
+@use 'sass:color';
+@use '../../variables' as *;
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: $white;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    padding: 20px;
+    border-bottom: 1px solid $border-color-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $text-color-muted;
+
+    &:hover {
+        color: $text-color-base;
+    }
+}
+
+.content {
+    padding: 20px;
+}
+
+.optionRow {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid $border-color-light;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+
+    &:hover {
+        background: $neutral-50;
+    }
+
+    &.active {
+        border-color: $primary-color;
+        background: $primary-color-lightest-bg;
+    }
+}
+
+.rowIcon {
+    color: $primary-color;
+}
+
+.rowInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.rowTitle {
+    font-weight: 600;
+    color: $text-color-base;
+}
+
+.rowSub {
+    font-size: 0.85rem;
+    color: $text-color-secondary;
+}
+
+.checkbox,
+.radio {
+    font-weight: bold;
+    color: $primary-color;
+}
+
+.summary {
+    background: $neutral-50;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.sumRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+
+    &.total {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid $border-color-medium;
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+
+    &.discount {
+        color: $success-500;
+    }
+}
+
+.payButton {
+    width: 100%;
+    padding: 16px;
+    background: $success-500;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover:not(:disabled) {
+        background: color.adjust($success-500, $lightness: -5%);
+    }
+
+    &:disabled {
+        background: $neutral-300;
+        cursor: not-allowed;
+    }
+}
+
+.addCardBtn {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: 1px dashed $border-color-medium;
+    border-radius: 10px;
+    color: $primary-color;
+    cursor: pointer;
+    font-weight: 600;
+
+    &:hover {
+        background: $neutral-50;
+    }
+}

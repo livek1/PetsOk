@@ -1,24 +1,31 @@
-// --- File: style/components/becomeASitter/BecomeASitterHero.scss ---
+// --- File: src/style/components/becomeASitter/BecomeASitterHero.scss ---
 @use '../../variables' as *;
-@use 'sass:color';
 
 .become-sitter-hero {
     position: relative;
-    min-height: 65vh;
+    min-height: 85vh; // Высокий первый экран
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 120px 20px 60px 20px;
     color: $white;
     overflow: hidden;
+    padding-top: 100px; // Учитываем хедер
 
-    // --- СТИЛИ ДЛЯ ФОНОВОГО ИЗОБРАЖЕНИЯ ---
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    // Градиент теперь не нужен, так как фон задается через style в JSX
-    // background: linear-gradient(135deg, $primary-color-lighter 0%, $primary-color 100%);
+    &__bg-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    &__bg-image {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        // Легкий зум для динамики, если нужно
+    }
 
     &__overlay {
         position: absolute;
@@ -26,75 +33,232 @@
         left: 0;
         width: 100%;
         height: 100%;
-        // --- УСИЛИВАЕМ ОВЕРЛЕЙ ДЛЯ ЛУЧШЕЙ ЧИТАЕМОСТИ ТЕКСТА ---
-        // Градиент от темного к более прозрачному, чтобы не затемнять все равномерно
-        background: linear-gradient(to top, rgba($black, 0.6), rgba($black, 0.3));
-        z-index: 1;
+        // Затемнение слева направо, чтобы текст читался
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0.1) 100%);
     }
 
     &__content {
         position: relative;
         z-index: 2;
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 25px;
-        max-width: 750px;
+        justify-content: space-between;
+        gap: 40px;
+        width: 100%;
+        padding-bottom: 60px;
+
+        @media (max-width: $breakpoint-lg) {
+            flex-direction: column;
+            text-align: center;
+            justify-content: center;
+        }
+    }
+
+    // --- ЛЕВАЯ КОЛОНКА ---
+    &__text-col {
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+
+        @media (max-width: $breakpoint-lg) {
+            align-items: center;
+        }
+    }
+
+    &__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        align-self: flex-start;
+
+        @media (max-width: $breakpoint-lg) {
+            align-self: center;
+        }
     }
 
     h1 {
         font-family: $font-family-headings;
-        font-weight: $font-weight-bold;
-        font-size: 46px;
-        line-height: 1.2;
-        // Тень для дополнительного контраста
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        font-weight: 800;
+        font-size: 56px;
+        line-height: 1.1;
+        margin: 0 0 24px 0;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 
         @media (max-width: $breakpoint-md) {
-            font-size: 34px;
+            font-size: 38px;
         }
     }
 
     &__subtitle {
-        font-family: $font-family-base;
-        font-size: 18px;
-        line-height: $line-height-base;
-        max-width: 600px;
-        opacity: 0.95; // Делаем текст чуть более видимым
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        font-size: 20px;
+        line-height: 1.6;
+        opacity: 0.9;
+        margin-bottom: 40px;
+        max-width: 500px;
 
         @media (max-width: $breakpoint-md) {
-            font-size: 17px;
+            font-size: 16px;
         }
     }
 
     &__cta-button {
-        display: inline-block;
-        background-color: $white;
-        color: $primary-color-darkest;
-        padding: 16px 35px;
-        border-radius: $border-radius-xl;
-        font-family: $font-family-base;
+        background-color: $primary-color;
+        color: $white;
+        padding: 20px 48px;
+        border-radius: 16px;
         font-size: 18px;
-        font-weight: $font-weight-semibold;
-        text-decoration: none;
-        text-align: center;
-        transition: background-color $transition-base, color $transition-base, transform $transition-base, box-shadow $transition-base;
-        box-shadow: $box-shadow-md;
-        min-width: 220px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba($primary-color, 0.4);
+        align-self: flex-start;
+        position: relative;
+        overflow: hidden;
 
-        &:hover,
-        &:focus {
-            background-color: $gray-100;
-            color: $primary-color-darkest;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: $box-shadow-lg;
-            outline: none;
+        // Блик
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
         }
 
-        &:active {
-            transform: translateY(-1px) scale(0.99);
-            box-shadow: $box-shadow-sm;
+        &:hover::after {
+            left: 100%;
+        }
+
+        @media (max-width: $breakpoint-lg) {
+            align-self: center;
+            width: 100%;
+            max-width: 320px;
+        }
+    }
+
+    // --- ПРАВАЯ КОЛОНКА (КАРТОЧКА) ---
+    &__visual-col {
+        position: relative;
+        perspective: 1000px;
+    }
+
+    .income-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 30px;
+        width: 360px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        color: $text-color-base;
+        position: relative;
+        transform: rotateY(-10deg) rotateX(5deg);
+        transition: transform 0.5s ease;
+
+        &:hover {
+            transform: rotateY(0) rotateX(0) scale(1.02);
+        }
+
+        @media (max-width: $breakpoint-lg) {
+            transform: none; // Убираем 3D на мобилке
+            width: 100%;
+            max-width: 340px;
+            margin-top: 40px;
+        }
+
+        &__header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+
+            .icon-box {
+                width: 40px;
+                height: 40px;
+                background: #EBF8FF;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: $primary-color;
+            }
+
+            span {
+                font-size: 14px;
+                font-weight: 600;
+                color: $text-color-secondary;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        }
+
+        &__amount {
+            font-size: 42px;
+            font-weight: 800;
+            color: $text-color-base;
+            line-height: 1;
+            margin-bottom: 20px;
+
+            small {
+                font-size: 18px;
+                font-weight: 500;
+                color: $text-color-muted;
+            }
+        }
+
+        &__divider {
+            height: 1px;
+            background: #E2E8F0;
+            margin-bottom: 16px;
+        }
+
+        &__footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #2F855A;
+            font-weight: 600;
+        }
+
+        .zero-commission-sticker {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background: #FFD700; // Золотой
+            color: #744210;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            transform: rotate(15deg);
+            border: 4px solid $white;
+
+            .percent {
+                font-size: 28px;
+                font-weight: 900;
+                line-height: 1;
+            }
+
+            .text {
+                font-size: 10px;
+                font-weight: 700;
+                text-transform: uppercase;
+            }
         }
     }
 }

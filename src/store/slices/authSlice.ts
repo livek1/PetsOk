@@ -1,4 +1,4 @@
-// --- File: store/slices/authSlice.ts ---
+// --- File: src/store/slices/authSlice.ts ---
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 import {
@@ -49,7 +49,6 @@ const initialState: AuthState = {
     otpError: null,
 };
 
-// ИЗМЕНЕНИЕ: Аргумент для thunk теперь включает только необходимые поля
 interface RegisterThunkArg {
     registrationData: Omit<RegistrationPayload, 'source' | 'utm_source' | 'utm_medium' | 'utm_campaign' | 'utm_term' | 'utm_content'>;
     registrationType: 'client' | 'sitter';
@@ -58,6 +57,27 @@ interface RegisterThunkArg {
 interface CheckContactThunkArg { contactValue: string; contactType: 'phone' | 'email'; }
 interface SendOtpThunkArg { contactValue: string; contactType: 'phone' | 'email'; operation: 'register' | 'reset'; }
 interface VerifyOtpThunkArg { contactValue: string; contactType: 'phone' | 'email'; code: string; operation: 'register' | 'reset'; }
+
+// --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ЗАГРУЗКИ ПРОФИЛЯ ПОСЛЕ АВТОРИЗАЦИИ ---
+const fetchProfileAfterAuth = async (authResponse: AuthApiResponse) => {
+    // Сохраняем токен, чтобы последующий запрос прошел успешно
+    localStorage.setItem('authToken', authResponse.accessToken);
+    if (authResponse.refreshToken) {
+        localStorage.setItem('refreshToken', authResponse.refreshToken);
+    }
+
+    try {
+        // Сразу запрашиваем профиль
+        const userProfile = await fetchUserProfileApi();
+        // Возвращаем объединенный объект: токены из первого ответа, юзер из второго
+        return { ...authResponse, user: userProfile, data: userProfile };
+    } catch (e) {
+        console.error("Failed to fetch profile immediately after auth", e);
+        // Если не удалось загрузить профиль, возвращаем только токены (компонент попробует загрузить позже или выкинет ошибку)
+        return authResponse;
+    }
+};
+
 
 export const checkContactExists = createAsyncThunk<CheckContactResponse, CheckContactThunkArg, { rejectValue: string }>(
     'auth/checkContactExists', async (payload, { rejectWithValue }) => {
@@ -94,15 +114,13 @@ export const verifyOtp = createAsyncThunk<CheckOtpResponse, VerifyOtpThunkArg, {
     }
 );
 
-// --- КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ ЗДЕСЬ ---
 export const register = createAsyncThunk<AuthApiResponse, RegisterThunkArg, { rejectValue: string }>(
     'auth/register', async ({ registrationData, registrationType }, { rejectWithValue }) => {
         try {
-            // Создаем полный payload для API
             const augmentedPayload: RegistrationPayload = {
                 ...registrationData,
                 source: 'website',
-                registration_type: registrationType, // Используем переданный тип
+                registration_type: registrationType,
             };
 
             const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
@@ -114,20 +132,61 @@ export const register = createAsyncThunk<AuthApiResponse, RegisterThunkArg, { re
             });
 
             const response = await registerUserApi(augmentedPayload);
-            localStorage.setItem('authToken', response.accessToken);
-            if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
-            return response;
+            // Запрашиваем профиль сразу
+            return await fetchProfileAfterAuth(response);
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || error.message || 'Registration failed');
         }
     }
 );
 
-// Остальные thunks без изменений
-export const login = createAsyncThunk<AuthApiResponse, LoginPayload, { rejectValue: string }>('auth/login', async (credentials, { rejectWithValue }) => { try { const response = await loginUserApi(credentials); localStorage.setItem('authToken', response.accessToken); if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken); return response; } catch (error: any) { return rejectWithValue(error.response?.data?.message || error.message || 'Login failed'); } });
-export const loginWithGoogle = createAsyncThunk<AuthApiResponse, { idToken: string }, { rejectValue: string }>('auth/loginWithGoogle', async (payload, { rejectWithValue }) => { try { const response = await loginWithGoogleApi(payload.idToken); localStorage.setItem('authToken', response.accessToken); if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken); return response; } catch (error: any) { return rejectWithValue(error.response?.data?.message || error.message || 'Google login failed'); } });
-export const loginWithApple = createAsyncThunk<AuthApiResponse, { appleAuthData: any }, { rejectValue: string }>('auth/loginWithApple', async (payload, { rejectWithValue }) => { try { const response = await loginWithAppleApi(payload.appleAuthData); localStorage.setItem('authToken', response.accessToken); if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken); return response; } catch (error: any) { return rejectWithValue(error.response?.data?.message || error.message || 'Apple login failed'); } });
-export const loadUser = createAsyncThunk<User, void, { rejectValue: string; state: RootState }>('auth/loadUser', async (_, { getState, rejectWithValue }) => { const token = getState().auth.token; if (!token) return rejectWithValue('No token found'); try { return await fetchUserProfileApi(); } catch (error: any) { localStorage.removeItem('authToken'); localStorage.removeItem('refreshToken'); return rejectWithValue(error.response?.data?.message || 'Failed to load user'); } });
+export const login = createAsyncThunk<AuthApiResponse, LoginPayload, { rejectValue: string }>(
+    'auth/login', async (credentials, { rejectWithValue }) => {
+        try {
+            const response = await loginUserApi(credentials);
+            // Запрашиваем профиль сразу
+            return await fetchProfileAfterAuth(response);
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || error.message || 'Login failed');
+        }
+    }
+);
+
+export const loginWithGoogle = createAsyncThunk<AuthApiResponse, { idToken: string }, { rejectValue: string }>(
+    'auth/loginWithGoogle', async (payload, { rejectWithValue }) => {
+        try {
+            const response = await loginWithGoogleApi(payload.idToken);
+            return await fetchProfileAfterAuth(response);
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || error.message || 'Google login failed');
+        }
+    }
+);
+
+export const loginWithApple = createAsyncThunk<AuthApiResponse, { appleAuthData: any }, { rejectValue: string }>(
+    'auth/loginWithApple', async (payload, { rejectWithValue }) => {
+        try {
+            const response = await loginWithAppleApi(payload.appleAuthData);
+            return await fetchProfileAfterAuth(response);
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.message || error.message || 'Apple login failed');
+        }
+    }
+);
+
+export const loadUser = createAsyncThunk<User, void, { rejectValue: string; state: RootState }>(
+    'auth/loadUser', async (_, { getState, rejectWithValue }) => {
+        const token = getState().auth.token;
+        if (!token) return rejectWithValue('No token found');
+        try {
+            return await fetchUserProfileApi();
+        } catch (error: any) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('refreshToken');
+            return rejectWithValue(error.response?.data?.message || 'Failed to load user');
+        }
+    }
+);
 
 const authSlice = createSlice({
     name: 'auth',
@@ -154,18 +213,41 @@ const authSlice = createSlice({
         };
         const handleAuthFulfilled = (state: AuthState, action: PayloadAction<AuthApiResponse>) => {
             state.isLoading = false; state.status = 'succeeded'; state.isAuthenticated = true;
+
+            // Теперь здесь гарантированно будет user, так как мы подгрузили его в Thunk
             const userDataFromApi = action.payload.user || action.payload.data;
-            if (userDataFromApi) { state.user = { ...userDataFromApi, isSitter: userDataFromApi.roles?.includes('sitter') || userDataFromApi.roles?.includes('admin') || userDataFromApi.isSitter, }; }
-            else { state.user = null; console.warn("User data was null in fulfilled auth action payload."); }
-            state.token = action.payload.accessToken; state.refreshToken = action.payload.refreshToken || null; state.error = null;
+
+            if (userDataFromApi) {
+                state.user = {
+                    ...userDataFromApi,
+                    isSitter: userDataFromApi.roles?.includes('sitter') || userDataFromApi.roles?.includes('admin') || userDataFromApi.isSitter
+                };
+            } else {
+                state.user = null;
+                console.warn("User data was still null in fulfilled auth action payload (fetch failed?).");
+            }
+            state.token = action.payload.accessToken;
+            state.refreshToken = action.payload.refreshToken || null;
+            state.error = null;
         };
         const handleAuthRejected = (state: AuthState, action: PayloadAction<any>) => {
             state.isLoading = false; state.status = 'failed'; state.error = action.payload ?? 'An unknown error occurred';
         };
+
         builder.addCase(checkContactExists.pending, (state) => handlePending(state, 'checking_contact')).addCase(checkContactExists.fulfilled, (state, action) => { state.isLoading = false; state.status = action.payload.exists ? 'contact_exists' : 'contact_new'; }).addCase(checkContactExists.rejected, (state, action) => { state.isLoading = false; state.status = 'failed'; state.contactCheckError = action.payload ?? 'An unknown error occurred'; });
         builder.addCase(sendOtp.pending, (state) => handlePending(state, 'otp_sending')).addCase(sendOtp.fulfilled, (state, action) => { state.isLoading = false; if (action.payload.data?.code === 200 || action.payload.success === true) { state.status = 'otp_sent'; } else { state.status = 'failed'; state.otpError = action.payload.message || action.payload.data?.message || 'Failed to send OTP'; } }).addCase(sendOtp.rejected, (state, action) => { state.isLoading = false; state.status = 'failed'; state.otpError = action.payload ?? 'An unknown error occurred'; });
         builder.addCase(verifyOtp.pending, (state) => handlePending(state, 'otp_verifying')).addCase(verifyOtp.fulfilled, (state, action) => { state.isLoading = false; state.status = action.payload.success ? (action.meta.arg.operation === 'register' ? 'otp_verified_register' : 'otp_verified_reset') : 'failed'; if (!action.payload.success) { state.otpError = action.payload.message || 'Invalid OTP code'; } }).addCase(verifyOtp.rejected, (state, action) => { state.isLoading = false; state.status = 'failed'; state.otpError = action.payload ?? 'An unknown error occurred'; });
-        [register, login, loginWithGoogle, loginWithApple].forEach(thunk => { builder.addCase(thunk.pending, (state) => { let currentStatus: AuthState['status'] = 'logging_in'; if (thunk.typePrefix === register.typePrefix) currentStatus = 'registering'; handlePending(state, currentStatus); }); builder.addCase(thunk.fulfilled, handleAuthFulfilled); builder.addCase(thunk.rejected, handleAuthRejected); });
+
+        [register, login, loginWithGoogle, loginWithApple].forEach(thunk => {
+            builder.addCase(thunk.pending, (state) => {
+                let currentStatus: AuthState['status'] = 'logging_in';
+                if (thunk.typePrefix === register.typePrefix) currentStatus = 'registering';
+                handlePending(state, currentStatus);
+            });
+            builder.addCase(thunk.fulfilled, handleAuthFulfilled);
+            builder.addCase(thunk.rejected, handleAuthRejected);
+        });
+
         builder.addCase(loadUser.pending, (state) => { state.isLoading = true; }).addCase(loadUser.fulfilled, (state, action) => { state.isLoading = false; state.isAuthenticated = true; state.user = { ...action.payload, isSitter: action.payload.roles?.includes('sitter') || action.payload.roles?.includes('admin') || action.payload.isSitter }; }).addCase(loadUser.rejected, (state, action) => { state.isLoading = false; state.isAuthenticated = false; state.user = null; state.token = null; state.refreshToken = null; console.warn('AuthSlice: Load user rejected - ', action.payload); });
     },
 });

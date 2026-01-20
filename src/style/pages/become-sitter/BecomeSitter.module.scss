@@ -1,0 +1,193 @@
+@use '../../../style/variables' as *;
+
+.wizardContainer {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: $space-8 $space-4;
+    min-height: 80vh;
+}
+
+.card {
+    background: $white;
+    border-radius: $border-radius-xl;
+    padding: $space-8;
+    border: 1px solid $border-color-light;
+    box-shadow: $box-shadow-lg;
+
+    @media (max-width: $breakpoint-md) {
+        padding: $space-5;
+    }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: $space-8;
+
+    h1 {
+        font-family: $font-family-headings;
+        font-size: 2rem;
+        font-weight: 800;
+        color: $text-color-base;
+        margin-bottom: $space-2;
+    }
+
+    p {
+        font-size: 1.1rem;
+        color: $text-color-secondary;
+    }
+}
+
+.iconCircle {
+    width: 80px;
+    height: 80px;
+    background-color: $primary-color-lightest-bg;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto $space-4 auto;
+    color: $primary-color;
+
+    svg {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+.formGroup {
+    margin-bottom: $space-5;
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: $space-2;
+        color: $text-color-base;
+    }
+}
+
+.input,
+.select,
+.textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid $border-color-medium;
+    border-radius: $border-radius-md;
+    font-size: 1rem;
+    background-color: $neutral-50;
+    transition: all 0.2s;
+
+    &:focus {
+        background-color: $white;
+        border-color: $primary-color;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+}
+
+.errorText {
+    color: $error-500;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.btnPrimary {
+    width: 100%;
+    background-color: $primary-color;
+    color: $white;
+    border: none;
+    padding: 16px;
+    border-radius: $border-radius-md;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: $space-6;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: $primary-color-darker;
+    }
+
+    &:disabled {
+        background-color: $neutral-300;
+        cursor: not-allowed;
+    }
+}
+
+.btnSecondary {
+    @extend .btnPrimary;
+    background-color: $white;
+    border: 1px solid $border-color-light;
+    color: $text-color-base;
+    margin-top: $space-3;
+
+    &:hover {
+        background-color: $neutral-50;
+    }
+}
+
+/* Specific Steps Styles */
+
+.roleCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid $border-color-light;
+    border-radius: $border-radius-lg;
+    padding: $space-6;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: $space-4;
+
+    &:hover {
+        border-color: $primary-color-lighter;
+    }
+
+    &.selected {
+        border-color: $primary-color;
+        background-color: $primary-color-lightest-bg;
+    }
+
+    h3 {
+        margin: $space-3 0 $space-2 0;
+        font-weight: 700;
+    }
+
+    p {
+        color: $text-color-secondary;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+}
+
+.uploadArea {
+    border: 2px dashed $border-color-medium;
+    border-radius: $border-radius-lg;
+    padding: $space-6;
+    text-align: center;
+    cursor: pointer;
+    background-color: $neutral-50;
+    transition: all 0.2s;
+
+    &:hover {
+        border-color: $primary-color;
+        background-color: $primary-color-lightest-bg;
+    }
+}
+
+.previewImage {
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-top: $space-4;
+    border-radius: $border-radius-md;
+}
+
+.statusContainer {
+    text-align: center;
+    padding: $space-10 $space-4;
+}
+
+.lottieWrapper {
+    width: 200px;
+    margin: 0 auto $space-6 auto;
+}

@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "ru.petsok.pet",
+            "sha256_cert_fingerprints": [
+                "F5:9E:2B:37:03:8B:F4:C8:49:8F:73:C6:F9:E2:6C:A4:43:85:28:5F:67:FA:EE:08:C4:1E:F2:E6:E4:0D:4E:49"
+            ]
+        }
+    }
+]

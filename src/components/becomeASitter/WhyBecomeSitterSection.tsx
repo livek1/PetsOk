@@ -1,23 +1,29 @@
-// --- File: components/becomeASitter/WhyBecomeSitterSection.tsx ---
+// --- File: src/components/becomeASitter/WhyBecomeSitterSection.tsx ---
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import '../../style/components/becomeASitter/WhyBecomeSitterSection.scss';
 
 // Иконки
-const IconFlexibleSchedule: React.FC = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zM12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" /></svg>;
-const IconEarnMore: React.FC = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.26 12.01c-.48-.2-1.02-.2-1.5-.2V15h2.75l.01-.01c.42-.19.8-.49.99-.99H15v-1h-1.5c.01-.34.02-.68.02-1.02H15V10h-2.26c-.48-.2-1.02-.2-1.5-.2V9h-2v1.01c-.48.2-.95.42-1.34.66L6 9v2l2 1v1l-2 1v2l1.9-1.16c.39.24.86.44 1.34.66V17h2v-1.01c.48-.2.95-.42 1.34-.66L18 17v-2l-2-1v-1l2-1V9l-1.9 1.16c-.39-.24-.86-.44-1.34-.66V8h-2v1.01z" /></svg>;
-const IconLoveAnimals: React.FC = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>;
-const IconFullSupport: React.FC = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" /></svg>;
+const IconZeroPercent = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#FFC107"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>;
+const IconFreedom = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#3598FE"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>;
+const IconSafety = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#38A169"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" /></svg>;
+const IconClients = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#E53E3E"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" /></svg>;
 
 const WhyBecomeSitterSection: React.FC = () => {
     const { t } = useTranslation();
 
     const benefits = [
-        { id: 'earnMore', icon: <IconEarnMore />, titleKey: 'whyBecomeSitter.earnMore.title', descriptionKey: 'whyBecomeSitter.earnMore.desc' },
-        { id: 'flexible', icon: <IconFlexibleSchedule />, titleKey: 'whyBecomeSitter.flexible.title', descriptionKey: 'whyBecomeSitter.flexible.desc' },
-        { id: 'love', icon: <IconLoveAnimals />, titleKey: 'whyBecomeSitter.love.title', descriptionKey: 'whyBecomeSitter.love.desc' },
-        { id: 'support', icon: <IconFullSupport />, titleKey: 'whyBecomeSitter.support.title', descriptionKey: 'whyBecomeSitter.support.desc' },
+        {
+            id: 'benefit1',
+            icon: <IconZeroPercent />,
+            titleKey: 'becomeSitter.benefit1Title',
+            descriptionKey: 'becomeSitter.benefit1Desc',
+            isHighlight: true // Флаг для выделения карточки
+        },
+        { id: 'benefit2', icon: <IconFreedom />, titleKey: 'becomeSitter.benefit2Title', descriptionKey: 'becomeSitter.benefit2Desc' },
+        { id: 'benefit3', icon: <IconSafety />, titleKey: 'becomeSitter.benefit3Title', descriptionKey: 'becomeSitter.benefit3Desc' },
+        { id: 'benefit4', icon: <IconClients />, titleKey: 'becomeSitter.benefit4Title', descriptionKey: 'becomeSitter.benefit4Desc' },
     ];
 
     const sectionVariants = {
@@ -32,31 +38,31 @@ const WhyBecomeSitterSection: React.FC = () => {
 
     return (
         <motion.section
-            className="why-become-sitter wrapper"
+            className="why-become-sitter"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={sectionVariants}
         >
-            <motion.h2 className="why-become-sitter__title" variants={itemVariants}>
-                {t('whyBecomeSitter.sectionTitle')}
-            </motion.h2>
-            <motion.p className="why-become-sitter__subtitle" variants={itemVariants}>
-                {t('whyBecomeSitter.sectionSubtitle')}
-            </motion.p>
-            <div className="why-become-sitter__benefits-grid">
-                {benefits.map((benefit, index) => (
-                    <motion.div
-                        key={benefit.id}
-                        className="benefit-card"
-                        custom={index}
-                        variants={itemVariants}
-                    >
-                        <div className="benefit-card__icon-wrapper">{benefit.icon}</div>
-                        <h3 className="benefit-card__title">{t(benefit.titleKey)}</h3>
-                        <p className="benefit-card__description">{t(benefit.descriptionKey)}</p>
-                    </motion.div>
-                ))}
+            <div className="wrapper">
+                <motion.h2 className="why-become-sitter__title" variants={itemVariants}>
+                    {t('becomeSitter.benefitsTitle')}
+                </motion.h2>
+
+                <div className="why-become-sitter__benefits-grid">
+                    {benefits.map((benefit, index) => (
+                        <motion.div
+                            key={benefit.id}
+                            className={`benefit-card ${benefit.isHighlight ? 'benefit-card--highlight' : ''}`}
+                            custom={index}
+                            variants={itemVariants}
+                        >
+                            <div className="benefit-card__icon-wrapper">{benefit.icon}</div>
+                            <h3 className="benefit-card__title">{t(benefit.titleKey)}</h3>
+                            <p className="benefit-card__description">{t(benefit.descriptionKey)}</p>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
         </motion.section>
     );

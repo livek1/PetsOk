@@ -1,0 +1,520 @@
+@use '../../variables' as *;
+@use 'sass:color';
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+}
+
+// --- Лоадер ---
+.loaderContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.errorContainer {
+    text-align: center;
+    padding: 40px;
+    color: $text-color-secondary;
+    font-size: 1.2rem;
+}
+
+// --- Header ---
+.header {
+    margin-bottom: 24px;
+}
+
+.backBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: $text-color-secondary;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: color 0.2s;
+    padding: 0;
+
+    &:hover {
+        color: $primary-color;
+    }
+}
+
+.headerTitle {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+
+    h1 {
+        font-family: $font-family-headings;
+        font-size: 2rem;
+        font-weight: 800;
+        color: $text-color-base;
+        margin: 0;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 1.5rem;
+        }
+    }
+}
+
+.statusBadge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+
+    &.pending_worker {
+        background-color: #FFFAF0;
+        color: #DD6B20;
+    }
+
+    &.pending_platform_payment {
+        background-color: #FFF5F5;
+        color: #E53E3E;
+    }
+
+    &.confirmed {
+        background-color: #F0FFF4;
+        color: #38A169;
+    }
+
+    &.in_progress {
+        background-color: #EBF8FF;
+        color: #3182CE;
+    }
+
+    &.completed {
+        background-color: #F0FFF4;
+        color: #38A169;
+    }
+
+    &.canceled_client,
+    &.canceled_worker {
+        background-color: #EDF2F7;
+        color: #718096;
+    }
+}
+
+// --- Layout Grid ---
+.contentGrid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    align-items: start;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.mainColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+// --- Generic Card Style ---
+.card,
+.workerCard,
+.actionsCard {
+    background-color: $white;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid $border-color-light;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+
+    @media (max-width: $breakpoint-sm) {
+        padding: 16px;
+    }
+}
+
+.cardTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text-color-base;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $border-color-light;
+}
+
+// --- Warning Box ---
+.warningBox {
+    background-color: #FFFBEB;
+    border: 1px solid #FCD34D;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+
+    .warningIcon {
+        color: #D97706;
+        flex-shrink: 0;
+    }
+
+    .warningContent {
+        h4 {
+            margin: 0 0 4px 0;
+            color: #92400E;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+            color: #B45309;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+    }
+}
+
+// --- Details List ---
+.detailsList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.detailRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .detailLabel {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: $text-color-secondary;
+        font-size: 0.95rem;
+
+        svg {
+            color: $text-color-muted;
+        }
+    }
+
+    .detailValue {
+        font-weight: 600;
+        color: $text-color-base;
+    }
+}
+
+// --- Billing List ---
+.billingList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.emptyText {
+    color: $text-color-muted;
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.billingItem {
+    background-color: $neutral-50;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid $border-color-light;
+}
+
+.billingHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.periodDate {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $text-color-secondary;
+    text-transform: uppercase;
+}
+
+.billingStatus {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+
+    &.paid {
+        background: #E6FFFA;
+        color: #047857;
+    }
+
+    &.pending_payment {
+        background: #FFFBEB;
+        color: #D97706;
+    }
+
+    &.payment_failed {
+        background: #FFF5F5;
+        color: #C53030;
+    }
+}
+
+.billingRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: $text-color-secondary;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    .moneyBold {
+        font-weight: 700;
+        color: $text-color-base;
+    }
+}
+
+// --- Tasks List ---
+.tasksList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.taskItem {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid $border-color-light;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.taskDate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    margin-right: 16px;
+    background: $neutral-50;
+    border-radius: 8px;
+    padding: 6px 0;
+
+    .day {
+        font-size: 1.1rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .month {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: $text-color-muted;
+    }
+}
+
+.taskInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .taskTime {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $text-color-base;
+    }
+
+    .taskService {
+        font-size: 0.85rem;
+        color: $text-color-secondary;
+    }
+}
+
+.taskStatus {
+    font-size: 0.75rem;
+    color: $text-color-muted;
+    text-transform: capitalize;
+}
+
+.showMoreBtn {
+    background: none;
+    border: none;
+    color: $primary-color;
+    font-weight: 600;
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: 12px;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+// --- Worker Sidebar ---
+.workerHeader {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+
+    .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .workerInfo {
+        .workerName {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            color: $text-color-base;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+
+            .reviewsCount {
+                color: $text-color-muted;
+                font-weight: 400;
+                font-size: 0.8rem;
+            }
+        }
+    }
+}
+
+.workerActions {
+    display: flex;
+    gap: 12px;
+}
+
+.chatBtn {
+    flex: 1;
+    background-color: $primary-color-lightest-bg;
+    color: $primary-color;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+        background-color: rgba($primary-color, 0.15);
+    }
+}
+
+.profileLink {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid $border-color-light;
+    border-radius: 10px;
+    text-decoration: none;
+    color: $text-color-base;
+    font-weight: 600;
+    transition: background 0.2s;
+
+    &:hover {
+        background-color: $neutral-50;
+    }
+}
+
+.noWorkerState {
+    text-align: center;
+    color: $text-color-muted;
+    font-style: italic;
+    padding: 20px 0;
+}
+
+// --- Actions Sidebar ---
+.actionsCard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px;
+}
+
+.payBtn {
+    width: 100%;
+    background-color: $success-500;
+    color: $white;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background-color: color.adjust($success-500, $lightness: -5%);
+    }
+}
+
+.cancelBtn {
+    width: 100%;
+    background-color: transparent;
+    color: $error-500;
+    padding: 12px;
+    border: 1px solid rgba($error-500, 0.2);
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: rgba($error-500, 0.05);
+        border-color: $error-500;
+    }
+}

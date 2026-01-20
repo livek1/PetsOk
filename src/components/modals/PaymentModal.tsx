@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from "react-dom";
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux'; // Добавлены хуки Redux
+import { useDispatch, useSelector } from 'react-redux';
 import { initiateOrderPayment, getVerificationUrl } from '../../services/api';
 import style from '../../style/components/modals/PaymentModal.module.scss';
 import { AppDispatch, RootState } from '../../store';
-import { fetchPaymentMethodsAction, selectActivePaymentMethods } from '../../store/slices/paymentSlice'; // Импорт действий и селектора
+import { fetchPaymentMethodsAction, selectActivePaymentMethods } from '../../store/slices/paymentSlice';
 
 // Иконки
 const CloseIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
@@ -35,7 +35,7 @@ interface PaymentModalProps {
     onClose: () => void;
     order: any;
     userBalance: any;
-    paymentMethods?: any[]; // Делаем необязательным, так как берем из Redux
+    paymentMethods?: any[];
     loadingData?: boolean;
     onPaymentSuccess: () => void;
 }
@@ -46,7 +46,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
 
-    // Получаем карты из Redux хранилища
     const cards = useSelector(selectActivePaymentMethods);
     const { isLoading: isCardsLoading } = useSelector((state: RootState) => state.payment);
 
@@ -65,26 +64,20 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         }
     }, []);
 
-    // При открытии модалки запускаем фоновое обновление карт
     useEffect(() => {
         if (isOpen) {
             dispatch(fetchPaymentMethodsAction());
         }
     }, [isOpen, dispatch]);
 
-    // Логика автовыбора карты при изменении списка карт (из кэша или после загрузки)
     useEffect(() => {
         if (cards && cards.length > 0) {
-            // Если карта уже выбрана и она существует в списке — ничего не делаем
             if (selectedMethodId && cards.find((c: any) => c.id === selectedMethodId)) return;
-
-            // Иначе выбираем дефолтную или первую попавшуюся
             const defaultCard = cards.find((c: any) => c.is_default) || cards[0];
             setSelectedMethodId(defaultCard.id);
         }
     }, [cards, selectedMethodId]);
 
-    // --- ЛОГИКА РАСЧЕТА ---
     const calculations = useMemo(() => {
         if (!order) return null;
         let { payment_flow_type, status } = order;
@@ -234,11 +227,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                                             : t('paymentMethods.yourCards', 'Ваши карты')
                                         }
                                     </h4>
-                                    {/* Индикатор обновления в фоне */}
                                     {isCardsLoading && <span style={{ fontSize: 12, color: '#A0AEC0' }}>Обновление...</span>}
                                 </div>
 
-                                {/* Если карт нет совсем и идет первая загрузка - спиннер. Иначе список. */}
                                 {isCardsLoading && cards.length === 0 ? (
                                     <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
                                         <div className={style.spinner} style={{ width: 24, height: 24, borderWidth: 2 }}></div>
@@ -271,7 +262,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
                                                     {!isActive && (
                                                         <span className={style.errorText}>
-                                                            {t(`paymentMethods.status.${card.status}`, card.status)}
+                                                            {/* FIX: Explicitly cast translation to string and provide defaultValue object */}
+                                                            {t(`paymentMethods.status.${card.status}`, { defaultValue: card.status }) as string}
                                                         </span>
                                                     )}
                                                 </div>

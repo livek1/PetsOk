@@ -95,7 +95,8 @@ const OrderResponses = () => {
         try {
             // 2. Безопасное извлечение профиля исполнителя
             // API может возвращать данные внутри .data или напрямую, обрабатываем оба варианта
-            let actorProfile = null;
+            // FIX: Explicitly type actorProfile as any to avoid TS error
+            let actorProfile: any = null;
 
             if (selectedRequest.request_type === REQUEST_TYPE.WORKER_OFFER) {
                 actorProfile = selectedRequest.sender?.data || selectedRequest.sender;

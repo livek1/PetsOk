@@ -17,11 +17,14 @@
 .modal {
     background: $white;
     width: 100%;
-    max-width: 450px;
+    max-width: 480px;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     animation: slideUp 0.3s ease-out;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes slideUp {
@@ -37,15 +40,18 @@
 }
 
 .header {
-    padding: 20px;
+    padding: 16px 20px;
     border-bottom: 1px solid $border-color-light;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: $white;
 
     h3 {
         margin: 0;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: $text-color-base;
     }
 }
 
@@ -54,6 +60,9 @@
     border: none;
     cursor: pointer;
     color: $text-color-muted;
+    padding: 4px;
+    display: flex;
+    align-items: center;
 
     &:hover {
         color: $text-color-base;
@@ -62,18 +71,56 @@
 
 .content {
     padding: 20px;
+    overflow-y: auto;
+}
+
+.loaderContainer {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid $border-color-light;
+    border-top: 3px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.section {
+    margin-top: 20px;
+
+    h4 {
+        margin: 0 0 10px 4px;
+        font-size: 0.95rem;
+        color: $text-color-secondary;
+        font-weight: 600;
+    }
 }
 
 .optionRow {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 15px;
+    padding: 14px 15px;
     border: 1px solid $border-color-light;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s;
     margin-bottom: 10px;
+    background-color: $white;
 
     &:hover {
         background: $neutral-50;
@@ -81,12 +128,29 @@
 
     &.active {
         border-color: $primary-color;
-        background: $primary-color-lightest-bg;
+        background: rgba($primary-color, 0.03);
+    }
+
+    &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background-color: $neutral-50;
+        border-color: $border-color-light;
+
+        &:hover {
+            background-color: $neutral-50;
+        }
     }
 }
 
 .rowIcon {
-    color: $primary-color;
+    color: $text-color-secondary;
+    display: flex;
+    align-items: center;
+
+    .active & {
+        color: $primary-color;
+    }
 }
 
 .rowInfo {
@@ -95,46 +159,94 @@
     flex-direction: column;
 }
 
+.cardTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .rowTitle {
     font-weight: 600;
     color: $text-color-base;
+    font-size: 0.95rem;
+
+    .active & {
+        color: color.adjust($primary-color, $lightness: -10%);
+    }
+}
+
+.defaultBadge {
+    font-size: 0.75rem;
+    color: $text-color-secondary;
+    font-weight: 400;
 }
 
 .rowSub {
-    font-size: 0.85rem;
-    color: $text-color-secondary;
+    font-size: 0.8rem;
+    color: $text-color-muted;
+    margin-top: 2px;
+}
+
+.errorText {
+    font-size: 0.75rem;
+    color: $error-500;
+    margin-top: 2px;
+    font-weight: 500;
 }
 
 .checkbox,
 .radio {
     font-weight: bold;
     color: $primary-color;
+    font-size: 1.1rem;
+    min-width: 20px;
+    text-align: center;
+    color: $border-color-medium; // Default unselected color
+
+    .active & {
+        color: $primary-color;
+    }
+}
+
+.emptyText {
+    color: $text-color-muted;
+    font-size: 0.9rem;
+    padding: 10px;
+    text-align: center;
 }
 
 .summary {
     background: $neutral-50;
-    padding: 15px;
+    padding: 16px;
     border-radius: 12px;
-    margin: 20px 0;
+    margin: 24px 0;
+    border: 1px solid $border-color-light;
 }
 
 .sumRow {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 6px;
-    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: $text-color-secondary;
 
     &.total {
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px solid $border-color-medium;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed $border-color-medium;
         font-weight: 800;
         font-size: 1.1rem;
+        color: $text-color-base;
     }
 
     &.discount {
         color: $success-500;
     }
+}
+
+.sumVal {
+    font-weight: 600;
+    color: $text-color-base;
 }
 
 .payButton {
@@ -145,31 +257,46 @@
     border: none;
     border-radius: 12px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
+    box-shadow: 0 4px 10px rgba($success-500, 0.2);
 
     &:hover:not(:disabled) {
         background: color.adjust($success-500, $lightness: -5%);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba($success-500, 0.25);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0);
     }
 
     &:disabled {
         background: $neutral-300;
+        color: $neutral-500;
         cursor: not-allowed;
+        box-shadow: none;
     }
 }
 
 .addCardBtn {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background: none;
-    border: 1px dashed $border-color-medium;
+    border: 1px dashed $primary-color;
     border-radius: 10px;
     color: $primary-color;
     cursor: pointer;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+    margin-top: 10px;
 
     &:hover {
-        background: $neutral-50;
+        background: rgba($primary-color, 0.05);
     }
 }

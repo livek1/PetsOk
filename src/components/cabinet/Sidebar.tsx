@@ -1,3 +1,4 @@
+// --- File: src/components/cabinet/Sidebar.tsx ---
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -21,10 +22,14 @@ const Icons = {
     BecomeSitter: () => (
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            {/* Маленький плюсик внутри или рядом, чтобы показать действие "Добавить" */}
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v4m-2-2h4" />
         </svg>
     ),
+    Plus: () => (
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+    )
 };
 
 interface SidebarProps {
@@ -51,8 +56,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     // Меню для Ситтера
     const sitterLinks = [
         { to: '/cabinet/sitter-dashboard', label: t('cabinet.sitterDashboard', 'Панель ситтера'), icon: Icons.Home },
-        { to: '/cabinet/sitter-jobs', label: t('cabinet.sitterJobs', 'Мои работы'), icon: Icons.Briefcase },
-        // НОВЫЙ ПУНКТ:
         { to: '/cabinet/sitter-settings', label: t('sitterSettings.title', 'Настройки исполнителя'), icon: Icons.Settings },
     ];
 
@@ -69,6 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 <nav className={style.navLinks}>
+                    {/* Секция Ситтера (если есть роль) */}
                     {isSitter && (
                         <>
                             <div style={{ padding: '0 16px', marginBottom: '8px', fontSize: '12px', color: '#999', fontWeight: 600, textTransform: 'uppercase' }}>
@@ -80,13 +84,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                     {link.label}
                                 </NavLink>
                             ))}
-                            <div style={{ height: '1px', background: '#eee', margin: '16px 0' }}></div>
+                            <div style={{ height: '1px', background: '#eee', margin: '20px 0' }}></div>
                         </>
                     )}
 
+                    {/* Секция Клиента */}
                     <div style={{ padding: '0 16px', marginBottom: '8px', fontSize: '12px', color: '#999', fontWeight: 600, textTransform: 'uppercase' }}>
                         {t('cabinet.modeClient', 'Клиент')}
                     </div>
+
+                    {/* === НОВАЯ КНОПКА: СОЗДАТЬ ЗАКАЗ === */}
+                    <NavLink
+                        to="/cabinet/orders/create"
+                        className={style.createOrderBtn}
+                        onClick={onClose}
+                    >
+                        <Icons.Plus />
+                        <span>{t('orders.createOrder', 'Создать заказ')}</span>
+                    </NavLink>
+                    {/* =================================== */}
+
                     {clientLinks.map(link => (
                         <NavLink key={link.to} to={link.to} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`} onClick={onClose}>
                             <link.icon />
@@ -94,10 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         </NavLink>
                     ))}
 
-                    {/* 
-                       ВАЖНО: Если пользователь не ситтер, показываем ссылку на Визард (внутренний роут),
-                       а не на лендинг.
-                    */}
+                    {/* Кнопка "Стать ситтером" (внизу) для тех, кто еще не ситтер */}
                     {!isSitter && (
                         <NavLink
                             to="/cabinet/become-sitter"
@@ -123,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <h4>{user?.name || user?.email}</h4>
                         <span>{isSitter ? t('userRoles.sitter', 'Ситтер') : 'Клиент'}</span>
                     </div>
-                    <div className={style.logoutBtn} onClick={handleLogout} title={t('profile.logout', 'Выйти')}>
+                    <div className={style.logoutBtn} onClick={handleLogout} title={t('profile.logout.confirmButton', 'Выйти')}>
                         <Icons.LogOut />
                     </div>
                 </div>

@@ -1,121 +1,158 @@
 @use '../../../style/variables' as *;
+@use 'sass:color';
+
+$primary-color: #3598FE;
+$bg-color: #F7F9FC;
+$card-bg: #FFFFFF;
+$text-main: #1A202C;
+$text-secondary: #718096;
+$border-color: #E2E8F0;
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 20px;
+    background-color: $bg-color;
+    min-height: 100vh;
+}
+
+.loader {
+    text-align: center;
+    padding: 40px;
+    color: $text-secondary;
+}
 
 .headerRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: $space-6;
+    margin-bottom: 24px;
 
     h1 {
-        font-family: $font-family-headings;
-        font-size: 1.75rem;
-        font-weight: $font-weight-bold;
-        color: $text-color-base;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        color: $text-main;
         margin: 0;
     }
 }
 
 .addButton {
-    background-color: $primary-color;
-    color: $white;
-    padding: 10px 20px;
-    border-radius: $border-radius-md;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background-color 0.2s;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 8px;
-
-    &:hover {
-        background-color: $primary-color-darker;
-    }
-}
-
-.petsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: $space-6;
-}
-
-.petCard {
-    background-color: $white;
-    border: 1px solid $border-color-light;
-    border-radius: $border-radius-lg;
-    padding: $space-5;
-    display: flex;
-    align-items: center;
-    gap: $space-4;
+    background-color: $primary-color;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 12px;
     text-decoration: none;
-    color: inherit;
-    transition: all 0.2s;
-    box-shadow: $box-shadow-sm;
+    font-weight: 600;
+    transition: background 0.2s;
 
     &:hover {
-        transform: translateY(-4px);
-        box-shadow: $box-shadow-md;
-        border-color: $primary-color-lighter;
-    }
-}
-
-.petAvatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    background-color: $neutral-100;
-    flex-shrink: 0;
-}
-
-.petAvatarPlaceholder {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: $primary-50;
-    color: $primary-color;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.petInfo {
-    flex-grow: 1;
-    overflow: hidden;
-
-    h3 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin: 0 0 4px 0;
-        color: $text-color-base;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    p {
-        margin: 0;
-        font-size: 0.9rem;
-        color: $text-color-secondary;
-    }
-
-    .petMeta {
-        font-size: 0.85rem;
-        color: $text-color-muted;
-        margin-top: 4px;
+        background-color: color.adjust($primary-color, $lightness: -5%);
     }
 }
 
 .emptyState {
     text-align: center;
     padding: 60px 20px;
-    background: $white;
-    border-radius: $border-radius-xl;
-    border: 1px dashed $border-color-medium;
-    color: $text-color-secondary;
+    background: $card-bg;
+    border-radius: 20px;
+    border: 1px dashed $border-color;
+
+    .emptyIcon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.5;
+    }
 
     h3 {
-        margin-top: 20px;
-        font-size: 1.2rem;
+        font-size: 18px;
+        font-weight: 700;
+        color: $text-main;
+        margin-bottom: 8px;
     }
+
+    p {
+        color: $text-secondary;
+    }
+}
+
+.petsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.petCard {
+    background: $card-bg;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid transparent;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border-color: $border-color;
+    }
+}
+
+.petAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    object-fit: cover;
+    background-color: $border-color;
+}
+
+.petAvatarPlaceholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    background-color: #F0F2F5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #A0AEC0;
+}
+
+.petInfo {
+    flex: 1;
+    overflow: hidden;
+
+    h3 {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 0 0 4px 0;
+        color: $text-main;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.petBreed {
+    font-size: 14px;
+    color: $text-main;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.petMeta {
+    font-size: 13px;
+    color: $text-secondary;
+    margin: 0;
 }

@@ -147,36 +147,183 @@ i18n.use(initReactI18next).init({
   resources: {
     ru: {
       translation: {
-        // --- ОБЩИЕ ---
-        loading: "Загрузка...",
-        common: {
-          continue: "Продолжить",
-          confirm: "Подтвердить",
-          close: "Закрыть",
-          month: "мес",
-          save: "Сохранить",
-          cancel: "Отмена",
-          exit: "Выйти",
-          delete: "Удалить",
-          add: "Добавить",
-          back: "Назад",
-          edit: "Редактировать",
-          male: "Мальчик",
-          female: "Девочка",
-          yes: "Да",
-          no: "Нет",
-          unknown: "Не знаю",
-          unknownBreed: "Порода не указана",
-          noInfo: "Нет информации",
-          noPhotos: "Нет фото",
-          years_short: "л.",
-          months_short: "мес.",
-          male_people: "Мужской",
-          female_people: "Женский",
-          select: "Выбрать",
-          service: "Услуга",
-        },
-        recomLang: "Рекомендуемые языки и регионы",
+        // --- ТОП УРОВЕНЬ (Кнопки, Лейблы) ---
+        "Add": "Добавить",
+        "Back": "Назад",
+        "Confirm": "Подтвердить",
+        "Info": "Информация",
+        "Next": "Далее",
+        "Warning": "Внимание",
+        "cancel": "Отмена",
+        "delete": "Удалить",
+        "retry": "Повторить",
+        "saved_to_gallery": "Сохранено в галерею",
+        "LabelSearch": "Ищу ...",
+        "LoginSignUp": "Войти или Зарегистрироваться",
+        "PhoneVerification": "Проверка кода",
+        "RegistrationForm": "Регистрация",
+        "Login": "Войти",
+        "AddressPlaceholder": "Введите адрес",
+        "CacheClearPartialError": "Не удалось полностью очистить кеш",
+        "FailedToDeleteSpecificMedia": "Не удалось удалить выбранный медиафайл",
+        "FailedToDeleteSpecificMediaNoReason": "Ошибка удаления медиафайла",
+        "FailedToFetchUserProfile": "Не удалось загрузить профиль пользователя",
+        "FailedToLoadProfile": "Ошибка загрузки профиля",
+        "NoServicesToConfigureForYourRole": "Нет доступных услуг для настройки вашей роли",
+        "NoWorkerRolesMessageServiceSettings": "У вас нет ролей исполнителя для настройки услуг",
+        "SomethingWentWrong": "Что-то пошло не так",
+        "Success": "Успешно",
+        "for_30_min_walk": "за 30 мин прогулки",
+        "for_60_min_walk": "за 60 мин прогулки",
+        "per_hour": "за час",
+        "per_day": "за день",
+        "per_night": "за ночь",
+        "per_visit": "за визит",
+        "Cat": "Кошка",
+        "Dog": "Собака",
+        "CountryCityError": "Ошибка получения данных о стране или городе",
+        "ErrorSelectDogSizeForWalker": "Выгульщику необходимо выбрать хотя бы один размер собаки",
+        "ErrorSomethingWentWrong": "Что-то пошло не так",
+        "ErrorSubmissionFailed": "Не удалось отправить данные",
+        "PET_BIG_NAME": "Большой",
+        "PET_BIG_SIZE": "20 - 40 кг",
+        "PET_HUGE_NAME": "Огромный",
+        "PET_HUGE_SIZE": "Более 40 кг",
+        "PET_MEDIUM_NAME": "Средний",
+        "PET_MEDIUM_SIZE": "10 - 20 кг",
+        "PET_MINI_NAME": "Мини",
+        "PET_MINI_SIZE": "До 5 кг",
+        "PET_SMALL_NAME": "Маленький",
+        "PET_SMALL_SIZE": "5 - 10 кг",
+        "ResetPassword": "Сбросить пароль",
+        "SitterDescription": "Принимайте питомцев у себя дома",
+        "SitterRole": "Ситтер",
+        "Title": "Заголовок",
+        "UnexpectedError": "Непредвиденная ошибка",
+        "ValidationError": "Ошибка валидации",
+        "WalkerDescription": "Гуляйте с собаками в вашем районе",
+        "WalkerRole": "Выгульщик",
+        "ProfilePendingModeration": "Профиль на модерации",
+        "ProfileRejected": "Профиль отклонен",
+        "ModeratorReason": "Причина модератора",
+        "MaximumMediaLimitReached": "Достигнут максимальный лимит медиафайлов ({{count}}).",
+        "TitleRequired": "Заголовок обязателен.",
+        "TitleTooLong": "Заголовок не может превышать {{maxLength}} символов.",
+        "DescriptionRequired": "Описание обязательно.",
+        "DescriptionTooLong": "Описание не может превышать {{maxLength}} символов.",
+        "InvalidCareExperience": "Пожалуйста, введите корректную цифру опыта (0-99 лет).",
+        "CannotSaveWhilePending": "Нельзя сохранить профиль, пока он на модерации.",
+        "FailedToUpdateProfile": "Не удалось обновить профиль.",
+        "error_loading_media": "Ошибка загрузки медиа",
+        "error_unknown_media_type": "Ошибка: Неизвестный тип медиа",
+        "error_downloading_media": "Ошибка загрузки медиа",
+        "error_saving": "Ошибка сохранения",
+        "Description": "Описание",
+        "Address": "Адрес",
+        "CareExperienceYears": "Опыт ухода (лет)",
+        "ChildrenUnderTwelvePresent": "Есть ли дети до 12 лет?",
+        "ConstantSupervisionRequired": "Требуется постоянный присмотр?",
+        "ErrorAlert": "Ошибка",
+        "RequestSuccess": "Ваш запрос успешно создан!",
+        "SuccessAlert": "Успех",
+        "ServiceSettingsTitle": "Настройки услуг",
+        "ServiceSettingsDescription": "Настройте предлагаемые вами услуги и ваши тарифы. Клиентам будут видны только активные услуги.",
+        "BasePrice": "Базовая цена",
+        "SelectUnitPlaceholder": "Выберите единицу...",
+        "PricePerAdditionalPet": "Цена за доп. питомца",
+        "MaxPets": "Макс. питомцев",
+        "WalkerMaxPetsInfo": "Выгульщики могут выгуливать только одного питомца за раз.",
+        "AdditionalPetPriceInfo": "Цена за каждого дополнительного питомца сверх первого. Оставьте пустым, если не применимо.",
+        "MaxPetsInfo": "Максимальное количество питомцев, которых вы готовы принять одновременно (кроме выгула).",
+        "SaveSettings": "Сохранить настройки",
+        "ErrorLoadingSettings": "Ошибка загрузки настроек. Пожалуйста, попробуйте снова.",
+        "SettingsUpdatedSuccess": "Настройки успешно обновлены!",
+        "Dogs": "Собаки",
+        "Cats": "Кошки",
+        "OptionalPlaceholder": "Необязательно",
+        "NoServicesAvailableTitle": "Нет доступных услуг",
+        "EditYourProfile": "Редактировать ваш профиль",
+        "UnsavedChangesTitle": "Несохраненные изменения",
+        "UnsavedChangesMessage": "У вас есть несохраненные изменения. Вы уверены, что хотите уйти?",
+        "Discard": "Отменить изменения",
+        "Stay": "Остаться",
+        "New": "Новый",
+        "LoadingProfile": "Загрузка профиля...",
+        "YourPhotosAndVideos": "Ваши фото и видео",
+        "NoMediaYet": "Пока нет фото или видео.",
+        "AddFirstMedia": "Добавьте свое первое фото или видео!",
+        "DragAndDropToSortMediaNew": "Перетащите, чтобы изменить порядок медиа.",
+        "FirstPhotoIsAvatar": "Первое фото будет вашим аватаром профиля.",
+        "VideoDurationLimitInfo": "Видео ограничены {{duration}} секундами.",
+        "ProfileModerationNotice": "Ваш профиль в настоящее время проходит модерацию. Редактирование временно отключено.",
+        "ProfileMainInfo": "Основная информация профиля",
+        "TitlePlaceholder": "Например, Любящий выгульщик собак в центре города",
+        "DescriptionPlaceholder": "Расскажите клиентам о себе, своем опыте и почему вы любите питомцев...",
+        "AddressUpdateHelp": "Ваш адрес будет использоваться для расчета расстояний до заказов.",
+        "AdditionalInfo": "Дополнительная информация",
+        "CareExperienceHelp": "Сколько лет у вас опыта ухода за питомцами?",
+        "ChildrenUnderTwelveHelp": "Живут ли в вашем доме дети до 12 лет?",
+        "ConstantSupervisionHelp": "Обычно ли вы дома и можете обеспечить постоянный присмотр?",
+        "UploadingMedia": "Загрузка медиа",
+        "SaveProfile": "Сохранить профиль",
+        "ProfileSentToModeration": "Профиль обновлен и отправлен на модерацию.",
+        "ProfileSavedSuccess": "Профиль успешно сохранен!",
+        "permission_required": "Требуется разрешение",
+        "CacheClearConfirm": "Вы уверены, что хотите очистить кеш? Это может потребовать повторной загрузки некоторых данных.",
+        "Clear": "Очистить",
+        "CacheClearedSuccess": "Кеш успешно очищен.",
+        "CacheClearError": "Не удалось очистить кеш.",
+        "file_uploaded_success": "Файл '{{fileName}}' успешно загружен.",
+        "file_upload_error": "Ошибка загрузки файла '{{fileName}}'",
+        "TabLabelServices": "Услуги",
+        "TabLabelMore": "Ещё",
+        "TabLabelInbox": "Чат",
+        "TabLabelYourPets": "Мои питомцы",
+        "TabLabelYourBalance": "Баланс",
+        "TabLabelOrders": "Заказы",
+        "TabLabelWorkerOrders": "Работа",
+        "TypeServiceBoarding": "Передержка",
+        "TypeServiceHouseSitting": "Присмотр на дому",
+        "Boarding": "Передержка",
+        "HouseSitting": "Присмотр на дому",
+        "DropInVisit": "Визит на дом",
+        "DoggyDayCare": "Дневная няня",
+        "Walking": "Выгул",
+        "Step2RoleSelectionTitle": "Шаг 2: Выберите вашу роль",
+        "SelectAtLeastOneRole": "Выберите хотя бы одну роль.",
+        "RecommendedPrice": "Рекомендуемая цена: {{price}} {{currency}}",
+        "AllowedPetTypes": "Допустимые типы питомцев",
+        "AllowedDogSizes": "Допустимые размеры собак",
+        "AllowedCatSizes": "Допустимые размеры кошек",
+        "ThisCanBeChangedLater": "Эти настройки можно будет изменить позже.",
+        "NextButton": "Далее",
+        "Step3ServiceSettingsTitle": "Настройки услуг",
+        "Step3ServiceSettingsDescription": "Укажите детали для каждой услуги, которую вы хотите предоставлять. Вы можете изменить эти настройки позже в своем профиле.",
+        "GoToTestsButton": "Перейти к тестам",
+        "LoadingSettings...": "Загрузка настроек...",
+        "LoadingServiceDetails": "Загрузка деталей услуги: {{service}}...",
+        "RecommendedPriceWithValue": "Рекомендованная цена: {{price}} {{currency}} {{unit}}",
+        "YouCanSetYourOwnPrice": "Вы можете указать свою цену.",
+        "SelectDurationPlaceholder": "Выберите длительность",
+        "Error": "Ошибка",
+        "ErrorLoadingApplicationStatus": "Не удалось загрузить статус заявки.",
+        "ErrorLoadingAvailableServices": "Не удалось загрузить доступные услуги.",
+        "ErrorLoadingServiceDetails": "Не удалось загрузить детали услуги. Пожалуйста, попробуйте еще раз.",
+        "ErrorLoadingServiceDetailsFor": "Не удалось загрузить детали для услуги: {{service}}. Пожалуйста, обновите.",
+        "SettingsSavedSuccessfully": "Настройки успешно сохранены!",
+        "CannotActivateServiceTestNotPassedOrNotDefined": "Невозможно активировать услугу",
+        "TestNotPassedOrNotDefinedForActivation": "Тест не пройден или не определен для активации этой услуги.",
+        "ErrorEnterValidPositivePriceFor": "Пожалуйста, укажите корректную положительную цену для",
+        "ErrorSelectUnitFor": "Пожалуйста, выберите единицу измерения для",
+        "ErrorEnterValidAdditionalPrice": "Пожалуйста, укажите корректную цену за дополнительного питомца для",
+        "ErrorEnterValidPositiveMaxPets": "Пожалуйста, укажите корректное положительное число для макс. питомцев для",
+        "ErrorSelectPetTypeFor": "Пожалуйста, выберите хотя бы один тип питомца для",
+        "ErrorSelectDogSizeFor": "Пожалуйста, выберите хотя бы один размер собаки для",
+        "ErrorSelectCatSizeFor": "Пожалуйста, выберите хотя бы один размер кошки для",
+        "ErrorActivateAtLeastOneServiceWhereTestPassed": "Пожалуйста, активируйте хотя бы одну услугу, для которой пройден тест и указана цена.",
+        "TestRequiredForActivation": "Для активации этой услуги требуется пройти тест.",
+        "RetakeTestPrompt": "Пройти тест повторно?",
+        "CompleteTestPrompt": "Завершить тест",
 
         // --- SEO МЕТА-ТЕГИ ---
         seo: {
@@ -238,7 +385,7 @@ i18n.use(initReactI18next).init({
             daycare: "Дневной присмотр",
             houseSitting: "Присмотр на дому",
             puppyNanny: "Няня для щенка",
-            dropIn: "Визиты", // <--- ДОБАВЛЕНО ЭТО ПОЛЕ
+            dropIn: "Визиты",
           },
           logoAriaLabel: 'PetsOk на Главную',
           changeLanguageAriaLabel: 'Сменить язык',
@@ -248,88 +395,330 @@ i18n.use(initReactI18next).init({
           mobileMenuHeading: 'Мобильное меню'
         },
 
-        // --- ПОПАП ПОЛЬЗОВАТЕЛЯ ---
-        profile: {
-          profile: "Профиль",
-          settings: "Настройки",
-          support: "Помощь",
-          help: "Помощь и поддержка",
-          logIn: "Войти",
-          signIn: "Регистрация",
-          logInTitle: "Войдите или зарегистрируйтесь",
-          logout: "Выйти",
-          email: "Email",
-          password: "Пароль",
-          btn: "Войти",
-          forgot: "Забыли свой пароль?",
-          forgotAirbnb: "Забыли пароль?",
-          links: "Не забудьте подписаться на нас",
-          deletion: {
-            confirmMessage: "Вы уверены, что хотите удалить аккаунт? Это действие необратимо.",
-            successMessage: "Запрос на удаление отправлен.",
-            statusRequested: "Запрошено удаление"
-          }
-        },
-        userRoles: {
-          sitter: "Ситтер",
-        },
-
-        // --- КАБИНЕТ ---
-        cabinet: {
-          title: "Личный кабинет",
-          profile: "Мой профиль",
-          pets: "Мои питомцы",
-          orders: "Мои заказы",
-          wallet: "Кошелек",
-          chat: "Сообщения",
-          sitterDashboard: "Панель ситтера",
-          sitterJobs: "Мои работы",
-          modeSitter: "Исполнитель",
-          modeClient: "Клиент"
-        },
-
-        // --- РЕДАКТИРОВАНИЕ ПРОФИЛЯ ---
-        editProfileScreen: {
-          header: { title: "Мой профиль" },
-          avatar: { hint: "Нажмите на фото, чтобы изменить" },
-          sections: {
-            basicInfo: { title: "Личные данные" },
-            contactInfo: { title: "Контакты и адрес" },
-            emergencyContact: { title: "Доверенное лицо" }
+        // --- COMMON ---
+        loading: "Загрузка...",
+        common: {
+          add: "Добавить",
+          ageCapital: "Возраст",
+          backToProfile: "Вернуться в профиль",
+          catsFriendly: "Ладит с кошками",
+          clientPromoDiscount: "Скидка клиента",
+          currencyDefaultSymbol: "₽",
+          dateNotSet: "Дата не выбрана",
+          days: "Дней",
+          default: "По умолчанию",
+          dogsFriendly: "Ладит с собаками",
+          duration: "Длительность",
+          errorConfig: "Ошибка конфигурации",
+          errorOccurred: "Произошла ошибка",
+          errorUnexpected: "Непредвиденная ошибка",
+          expired: "Истек",
+          female: "Девочка",
+          genderCapital: "Пол",
+          info: "Инфо",
+          information: "Информация",
+          kidsFriendly: "Ладит с детьми",
+          later: "Позже",
+          male: "Мальчик",
+          min: "мин",
+          minShort: "м.",
+          months: "Месяцев",
+          months_other: "месяцев",
+          months_short: "мес.",
+          navigateToSubscriptionMessage: "Перейдите к подписке, чтобы узнать больше.",
+          navigateToSubscriptionTitle: "Подписка",
+          nights: "Ночей",
+          noPets: "Нет питомцев",
+          noPetsInfo: "Питомцы не добавлены",
+          offerPrice: "Цена предложения",
+          orderDetails: "Детали заказа",
+          orderTotal: "Итого по заказу",
+          perWeek: "за неделю",
+          petSitter: "Пет-ситтер",
+          price: "Цена",
+          promoApplied: "Промокод применен",
+          promoCode: "Промокод",
+          rate: "Ставка",
+          repeatOrdersShort: "Повторные заказы",
+          restart: "Перезапустить",
+          reviews: "Отзывы",
+          reviewsShort: "Отзывы",
+          revokeOffer: "Отозвать предложение",
+          serviceCost: "Стоимость услуги",
+          sizeCapital: "Размер",
+          startedAt: "Начато в",
+          statusUpdate: "Обновление статуса",
+          stayingHomeAlone: "Остается один",
+          submitAndContinue: "Отправить и продолжить",
+          success: "Успех",
+          system: "Система",
+          testFailed: "Тест не пройден",
+          timeLeft: "Осталось времени",
+          today: "Сегодня",
+          tomorrow: "Завтра",
+          total: "Итого",
+          totalPrice: "Общая цена",
+          totalToPay: "К оплате",
+          tryAgain: "Попробовать снова",
+          unknownClient: "Неизвестный клиент",
+          viewPets: "Посмотреть питомцев",
+          visitsPerDayCount: "Визитов в день",
+          waitlistTitle: "Лист ожидания",
+          warning: "Предупреждение",
+          years: "Лет",
+          years_other: "лет",
+          years_short: "г.",
+          yesCancelOffer: "Да, отозвать предложение",
+          login: "Войти",
+          signUp: "Регистрация",
+          save: "Сохранить",
+          error: "Ошибка",
+          back: "Назад",
+          country: "Страна",
+          city: "Город",
+          search: "Поиск...",
+          searchCity: "Поиск города...",
+          selectCountry: "Выберите страну",
+          selectCountryFirst: "Сначала выберите страну",
+          selectCity: "Выберите город",
+          noCountriesAvailable: "Нет доступных стран",
+          noCitiesFound: "Города не найдены / Выберите страну",
+          enterCityName: "Введите название города",
+          next: "Далее",
+          loadingCountries: "Загрузка стран...",
+          thankYou: "Спасибо!",
+          backToHome: "На главный экран",
+          errorSubmitting: "Ошибка отправки. Пожалуйста, попробуйте снова.",
+          loading: "Загрузка...",
+          you: "Вы",
+          unknownUser: "Неизвестный пользователь",
+          yesterday: "Вчера",
+          continue: "Продолжить",
+          retry: "Повторить",
+          unknown: "Неизвестно",
+          errorLoadingStatus: "Не удалось загрузить ваш статус. Проверьте соединение и попробуйте снова.",
+          client: "Клиент",
+          km: "км",
+          distanceKm: "{{distance}} км",
+          from: "С",
+          recurring: "Регулярно",
+          details: "Детали",
+          errorLoadingData: "Ошибка загрузки данных",
+          decline: "Отклонить",
+          minutesShort: "мин",
+          promoCodeApplied: "Промокод применен",
+          priceAfterDiscount: "Цена со скидкой",
+          pricePerUnit: "Цена за {{unit}}",
+          pricePerWeek: "Цена за неделю",
+          promoCodeActive: "Промокод активен",
+          platformFee: "Комиссия платформы",
+          fullOrderDetails: "Полная информация о заказе",
+          pets: "Питомцы",
+          notes: "Заметки",
+          messageOptional: "Сообщение (необязательно)",
+          processing: "Обработка...",
+          noRatingShort: "Новый",
+          available: "Доступно",
+          totalPerWeek: "Итого / неделя",
+          paymentFlow: {
+            "platformPrepay": "Предоплата бронирования",
+            "platformFeeOnly": "Оплата через приложение",
+            "directToWorker": "Напрямую исполнителю",
+            "platformPrepayDescriptionEstimate": "Вы вносите предоплату через приложение для подтверждения бронирования.",
+            "platformFeeOnlyDescriptionEstimate": "Вы оплачиваете часть суммы через приложение для подтверждения заказа. Остаток — исполнителю.",
+            "directToWorkerDescription": "Вы оплачиваете полную стоимость напрямую исполнителю."
           },
-          labels: {
-            firstName: "Имя",
-            lastName: "Фамилия",
-            gender: "Пол",
-            birthDate: "Дата рождения",
-            phone: "Телефон",
-            address: "Адрес",
-            addressDetails: "Детали адреса",
-            emergencyName: "Имя",
-            emergencyPhone: "Телефон"
-          },
-          placeholders: {
-            firstName: "Иван",
-            lastName: "Иванов"
-          },
-          info: {
-            emergency: { text: "Эти данные нужны нам исключительно для экстренных ситуаций." }
-          },
-          flash: {
-            updateSuccess: "Профиль успешно обновлен!",
-            updateFailed: "Ошибка обновления"
-          }
-        },
-
-        // --- МОДАЛЬНОЕ ОКНО ЯЗЫКА ---
-        languageModal: {
-          selectLanguage: "Выберите язык",
+          loadingOrders: "Загрузка заказов...",
+          noPetsInOrder: "В этом заказе нет питомцев.",
+          unknownPet: "Неизвестный питомец",
+          sterilized: "Стерилизован(а)",
+          vaccinated: "Вакцинирован(а)",
+          notAvailableShort: "Н/Д",
+          openingChatWith: "Открытие чата с {{name}}...",
+          contactSupport: "Связаться с поддержкой",
+          pro: "PRO",
+          monthShort: "мес.",
+          perYearShortV2: "/год",
+          perMonthShortV2: "/мес.",
+          weekSmall: "неделя",
+          nightSmall: "ночь",
+          visitSmall: "визит",
+          daySmall: "день",
+          unitSmall: "ед.",
+          dateFormatNoYear: "D MMM",
+          dateFormatFull: "DD.MM.YYYY",
+          readMore: "Читать далее",
+          serviceStartDate: "Дата начала услуги",
+          notSpecified: "Не указано",
+          visitDetails: "Детали визита",
+          timezone: "Часовой пояс",
+          phone: "Телефон",
+          address: "Адрес",
+          addressDetails: "Детали адреса",
+          openInGoogleMaps: "Google Карты",
+          openInYandexNavi: "Яндекс Навигатор",
+          openIn2GIS: "2ГИС",
+          petDetails: "Детали питомца",
+          type: "Тип",
+          breed: "Порода",
+          size: "Размер",
+          gender: "Пол",
+          ageNewborn: "Новорожденный",
+          photos: "Фотографии",
+          infoForSitting: "Инфо для присмотра",
+          infoForWalking: "Инфо для выгула",
+          infoForBoarding: "Инфо для передержки",
+          unknownType: "Неизвестный тип",
+          yesConfirm: "Да, подтвердить",
+          chat: "Чат",
+          notNow: "Не сейчас",
+          enable: "Включить",
+          totalForService: "Стоимость услуги",
+          payoutForService: "Выплата за услугу",
+          ok: "OK",
+          goBack: "Назад",
+          refresh: "Обновить",
+          age: "Возраст",
+          cancel: "Отмена",
+          cancelOffer: "Отменить предложение",
+          confirm: "Подтвердить",
+          dates: "Даты",
+          last: "Последний",
+          loadMore: "Загрузить еще",
+          monthsShort: "мес.",
+          no: "Нет",
+          service: "Услуга",
+          todayAt: "Сегодня в",
+          tomorrowAt: "Завтра в",
+          unknownBreed: "Неизвестная порода",
+          visitShort: "визит",
+          visits: "визитов",
+          timesPerDay: "{{count}} раз(а) в день",
+          durationMinutes: "длительность визита/выгула {{count}} мин.",
+          yearsShort: "г.",
+          yes: "Да",
+          yesCancel: "Да, отменить",
+          yesterdayAt: "Вчера в",
+          select: "Выбрать",
           close: "Закрыть",
-          allLanguages: "Все языки и регионы",
-          noLanguages: "Список языков пуст."
+          month: "мес",
+          exit: "Выйти",
+          edit: "Редактировать",
+          male_people: "Мужской",
+          female_people: "Женский",
+          noInfo: "Нет информации",
+          noPhotos: "Нет фото",
         },
 
-        // --- МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ И РЕГИСТРАЦИИ ---
+        // --- AUTH & REGISTRATION ---
+        error: {
+          "appleLoginFailed": "Ошибка входа через Apple",
+          "appleLoginFailedBackend": "Ошибка сервера при входе Apple",
+          "appleTokenMissing": "Токен Apple отсутствует",
+          "googleLoginCancelled": "Вход через Google отменен",
+          "googleLoginFailed": "Ошибка входа через Google",
+          "googleLoginFailedBackend": "Ошибка сервера при входе Google",
+          "googleTokenMissing": "Токен Google отсутствует",
+          "loginFailed": "Не удалось войти",
+          "passwordRequired": "Введите пароль",
+          "networkConnection": "Нет соединения с интернетом. Проверьте сеть.",
+          "invalidCredentials": "Неверный логин или пароль",
+          "tooManyAttempts": "Слишком много попыток входа. Попробуйте через {{seconds}} сек.",
+          "userNotFound": "Пользователь не найден",
+          "userExists": "Пользователь с такими данными уже существует",
+          "fieldRequired": "Это поле обязательно",
+          "invalidEmail": "Некорректный формат Email",
+          "invalidPhoneNumber": "Некорректный номер телефона",
+          "minLengthPassword": "Пароль слишком короткий (минимум 6 символов)",
+          "passwordsDoNotMatch": "Пароли не совпадают",
+          "generic": "Произошла ошибка. Попробуйте позже.",
+          "missingContactInfo": "Не указан телефон или Email"
+        },
+        auth: {
+          "pleaseLogIn": "Пожалуйста, войдите",
+          "loginButton": "Войти",
+          "noAccountPrompt": "У вас нет аккаунта?",
+          "signUpButton": "Регистрация"
+        },
+        login: {
+          "mainTitle": "Вход",
+          "subtitle": "Введите email или телефон, чтобы погрузиться в мир заботы о питомцах",
+          "labelEmail": "Ваш Email",
+          "labelPhone": "Ваш Телефон",
+          "placeholderEmail": "Введите ваш email",
+          "placeholderPhone": "Введите номер телефона",
+          "continueButton": "Продолжить",
+          "orDivider": "ИЛИ",
+          "continueWithGoogle": "Продолжить с Google",
+          "continueWithApple": "Продолжить с Apple",
+          "agreementPrefix": "Нажимая 'Продолжить', вы соглашаетесь с нашими",
+          "termsLink": "Условиями использования",
+          "footer": "PetsOk - Забота в каждом клике",
+          "searchCountryPlaceholder": "Поиск страны",
+          "noCountryFound": "Страна не найдена",
+          "loggingIn": "Вход..."
+        },
+        passwordScreen: {
+          "title": "Введите ваш пароль",
+          "subtitlePhone": "Для входа с телефоном {{phone}}",
+          "subtitleEmail": "Для входа с email {{email}}",
+          "label": "Пароль",
+          "placeholder": "••••••••••",
+          "loginButton": "Войти",
+          "forgotPassword": "Забыли пароль?",
+          "footer": "Мы заботимся о безопасности ваших данных"
+        },
+        verifyCode: {
+          "titleSms": "Подтверждение телефона",
+          "titleEmail": "Подтверждение Email",
+          "subtitlePhone": "Мы отправили 4-значный код на номер:\n{{phone}}",
+          "subtitleEmail": "Мы отправили 4-значный код на адрес:\n{{email}}",
+          "resendTimer": "Повторно отправить код через {{time}} сек.",
+          "resendAction": "Отправить код повторно",
+          "codeSentSuccess": "Код подтверждения успешно отправлен!",
+          "errorSendingCode": "Не удалось отправить код. Попробуйте позже.",
+          "errorCheckingCode": "Ошибка проверки кода. Попробуйте снова.",
+          "errorInvalidCode": "Неверный код подтверждения"
+        },
+        registration: {
+          "title": "Регистрация",
+          "subtitle": "Заполните данные для создания аккаунта",
+          "nameLabel": "Ваше имя",
+          "namePlaceholder": "Введите имя",
+          "passwordLabel": "Создайте пароль",
+          "passwordPlaceholder": "Введите пароль",
+          "confirmPasswordLabel": "Подтвердите пароль",
+          "confirmPasswordPlaceholder": "Повторите пароль",
+          "passwordHint": "Пароль должен быть не менее 6 символов",
+          "registerButton": "Зарегистрироваться",
+          "agreementPrefix": "Нажимая 'Зарегистрироваться', вы соглашаетесь с нашими",
+          "termsLink": "Условиями использования",
+          "footer": "PetsOk - С любовью к вашим питомцам",
+          "genericSuccessNoToken": "Регистрация почти завершена. Пожалуйста, войдите в систему.",
+          "genericError": "Ошибка регистрации. Попробуйте позже.",
+          "agreeToTermsPrefixAirbnb": "Нажимая «Принять и продолжить», я принимаю ",
+          "termsAndConditionsAirbnb": "Условия предоставления услуг",
+          "paymentTermsAirbnb": "Политику обработки платежей",
+          "agreeToTermsSuffixAirbnb": ", и подтверждаю ознакомление с ",
+          "privacyPolicyMain": "Политикой конфиденциальности",
+          "submitting": "Регистрация...",
+          "submitButtonAirbnb": "Принять и продолжить",
+        },
+        resetPassword: {
+          "title": "Новый пароль",
+          "subtitle": "Установите новый пароль для вашего аккаунта",
+          "passwordLabel": "Новый пароль",
+          "passwordPlaceholder": "Введите новый пароль",
+          "confirmPasswordLabel": "Подтвердите пароль",
+          "confirmPasswordPlaceholder": "Повторите новый пароль",
+          "resetButton": "Сохранить пароль",
+          "footer": "PetsOk - Безопасность прежде всего",
+          "success": "Пароль успешно изменен!",
+          "genericError": "Не удалось сбросить пароль. Попробуйте позже.",
+          "resetting": "Сброс...",
+          "setNewPasswordButton": "Установить пароль",
+          "notImplemented": "Функционал сброса пароля в разработке."
+        },
         authModal: {
           defaultTitle: 'Аутентификация',
           contactEntry: { titleAirbnb: "Добро пожаловать в PetsOk" },
@@ -361,29 +750,30 @@ i18n.use(initReactI18next).init({
           newPasswordLabel: "Новый пароль",
           confirmPasswordLabel: "Подтвердите новый пароль"
         },
-        registration: {
-          agreeToTermsPrefixAirbnb: "Нажимая «Принять и продолжить», я принимаю ",
-          termsAndConditionsAirbnb: "Условия предоставления услуг",
-          paymentTermsAirbnb: "Политику обработки платежей",
-          agreeToTermsSuffixAirbnb: ", и подтверждаю ознакомление с ",
-          privacyPolicyMain: "Политикой конфиденциальности",
-          submitting: "Регистрация...",
-          submitButtonAirbnb: "Принять и продолжить",
-        },
-        login: {
-          loggingIn: 'Вход...',
-        },
-        resetPassword: {
-          resetting: 'Сброс...',
-          setNewPasswordButton: 'Установить пароль',
-          notImplemented: "Функционал сброса пароля в разработке."
-        },
         otp: {
           resending: "Отправка...",
           resend: "Отправить код повторно",
         },
 
-        // --- СООБЩЕНИЯ ВАЛИДАЦИИ ---
+        // --- VALIDATION ERRORS ---
+        validationErrors: {
+          "lastNameRequired": "Пожалуйста, укажите фамилию.",
+          "firstNameRequired": "Пожалуйста, укажите имя.",
+          "genderRequired": "Пожалуйста, выберите ваш пол.",
+          "birthDateRequired": "Пожалуйста, укажите дату рождения.",
+          "birthDateInvalid": "Пожалуйста, введите корректную дату рождения.",
+          "ageRequirement": "Вам должно быть не менее 18 лет для регистрации.",
+          "idPhotoRequired": "Требуется фото вашего документа.",
+          "selfieWithIdRequired": "Требуется ваше селфи с документом.",
+          "fillAllFields": "Пожалуйста, заполните все обязательные поля и исправьте ошибки.",
+          "addressDetailsTooLong": "Детали адреса слишком длинные",
+          "addressTooLong": "Адрес слишком длинный",
+          "descriptionRequired": "Описание обязательно",
+          "descriptionTooLong": "Описание слишком длинное",
+          "invalidCareExperience": "Некорректный опыт ухода",
+          "titleRequired": "Заголовок обязателен",
+          "titleTooLong": "Заголовок слишком длинный"
+        },
         validation: {
           contactRequired: "Введите email или телефон.",
           contactInvalid: "Некорректный формат email или телефона.",
@@ -400,139 +790,1574 @@ i18n.use(initReactI18next).init({
           termsRequired: "Для продолжения необходимо принять условия.",
           termsRequiredShort: "Согласие обязательно",
         },
-        // --- СТРАНИЦА "СТАТЬ СИТТЕРОМ" ---
+
+        // --- PROFILE ---
+        profile: {
+          "paymentMethods": "Способы оплаты",
+          "section": {
+            "you": "Вы",
+            "forWorkers": "Ситтерам",
+            "settings": "Настройки",
+            "support": "Поддержка"
+          },
+          "action": {
+            "signInUp": "Войти / Зарегистрироваться",
+            "becomeSitter": "Стать исполнителем",
+            "yourPets": "Мои питомцы",
+            "editProfile": "Редактировать профиль",
+            "balance": "Баланс",
+            "paymentMethods": "Способы оплаты",
+            "serviceSettings": "Настройки услуг",
+            "requestAccountDeletion": "Запросить удаление аккаунта",
+            "editSitterPage": "Редактировать страницу исполнителя",
+            "clearCache": "Очистить кеш",
+            "logout": "Выйти",
+            "login": "Войти",
+            "signUp": "Регистрация"
+          },
+          "logout": {
+            "confirmTitle": "Подтверждение выхода",
+            "confirmMessage": "Вы уверены, что хотите выйти из своего аккаунта?",
+            "confirmButton": "Выйти"
+          },
+          "deletion": {
+            "confirmTitle": "Удалить аккаунт?",
+            "confirmMessage": "Если вы удалите свой аккаунт, все ваши личные данные и активность будут безвозвратно удалены. Это действие нельзя будет отменить. Вы уверены, что хотите продолжить?",
+            "confirmButton": "Удалить аккаунт",
+            "successTitle": "Запрос на удаление отправлен",
+            "successMessage": "Ваш запрос на удаление аккаунта получен. Мы обработаем его в ближайшее время. Вы будете автоматически выведены из системы, как только начнется процесс.",
+            "errorMessage": "Не удалось отправить запрос на удаление. Пожалуйста, попробуйте позже или обратитесь в службу поддержки.",
+            "statusRequested": "Ожидает удаления"
+          },
+          "title": "Профиль",
+          "loginPrompt": "Войдите или зарегистрируйтесь, чтобы управлять своим профилем и бронированиями.",
+          "noAccountPrompt": "У вас еще нет аккаунта?",
+          "profile": "Профиль",
+          "settings": "Настройки",
+          "support": "Помощь",
+          "help": "Помощь и поддержка",
+          "logIn": "Войти",
+          "signIn": "Регистрация",
+          "logInTitle": "Войдите или зарегистрируйтесь",
+          "email": "Email",
+          "password": "Пароль",
+          "btn": "Войти",
+          "forgot": "Забыли свой пароль?",
+          "forgotAirbnb": "Забыли пароль?",
+          "links": "Не забудьте подписаться на нас"
+        },
+        userRoles: {
+          sitter: "Ситтер",
+        },
+        // --- CABINET ---
+        cabinet: {
+          title: "Личный кабинет",
+          profile: "Мой профиль",
+          pets: "Мои питомцы",
+          orders: "Мои заказы",
+          wallet: "Кошелек",
+          chat: "Сообщения",
+          sitterDashboard: "Панель ситтера",
+          modeSitter: "Исполнитель",
+          modeClient: "Клиент"
+        },
+        // --- EDIT PROFILE ---
+        editProfileScreen: {
+          "avatar": {
+            "hint": "Нажмите, чтобы изменить"
+          },
+          "flash": {
+            "avatarPickError": "Ошибка выбора фото",
+            "checkFields": "Проверьте поля",
+            "updateFailed": "Не удалось обновить профиль",
+            "updateSuccess": "Профиль обновлен!",
+            "validationError": "Ошибка валидации"
+          },
+          "gender": {
+            "female": "Женский",
+            "male": "Мужской"
+          },
+          "header": {
+            "title": "Ваш профиль"
+          },
+          "info": {
+            "contact": {
+              "text": "Эти данные нужны для связи с исполнителем.",
+              "title": "Контактные данные"
+            },
+            "emergency": {
+              "text": "Мы не будем беспокоить вашего доверенного лица без веской причины. Никаких СМС-рассылок или рекламы. Звонок возможен только в том случае, если во время услуги произойдет что-то важное, а связи с вами не будет.",
+              "title": "Экстренный контакт"
+            }
+          },
+          "labels": {
+            "address": "Адрес",
+            "addressDetails": "Детали адреса",
+            "birthDate": "Дата рождения",
+            "emergencyName": "Имя контакта",
+            "emergencyPhone": "Телефон контакта",
+            "firstName": "Имя",
+            "gender": "Пол",
+            "lastName": "Фамилия",
+            "phone": "Телефон"
+          },
+          "placeholders": {
+            "address": "Введите адрес",
+            "addressDetails": "Кв./Офис, этаж, домофон",
+            "birthDate": "ДД.ММ.ГГГГ",
+            "emergencyName": "Имя родственника или друга",
+            "emergencyPhone": "+7...",
+            "firstName": "Ваше имя",
+            "lastName": "Ваша фамилия"
+          },
+          "sections": {
+            "basicInfo": {
+              "title": "Основная информация"
+            },
+            "contactInfo": {
+              "title": "Контакты"
+            },
+            "emergencyContact": {
+              "title": "Экстренная связь"
+            }
+          },
+          "validation": {
+            "addressDetailsRequired": "Укажите детали адреса",
+            "addressRequired": "Адрес обязателен",
+            "emergencyNameRequired": "Имя контакта обязательно",
+            "emergencyPhoneRequired": "Телефон контакта обязателен",
+            "firstNameRequired": "Имя обязательно",
+            "phoneInvalid": "Неверный формат телефона",
+            "phoneRequired": "Телефон обязателен"
+          }
+        },
+
+        // --- LANGUAGE MODAL ---
+        languageModal: {
+          selectLanguage: "Выберите язык",
+          close: "Закрыть",
+          allLanguages: "Все языки и регионы",
+          noLanguages: "Список языков пуст."
+        },
+
+        // --- ORDERS ---
+        orderStatus: {
+          "completed": "Завершен",
+          "confirmed": "Подтвержден",
+          "in_progress_short": "В процессе",
+          "new": "Новый",
+          "inProgress": "Выполняется",
+          "canceled_client": "Отменен клиентом",
+          "canceled_worker": "Отменен исполнителем",
+          "canceled_admin": "Отменен администратором",
+          "disputed": "Спор",
+          "awaitingPayment": "Ожидает оплаты",
+          "awaitingBookingFee": "Ожидает подтверждения",
+          "recurring_payment_failed": "Ошибка автоплатежа",
+          "unknown": "Неизвестный статус"
+        },
+        orderTypes: {
+          "boarding": "Передержка",
+          "houseSitting": "Присмотр дома",
+          "dropInVisit": "Визит",
+          "doggyDayCare": "Дневной уход",
+          "walking": "Выгул",
+          "unknown": "Неизвестная услуга"
+        },
+        orders: {
+          "paymentDueExpired": "Время оплаты истекло",
+          "paymentDueTimer": "Истекает через: {{time}}",
+          "timeLeft": "Осталось: {{time}}",
+          "paymentRequiredTitle": "Требуется оплата для подтверждения бронирования",
+          "paymentRequiredSubtext": "Заказ будет отменен, если оплата не поступит вовремя.",
+          "paymentRequiredAction": "Оплатите сейчас, чтобы подтвердить бронирование.",
+          "orderAutoCancelled": "Заказ будет автоматически отменен.",
+          "payButtonAmount": "Оплатить {{amount}}",
+          "payBookingFeeButtonAmount": "Внести предоплату {{amount}}",
+          "paymentOverdue": "Просрочено",
+          "cancellationPolicyDefault": "Применяется стандартная политика отмены.",
+          "cancellationPolicyFullRefund": "Бесплатная отмена с полным возвратом средств до {{date}}.",
+          "cancellationPolicyPartialRefund": "Отмена после бесплатного периода может повлечь за собой комиссию.",
+          "myOrders": "Мои заказы",
+          "leaveReviewButton": "Оставить отзыв",
+          "cancellationPolicyFreeUntil": "Бесплатная отмена доступна до {{date}}.",
+          "cancellationPolicyNoLongerFree": "Период бесплатной отмены закончился.",
+          "cancellationContactSupportSuffix": "для помощи в изменении заказа.",
+          "logInToView": "Войдите, чтобы просмотреть свои заказы.",
+          "createOrder": "Создать заказ",
+          "noOrdersYet": "Пока нет заказов",
+          "chatNotAvailable": "Чат для этого заказа недоступен или еще не создан.",
+          "emptyMessage": "Для ваших лапок пока нет заказов. Давайте создадим первый!",
+          "createFirstOrder": "Позаботиться о питомце",
+          "awaitingPlatformFeeInfoTitle": "Ожидание оплаты комиссии",
+          "careChecklist": "Чек-лист ухода",
+          "clientPaidFullPrepayment": "Клиент внес полную предоплату",
+          "clientPaidPlatformFee": "Клиент оплатил комиссию",
+          "collectFromClientSubtitle": "Получите оплату напрямую",
+          "collectFromClientTitle": "Взять оплату с клиента",
+          "completedBy": "Завершено кем:",
+          "completedVisits": "Завершенные визиты",
+          "fedPet": "Покормил",
+          "gaveWater": "Дал воды",
+          "medicationGiven": "Дал лекарство",
+          "noPriceAvailable": "Цена недоступна",
+          "payNowButton": "Оплатить сейчас",
+          "payToWorkerDirectlySubtitle": "Остаток исполнителю",
+          "payToWorkerDirectlyTitle": "Прямая оплата",
+          "payment": "Оплата",
+          "paymentDisclaimer": "Оплата производится через защищенный шлюз.",
+          "paymentInstruction": {
+            "collectDirectlyTitle": "Сбор оплаты",
+            "collectBoarding": "Пожалуйста, возьмите оплату в размере {amount} с клиента перед началом передержки.",
+            "collectVisits": "Общая сумма: {{amount}}. Договоритесь с клиентом об оплате: либо полная сумма заранее, либо частями после каждого визита или выгула.",
+            "collectGeneric": "Необходимо получить {amount} напрямую от клиента.",
+            "disclaimer": "Сервис не несет ответственности за прямой сбор средств и не может его контролировать.",
+            "supportNote": "Если нужно отменить заказ или внести изменения, пожалуйста, напишите в поддержку.",
+            "paidOnlineTitle": "Оплачено онлайн",
+            "paidOnlineBody": "Клиент полностью оплатил заказ через сервис. Вам не нужно брать деньги лично."
+          },
+          "peed": "Пописал",
+          "playedWithPet": "Поиграл",
+          "pooped": "Покакал",
+          "pottyBreak": "Туалет",
+          "pricePerUnit": "Цена за ед.",
+          "promoCodeApplied": "Промокод применен",
+          "rate_units": {
+            "day": "день",
+            "night": "ночь",
+            "unit": "ед.",
+            "visit": "визит"
+          },
+          "reportNotFound": "Отчет не найден",
+          "responsesCount": "Откликов: {{count}}",
+          "selectWorkerTitle": "Выберите исполнителя",
+          "taskInProgress": "Задача в процессе",
+          "taskScheduledFor": "Запланировано на",
+          "upcomingVisits": "Предстоящие визиты",
+          "viewAllTasks": "Все задачи",
+          "viewAndSelectOfferButtonCount": "Смотреть отклики ({{count}})",
+          "viewReport": "Смотреть отчет",
+          "visitReportTitle": "Отчет о визите",
+          "visitsSchedule": "Расписание визитов",
+          "walkReportTitle": "Отчет о прогулке",
+          "workerNotes": "Заметки исполнителя",
+          "yourPayoutFromPlatform": "Ваша выплата",
+          "viewDetailsButton": "Подробнее",
+          "assignedWorker": "Исполнитель",
+          "promoApplied": "Промокод",
+          "totalOrderCost": "Общая стоимость заказа",
+          "remainingDueWorkerDirectly": "Остаток исполнителю напрямую",
+          "paymentDueFull": "К оплате сейчас",
+          "paymentTitle": "Подтверждение оплаты",
+          "payFromBalance": "Использовать баланс",
+          "willDebitFromBalance": "Будет списано с баланса: {{amount}}",
+          "insufficientBalanceNeedCard": "Недостаточно средств на балансе. Пожалуйста, выберите карту для оставшейся суммы.",
+          "payRestFromCard": "Остаток картой",
+          "payFromCard": "Оплатить картой",
+          "selectCardPrompt": "Выберите карту",
+          "bookingFeeDueNow": "К оплате сейчас",
+          "fromBalance": "С баланса",
+          "fromCard": "С карты",
+          "redirectingToConfirm": "Перенаправление на страницу подтверждения...",
+          "paymentProcessing": "Платеж обрабатывается. Пожалуйста, подождите...",
+          "statusMayUpdate": "Статус заказа может обновиться через несколько мгновений.",
+          "paymentSuccess": "Платеж успешно совершен!",
+          "redirectingToAddCard": "Перенаправление для добавления карты...",
+          "recurringFrom": "Регулярно с {{date}}",
+          "searchingInProgress": "Поиск исполнителей...",
+          "visitTimes": "Время визитов",
+          "cancellationDetails": "Детали отмены",
+          "cancellationReason": "Причина",
+          "manageOrder": "Управление заказом",
+          "cancelOrderButton": "Отменить заказ",
+          "cancelConfirmTitle": "Отменить заказ?",
+          "cancelConfirmMessage": "Вы уверены, что хотите отменить этот заказ? Это действие может быть необратимым.",
+          "cancelSuccess": "Заказ успешно отменен.",
+          "leaveReview": "Оставить отзыв",
+          "addReviewButton": "Оставить отзыв",
+          "noWorkerContact": "Контактные данные исполнителя будут доступны после подтверждения заказа.",
+          "noClientContact": "Контактные данные клиента будут доступны после подтверждения заказа.",
+          "cancelUpcomingTasksConfirmTitle": "Отменить предстоящие задачи?",
+          "paymentProcessStarted": "Начало процесса оплаты...",
+          "paymentHints": {},
+          "orderNotFound": "Заказ не найден",
+          "awaitingPlatformFeeInfo": "Ожидается предоплата для бронирования  {{amount}}. Остаток необходимо оплатить {{amountWorker}} исполнителю до {{date}}.",
+          "directPaymentWarningModal": "Эта сумма оплачивается напрямую исполнителю до {{date}}. Платформа не обрабатывает этот платеж.",
+          "openAddressIn": "Открыть адрес в",
+          "completeOrderConfirmButton": "Да, завершить",
+          "billingPeriod": {
+            "status": {
+              "bookingConfirmed": "Бронирование подтверждено"
+            },
+            "adminBonusAdded": "Бонус от администратора"
+          },
+          "petGender": {},
+          "cancelUpcomingTasksConfirmMessageWorkerDetailed": "Это действие отменит формирование заказов на следующие недели. Текущие задачи останутся активными. Вы уверены?",
+          "completeOrderButton": "Завершить заказ",
+          "completeOrderConfirmTitle": "Завершить заказ?",
+          "completeOrderConfirmMessage": "Вы уверены, что хотите отметить этот заказ как выполненный? Это действие нельзя будет отменить.",
+          "orderCompletedSuccess": "Заказ отмечен как выполненный!",
+          "recurringPaymentCancelledInfo": "Автоматическое продление для этого заказа отменено. Дальнейших списаний не будет.",
+          "cancelUpcomingConfirmTitle": "Отменить будущие задачи?",
+          "cancelUpcomingConfirmMessageClient": "Это отменит все задачи с выбранной даты и далее. Вы хотите продолжить?",
+          "completeServiceConfirmButton": "Подтвердить завершение и отменить будущие",
+          "futureTasksCancelledSuccessClient": "Все будущие задачи для этой услуги были отменены.",
+          "billingHistory": "История счетов",
+          "cancellationPolicyErrorParsingDate": "Ошибка обработки деталей политики отмены.",
+          "cancelConfirmMessageFree": "Этот заказ можно отменить бесплатно.",
+          "cancelConfirmMessagePaid": "За отмену может взиматься плата в соответствии с политикой:",
+          "selectPaymentMethod": "Выберите способ оплаты",
+          "workerConfirmedSuccess": "Исполнитель подтвержден! Заказ ожидает оплаты.",
+          "cancelFutureRecurringButton": "Отменить будущие задачи",
+          "cancelUpcomingTasksButtonWorker": "Отменить предстоящие задачи",
+          "cancelUpcomingTasksConfirmMessageWorker": "Вы уверены, что хотите отменить предстоящие задачи?",
+          "futureTasksCancelledSuccessWorker": "Задачи успешно отменены",
+          "leaveReviewClient": "Оставить отзыв клиенту",
+          "noPendingRequests": "Нет ожидающих запросов",
+          "paymentDetails": "Детали оплаты",
+          "recurringPaymentInfoModal": "Информация о регулярном платеже",
+          "responsesAndInvitesTitle": "Отклики и приглашения",
+          "payWorkerOnDateInfo": "Оплатить исполнителю {{date}}",
+          "leaveReviewToRead": "Напишите отзыв, чтобы прочитать встречный",
+          "banner": {
+            "adminSuggestionTitle": "Рекомендация сервиса",
+            "adminSuggestionBodyDetailed": "Мы подобрали отличного ситтера, и он уже дал согласие. Ознакомьтесь с анкетой и подтвердите выбор.",
+            "workerAcceptedTitle": "Ура! Есть согласие.",
+            "workerAcceptedChoiceBody": "{{name}} готов выполнить заказ. Вы можете подтвердить его кандидатуру или продолжить поиск.",
+            "popularTitle": "Ваш заказ популярен!",
+            "popularBodyDetailed": "Уже {{count}} ситтеров хотят помочь. У вас отличный выбор — посмотрите профили и выберите лучшего.",
+            "newOffersTitle": "Новые предложения",
+            "singleOfferBody": "Появился первый отклик! Вы можете обсудить детали в чате или подождать других предложений.",
+            "fewOffersBody": "У вас уже {{count}} отклика. Сравните условия и рейтинги исполнителей.",
+            "waitingTitle": "В ожидании ответа",
+            "waitingSingleBody": "Ждем ответа от {{name}}. Если время поджимает, попробуйте пригласить еще кого-то.",
+            "waitingMultipleBody": "Вы пригласили нескольких исполнителей. Ждем, кто ответит первым.",
+            "searchingTitle": "Ищем исполнителей...",
+            "searchingBodyDetailed": "Мы уже оповестили подходящих ситтеров поблизости. Обычно первые отклики приходят в течение часа."
+          },
+        },
+        orderDetails: {
+          "title": "Детали заказа"
+        },
+
+        // --- WORKER DASHBOARD ---
+        workerDashboard: {
+          "greetingNight": "Доброй ночи",
+          "greetingMorning": "Доброе утро",
+          "greetingAfternoon": "Добрый день",
+          "greetingEvening": "Добрый вечер",
+          "earnedLast30Days": "Заработано (30д)",
+          "rating": "Рейтинг",
+          "completed": "завершено",
+          "payoutPending": "Ожидает выплаты",
+          "subscriptionBanner": {
+            "title": "Станьте PRO-исполнителем",
+            "line1": "Весь доход — ваш",
+            "line2": "Будьте выше в выдаче и получайте больше заказов",
+            "line3": "Увеличьте видимость вашего профиля."
+          },
+          "validUntil": "Действительно до",
+          "subscriptionExpired": "Подписка истекла",
+          "manageSubscription": "Управлять",
+          "tabs": {
+            "activeOrders": "Активные заказы",
+            "activityFeed": "Лента активности"
+          },
+          "nextTask": "Следующая задача",
+          "upcomingTasks": "Предстоящие задачи",
+          "noUpcomingTasksToday": "На сегодня нет предстоящих задач.",
+          "noUpcomingTasks": "Для этого заказа нет предстоящих задач.",
+          "requests": {
+            "declineConfirmTitle": "Отклонить запрос?",
+            "declineConfirmMessage": "Вы уверены, что хотите отклонить этот запрос?",
+            "declinedSuccess": "Запрос отклонен."
+          },
+          "activityFeed": {
+            "acceptToFinalizePrice": "Примите, чтобы зафиксировать цену",
+            "calculationPendingPrice": "Ожидается расчет",
+            "calculationUnavailable": "Расчет недоступен",
+            "responseSentTo": "Ответ отправлен",
+            "status": {
+              "accepted": "Принято",
+              "awaitingClient": "Ждем клиента",
+              "cancelled": "Отменено",
+              "declined": "Отклонено",
+              "expired": "Истекло",
+              "pending": "В ожидании"
+            },
+            "newInvite": "Новое приглашение от {{clientName}}",
+            "adminSuggestion": "Предложение от Администрации для {{clientName}}",
+            "offerSentTo": "Предложение отправлено {{clientName}}",
+            "orderStatusUpdated": "Статус заказа #{{orderId}} изменен на «{{status}}»",
+            "unknownActivity": "Неизвестное событие",
+            "extraBonus": "Дополнительный бонус",
+            "extraRecurringBonus": "Доп. регулярный бонус",
+            "cancelConfirmTitleOffer": "Отозвать предложение?",
+            "cancelConfirmMessageOffer": "Вы уверены, что хотите отозвать ваше предложение? Клиент его больше не увидит.",
+            "canceledOfferSuccess": "Ваше предложение успешно отозвано.",
+            "noActivityTitle": "Лента активности пуста",
+            "noActivity": "Новые приглашения, предложения и обновления заказов будут появляться здесь.",
+            "viewAll": "Посмотреть всю активность"
+          },
+          "availableOrders": {
+            "yourOffer": "Ваше предложение",
+            "priceRecommendation": "Мы рекомендуем установить цену на основе тарифов вашего профиля. При необходимости вы можете скорректировать ее для этого конкретного заказа.",
+            "subscriptionPromo": "Сэкономьте {{fee}} {{currency}} комиссии на этом заказе! Перейдите на подписку.",
+            "yourPricePer": "Ваша цена (за {{unit}})",
+            "enterPricePlaceholder": "Введите вашу цену",
+            "calculationTitleEstimate": "Примерный расчет",
+            "calculationTitle": "Расчет дохода",
+            "yourEstimatedPayout": "Ваш примерный доход",
+            "yourPayout": "Ваш доход от заказа",
+            "yourTotalPayout": "Ваш суммарный доход",
+            "estimateDisclaimer": "Окончательная выплата может отличаться в зависимости от фактической продолжительности/количества визитов.",
+            "messagePlaceholder": "Необязательное сообщение клиенту...",
+            "sendOffer": "Отправить предложение",
+            "createOfferTitle": "Создать предложение",
+            "forOrder": "для Заказа",
+            "zeroPriceWarning": "Вы уверены, что хотите предложить услугу бесплатно?",
+            "bonusInfoMessage": "Этот бонус выплачивается сервисом PetsOk дополнительно к вашему доходу от заказа. Он будет зачислен на ваш счет после выполнения заказа."
+          },
+          "taskTypes": {},
+          "tasks": {
+            "title": "Задачи",
+            "noOrdersToShow": "Нет активных заказов для отображения.",
+            "upcomingTasksTitle": "Предстоящие задачи",
+            "noUpcomingTitle": "Нет предстоящих задач",
+            "noUpcomingMessage": "У вас нет запланированных задач на ближайшее будущее.",
+            "status": {}
+          },
+          "leaveReview": "Оставить отзыв",
+          "reviewSubmitted": "Отзыв отправлен",
+          "invites": {
+            "respondToInviteTitle": "Ответ на приглашение",
+            "acceptWithOfferButton": "Принять и отправить",
+            "acceptedWithOfferSuccess": "Ваш ответ отправлен клиенту!",
+            "pricePerUnitClientOffer": "Ваша цена (за единицу)",
+            "inviteExpiresIn": "Истекает через: {{time}}",
+            "priceHelperText": "Укажите вашу стандартную цену за услугу. Вы можете изменить ее, если заказ кажется более сложным или простым, чем обычно.",
+            "subscriptionPromo_title": "Добавьте {{amount}} {{currency}} к вашему доходу",
+            "subscriptionPromo_subtitle": "Оформите подписку перед откликом и работайте без комиссии со всех будущих заказов. Подписка, оформленная после отклика, не будет действовать для этого заказа."
+          },
+          "earnings": {
+            "historyTitle": "История доходов",
+            "noHistoryTitle": "Доходов пока нет",
+            "noHistoryMessage": "Завершенные заказы будут отображаться здесь.",
+            "platformFee": "Комиссия платформы",
+            "fromClientDirectly": "От клиента (напрямую)",
+            "fromPlatform": "От платформы",
+            "status": {}
+          },
+          "payouts": {
+            "historyTitle": "История выплат",
+            "period": "Период",
+            "scheduledFor": "Запланировано на",
+            "paidOn": "Выплачено",
+            "status": {},
+            "noHistoryMessage": "Истории выплат пока нет",
+            "noHistoryTitle": "Нет выплат"
+          },
+          "viewAllOrderTasks": "Все задачи заказа"
+        },
+
+        // --- PAYMENT & WALLET ---
+        payment: {
+          "cancelledTitle": "Платеж отменен",
+          "errorUnknownStatus": "Неизвестный статус платежа",
+          "failedTitle": "Ошибка оплаты",
+          "genericErrorBody": "Произошла ошибка при обработке платежа",
+          "paymentFailedOnGateway": "Шлюз отклонил платеж",
+          "securePaymentTitle": "Безопасная оплата",
+          "subscriptionSuccessBody": "Подписка успешно оформлена!",
+          "successTitle": "Успешно"
+        },
+        paymentMethods: {
+          "savedCards": "Сохраненные карты",
+          "addCard": "Добавить новую карту",
+          "noCards": "Вы еще не добавили ни одной платежной карты.",
+          "deleteConfirmTitle": "Удалить карту",
+          "deleteConfirmMessage": "Вы уверены, что хотите удалить карту {{card}}?",
+          "errorSetDefault": "Не удалось установить эту карту по умолчанию. Пожалуйста, попробуйте снова.",
+          "errorDeleteCard": "Не удалось удалить эту карту. Пожалуйста, попробуйте снова.",
+          "errorAddCard": "Не удалось начать процесс добавления карты. Пожалуйста, попробуйте позже.",
+          "expiryNotAvailable": "Н/Д",
+          "noCardsSaved": "Сохраненных карт пока нет.",
+          "refreshingMethods": "Обновление способов оплаты...",
+          "cardDefaultName": "Карта",
+          "expires": "Истек.",
+          "verificationProcessingTitle": "Проверка карты",
+          "verificationProcessingMessage": "Ваша карта проверяется. Это может занять несколько минут.",
+          "card": "Карта",
+          "unknownGateway": "Неизвестный шлюз",
+          "default": "По умолчанию",
+          "errorAddCardUrl": "Ошибка получения ссылки для добавления карты",
+          "verificationProcessingMessageShort": "Проверка карты...",
+          "status": {
+            "active": "Активна",
+            "expired": "Истекла",
+            "failed": "Ошибка",
+            "pending": "Ожидание"
+          }
+        },
+        wallet: {
+          "title": "Финансы",
+          "balanceTitle": "Текущий баланс",
+          "cardsTitle": "Способы оплаты",
+          "historyTitle": "История операций",
+          "addCard": "Добавить карту",
+          "noCards": "Нет привязанных карт",
+          "noTransactions": "История операций пуста",
+          "defaultCard": "Основная",
+          "expires": "Годен до",
+          "deleteCardConfirm": "Удалить карту?",
+          "income": "Поступление",
+          "outcome": "Списание",
+          "processing": "Обработка...",
+          "status": {
+            "pending": "В ожидании",
+            "success": "Успешно",
+            "failed": "Ошибка"
+          }
+        },
+        addCardForPayouts: {
+          "headerTitle": "Способ Оплаты",
+          "title": "Карта для Выплат",
+          "subtitle": "Карта необходима для получения выплат за выполненные заказы и, при необходимости, для оплат заказов. Вы сможете изменить ее позже.",
+          "yourCards": "Ваши Карты",
+          "noCardsYet": "У вас еще нет добавленных карт.",
+          "addCardButton": "Добавить Новую Карту",
+          "noActiveCardError": "Пожалуйста, добавьте или выберите активную карту для продолжения.",
+          "noDefaultCardError": "Нет карты по умолчанию"
+        },
+
+        // --- KYC & SITTER ---
+        kyc: {
+          "headerTitle": "Личная информация",
+          "formTitle": "Ваши личные данные",
+          "dataSafety": {
+            "title": "Ваши данные в безопасности",
+            "commitment": "Мы обязуемся защищать вашу личную информацию. Эти данные необходимы для целей верификации и обеспечения безопасности нашего сообщества.",
+            "ageRequirement": "Вам должно быть 18 лет или больше, чтобы зарегистрироваться в качестве исполнителя.",
+            "deletionPolicy": "Ваши данные будут обрабатываться безопасно и могут быть удалены по вашему запросу в соответствии с нашей политикой конфиденциальности."
+          },
+          "lastNameLabel": "Фамилия",
+          "lastNamePlaceholder": "Введите вашу фамилию",
+          "firstNameLabel": "Имя",
+          "firstNamePlaceholder": "Введите ваше имя",
+          "genderLabel": "Пол",
+          "birthDateLabel": "Дата рождения",
+          "birthDatePlaceholder": "Выберите дату",
+          "documentsTitle": "Загрузка документов",
+          "idPhotoLabel": "Фото вашего документа, удостоверяющего личность",
+          "idPhotoInfo": "Убедитесь, что все детали хорошо видны. Принимаются: паспорт, национальное удостоверение личности или водительские права.",
+          "selfieWithIdLabel": "Селфи с вашим документом",
+          "selfieWithIdInfo": "Держите документ рядом с лицом. Ваше лицо и документ должны быть четко видны.",
+          "uploadPhoto": "Загрузить фото",
+          "cropperTitle": "Редактировать фото",
+          "submissionSuccessMessageClient": "Ваша информация отправлена на проверку. Мы уведомим вас, когда проверка будет завершена."
+        },
+        becomeSitter: {
+          "step1": {
+            "title": "Где вы будете работать?",
+            "subtitle": "Выберите вашу страну и город, чтобы найти возможности для присмотра за питомцами.",
+            "customCityLink": "Не нашли свой город? Введите его вручную.",
+            "selectFromList": "Выбрать город из списка",
+            "yourCity": "Ваш город",
+            "waitlistMessage": "Спасибо! Ваш запрос на добавление города {{city}} получен. Мы сообщим вам, когда он станет доступен."
+          },
+          "loadingMessages": [
+            "Готовим магию...",
+            "Собираем информацию для вашего пути...",
+            "Почти готово..."
+          ],
+          "heroBadge": "Работа мечты для любителей животных",
+          "heroTitle": "Зарабатывай,\nиграя с питомцами",
+          "heroSubtitle": "Преврати любовь к животным в стабильный доход. Твой график, твои цены, твои правила.",
+          "ctaButton": "Стать ситтером",
+          "earningsLabel": "Твой потенциальный доход",
+          "earningsAmount": "40 000 ₽+",
+          "earningsNote": "Средний заработок активных ситтеров",
+          "benefitsTitle": "Почему выбирают нас?",
+          "benefit1Title": "Доход 100% твой",
+          "benefit1Desc": "Уникальное условие на рынке: 0% комиссии с заказов. Ты получаешь ровно столько, сколько установил в прайсе.",
+          "benefit2Title": "Свобода действий",
+          "benefit2Desc": "Сам выбирай, кого брать: только маленьких собак, кошек или всех подряд.",
+          "benefit3Title": "Безопасность",
+          "benefit3Desc": "Проверенные клиенты, поддержка 24/7 и защита на случай экстренных ситуаций.",
+          "benefit4Title": "Клиенты ждут",
+          "benefit4Desc": "Тысячи владельцев ищут надежного друга для своего питомца прямо сейчас.",
+          "stepsTitle": "Как начать зарабатывать?",
+          "step1Title": "Создать профиль",
+          "step1Desc": "Заполни анкету: расскажи о себе, загрузи фото и укажите цены.",
+          "step2Title": "Пройти проверку",
+          "step2Desc": "Мы быстро проверим данные, чтобы клиенты могли тебе доверять.",
+          "step3Title": "Принимать заказы",
+          "step3Desc": "Получай заявки в приложении, общайся и зарабатывай!",
+          "trustFooter": "Ваши данные в безопасности. Мы не передаем личную информацию третьим лицам.",
+          "appPreviewTitle": "Весь бизнес в твоем кармане",
+          "appPreviewSubtitle": "Мы сделали приложение, в котором удобно управлять заказами и следить за ростом дохода.",
+          "appFeature1Title": "Входящие заявки",
+          "appFeature1Desc": "Клиенты сами пишут тебе. Выбирай интересные заказы.",
+          "appFeature2Title": "Статистика дохода",
+          "appFeature2Desc": "Следи, как растет твой заработок в реальном времени.",
+          "appFeature3Title": "Выплаты по понедельникам",
+          "appFeature3Desc": "Деньги поступают на карту регулярно и без задержек."
+        },
+        becomeSitterLanding: {
+          "hero": {
+            "title": "Зарабатывайте, занимаясь любимым делом: заботой о питомцах!",
+            "subtitle": "Станьте пет-ситтером или выгульщиком с PetsOk. Гибкий график, счастливые питомцы, дополнительный доход."
+          },
+          "why": {
+            "title": "Почему выбирают PetsOk?",
+            "benefit1": {
+              "title": "Гибкость",
+              "desc": "Устанавливайте собственный график и тарифы. Работайте, когда хотите и где хотите."
+            },
+            "benefit2": {
+              "title": "Поддержка",
+              "desc": "Доступ к круглосуточной поддержке, образовательным ресурсам и сообществу любителей животных."
+            },
+            "benefit3": {
+              "title": "Радость",
+              "desc": "Проводите время с очаровательными питомцами и делайте их жизнь (и свою!) лучше."
+            }
+          },
+          "how": {
+            "title": "Простые шаги для старта",
+            "step1": {
+              "title": "Зарегистрируйтесь",
+              "desc": "Создайте свой профиль, указав свой опыт и услуги."
+            },
+            "step2": {
+              "title": "Пройдите верификацию",
+              "desc": "Пройдите наш процесс проверки безопасности для доверия и надежности."
+            },
+            "step3": {
+              "title": "Настройте услуги",
+              "desc": "Определите услуги, которые вы предлагаете, свою доступность и цены."
+            }
+          },
+          "features": {
+            "title": "Возможности, которые вам понравятся",
+            "feature1": {
+              "title": "Легкое управление",
+              "desc": "Управляйте своим расписанием, бронированиями и платежами в одном приложении."
+            },
+            "feature2": {
+              "title": "Безопасные платежи",
+              "desc": "Получайте оплату надежно и безопасно через нашу платформу."
+            },
+            "feature3": {
+              "title": "Безопасность прежде всего",
+              "desc": "Мы уделяем первостепенное внимание безопасности с помощью верификации и ресурсов поддержки."
+            }
+          },
+          "testimonials": {
+            "title": "Отзывы наших ситтеров",
+            "placeholder": "Отзывы скоро появятся!"
+          },
+          "cta": {
+            "title": "Готовы присоединиться к нашей стае?"
+          },
+          "footer": "© PetsOk 2024 | Счастливое место вашего питомца"
+        },
         sitterHero: {
-          title: "Зарабатывайте, занимаясь любимым делом",
-          subtitle: "Станьте пет-ситтером на PetsOk. Наслаждайтесь гибкостью, 0% комиссией и радостью от общения с питомцами.",
-          ctaButton: "Начать сейчас",
+          "title": "Зарабатывайте, занимаясь любимым делом",
+          "subtitle": "Станьте пет-ситтером на PetsOk. Наслаждайтесь гибкостью, 0% комиссией и радостью от общения с питомцами.",
+          "ctaButton": "Начать сейчас",
         },
         sitterServices: {
-          boarding: {
-            title: "Передержка у ситтера",
-            desc: "Принимайте питомцев у себя дома. Самая востребованная и высокооплачиваемая услуга.",
-            highlight: "Наибольший доход",
+          "boarding": {
+            "title": "Передержка у ситтера",
+            "desc": "Принимайте питомцев у себя дома. Самая востребованная и высокооплачиваемая услуга.",
+            "highlight": "Наибольший доход",
           },
-          walking: {
-            title: "Выгул собак",
-            desc: "Предлагайте прогулки, которые идеально впишутся в ваш ежедневный график.",
+          "walking": {
+            "title": "Выгул собак",
+            "desc": "Предлагайте прогулки, которые идеально впишутся в ваш ежедневный график.",
           },
-          daycare: {
-            title: "Дневная няня",
-            desc: "Отлично подходит, если вы работаете из дома и любите компанию собак.",
+          "daycare": {
+            "title": "Дневная няня",
+            "desc": "Отлично подходит, если вы работаете из дома и любите компанию собак.",
           },
-          homevisits: {
-            title: "Визиты на дом",
-            desc: "Посещайте питомцев в их привычной обстановке для кормления и игр.",
+          "homevisits": {
+            "title": "Визиты на дом",
+            "desc": "Посещайте питомцев в их привычной обстановке для кормления и игр.",
           },
         },
         whyBecomeSitter: {
-          sectionTitle: "Будьте сами себе боссом, с лапками",
-          sectionSubtitle: "Мы предоставляем инструменты и поддержку. Вы дарите любовь. Вот почему ситтеры выбирают PetsOk.",
-          earnMore: {
-            title: "Получайте 100% заработка",
-            desc: "Верно, 0% комиссии. Цена, которую вы устанавливаете, — это цена, которую вы получаете. Максимизируйте свой доход с первого дня.",
+          "sectionTitle": "Будьте сами себе боссом, с лапками",
+          "sectionSubtitle": "Мы предоставляем инструменты и поддержку. Вы дарите любовь. Вот почему ситтеры выбирают PetsOk.",
+          "earnMore": {
+            "title": "Получайте 100% заработка",
+            "desc": "Верно, 0% комиссии. Цена, которую вы устанавливаете, — это цена, которую вы получаете. Максимизируйте свой доход с первого дня.",
           },
-          flexible: {
-            title: "Абсолютная гибкость",
-            desc: "Вы все контролируете. Устанавливайте собственный график, услуги и тарифы. Идеально для подработки или работы на полную ставку.",
+          "flexible": {
+            "title": "Абсолютная гибкость",
+            "desc": "Вы все контролируете. Устанавливайте собственный график, услуги и тарифы. Идеально для подработки или работы на полную ставку.",
           },
-          love: {
-            title: "Работа, полная радости",
-            desc: "Если вы настоящий любитель животных, это больше, чем работа — это призвание. Получайте деньги за почесывание животиков.",
+          "love": {
+            "title": "Работа, полная радости",
+            "desc": "Если вы настоящий любитель животных, это больше, чем работа — это призвание. Получайте деньги за почесывание животиков.",
           },
-          support: {
-            title: "Мы всегда на вашей стороне",
-            desc: "От простого в использовании приложения до поддержки 24/7 — мы здесь, чтобы помочь вам добиться успеха и чувствовать себя в безопасности.",
+          "support": {
+            "title": "Мы всегда на вашей стороне",
+            "desc": "От простого в использовании приложения до поддержки 24/7 — мы здесь, чтобы помочь вам добиться успеха и чувствовать себя в безопасности.",
           },
         },
         howItWorksSitterSteps: {
-          sectionTitle: "Начните всего за 3 простых шага",
-          step1: {
-            title: "Создайте свой профиль",
-            desc: "Продемонстрируйте свой опыт и любовь к питомцам. Мы поможем создать профиль, который заметят.",
+          "sectionTitle": "Начните всего за 3 простых шага",
+          "step1": {
+            "title": "Создайте свой профиль",
+            "desc": "Продемонстрируйте свой опыт и любовь к питомцам. Мы поможем создать профиль, который заметят.",
           },
-          step2: {
-            title: "Получите первый заказ",
-            desc: "Вы устанавливаете свою доступность и цены. Мы будем присылать вам запросы от владельцев.",
+          "step2": {
+            "title": "Получите первый заказ",
+            "desc": "Вы устанавливаете свою доступность и цены. Мы будем присылать вам запросы от владельцев.",
           },
-          step3: {
-            title: "Получайте оплату. Это просто!",
-            desc: "Деньги поступят на ваш счет уже через два дня после успешного выполнения услуги.",
+          "step3": {
+            "title": "Получайте оплату. Это просто!",
+            "desc": "Деньги поступят на ваш счет уже через два дня после успешного выполнения услуги.",
           }
         },
         offerableServicesSection: {
-          sectionTitle: "Предлагайте разнообразные услуги",
-          sectionSubtitle: "Вы сами решаете, какие услуги предоставлять. Чем больше услуг вы предлагаете, тем больше у вас возможностей заработать.",
-          boarding: {
-            title: "Передержка",
-            desc: "Принимайте питомцев на ночь у себя дома. Часто это самая высокооплачиваемая услуга.",
-            highlight: "Наибольший доход",
+          "sectionTitle": "Предлагайте разнообразные услуги",
+          "sectionSubtitle": "Вы сами решаете, какие услуги предоставлять. Чем больше услуг вы предлагаете, тем больше у вас возможностей заработать.",
+          "boarding": {
+            "title": "Передержка",
+            "desc": "Принимайте питомцев на ночь у себя дома. Часто это самая высокооплачиваемая услуга.",
+            "highlight": "Наибольший доход",
           },
-          walking: {
-            title: "Выгул собак",
-            desc: "Предлагайте прогулки, которые идеально впишутся в ваш распорядок дня.",
+          "walking": {
+            "title": "Выгул собак",
+            "desc": "Предлагайте прогулки, которые идеально впишутся в ваш распорядок дня.",
           },
-          daycare: {
-            title: "Дневная няня",
-            desc: "Идеально, если вы работаете из дома и любите компанию собак.",
+          "daycare": {
+            "title": "Дневная няня",
+            "desc": "Идеально, если вы работаете из дома и любите компанию собак.",
           },
-          homevisits: {
-            title: "Визиты на дом",
-            desc: "Посещайте питомцев в их собственном доме для кормления, игр и выгула.",
+          "homevisits": {
+            "title": "Визиты на дом",
+            "desc": "Посещайте питомцев в их собственном доме для кормления, игр и выгула.",
           },
         },
         supportSafety: {
-          sectionTitle: "Ваш успех и безопасность — наш главный приоритет",
-          sectionSubtitle: "Мы создали платформу, которой доверяют любители животных.",
-          support: {
-            title: "Поддержка ситтеров 24/7",
-            desc: "Наша команда готова помочь с любым вопросом, от технических до экстренных ситуаций.",
+          "sectionTitle": "Ваш успех и безопасность — наш главный приоритет",
+          "sectionSubtitle": "Мы создали платформу, которой доверяют любители животных.",
+          "support": {
+            "title": "Поддержка ситтеров 24/7",
+            "desc": "Наша команда готова помочь с любым вопросом, от технических до экстренных ситуаций.",
           },
-          platform: {
-            title: "Надежная и безопасная платформа",
-            desc: "Мы используем проверку профилей и безопасные онлайн-платежи, чтобы вы чувствовали себя уверенно.",
+          "platform": {
+            "title": "Надежная и безопасная платформа",
+            "desc": "Мы используем проверку профилей и безопасные онлайн-платежи, чтобы вы чувствовали себя уверенно.",
           },
-          community: {
-            title: "Сильное сообщество ситтеров",
-            desc: "Общайтесь с другими ситтерами, делитесь опытом, находите поддержку и получайте вдохновение.",
+          "community": {
+            "title": "Сильное сообщество ситтеров",
+            "desc": "Общайтесь с другими ситтерами, делитесь опытом, находите поддержку и получайте вдохновение.",
           },
-          testimonial: {
-            quote: "\"Благодаря PetsOk я смогла превратить свою страсть к собакам в настоящий бизнес. А 0% комиссия — это просто меняет правила игры!\"",
-            author: "Анна К., ситтер PetsOk"
+          "testimonial": {
+            "quote": "\"Благодаря PetsOk я смогла превратить свою страсть к собакам в настоящий бизнес. А 0% комиссия — это просто меняет правила игры!\"",
+            "author": "Анна К., ситтер PetsOk"
           },
-          imageAlt: "Уверенный ситтер с довольной собакой"
+          "imageAlt": "Уверенный ситтер с довольной собакой"
         },
         finalCtaSitter: {
-          title: "Готовы начать свое путешествие с PetsOk?",
-          subtitle: "Присоединяйтесь к тысячам ситтеров, которые зарабатывают деньги, устанавливают свой собственный график и занимаются тем, что любят. Ваш следующий пушистый клиент уже ждет!",
-          cta: "Создать профиль ситтера (это бесплатно!)",
-          titleUpdated: "Не упустите свой шанс — зарабатывайте больше с PetsOk!",
-          subtitleUpdated: "0% комиссии, гибкий график и благодарные клиенты ждут вас. Присоединяйтесь к нашей дружной команде профессионалов уже сегодня!",
-          ctaUpdated: "Присоединиться к PetsOk (0% Комиссии)"
+          "title": "Готовы начать свое путешествие с PetsOk?",
+          "subtitle": "Присоединяйтесь к тысячам ситтеров, которые зарабатывают деньги, устанавливают свой собственный график и занимаются тем, что любят. Ваш следующий пушистый клиент уже ждет!",
+          "cta": "Создать профиль ситтера (это бесплатно!)",
+          "titleUpdated": "Не упустите свой шанс — зарабатывайте больше с PetsOk!",
+          "subtitleUpdated": "0% комиссии, гибкий график и благодарные клиенты ждут вас. Присоединяйтесь к нашей дружной команде профессионалов уже сегодня!",
+          "ctaUpdated": "Присоединиться к PetsOk (0% Комиссии)"
+        },
+        additionalProfile: {
+          "headerTitle": "Профиль Ситтера",
+          "mainTitle": "Расскажите о себе",
+          "mainSubtitle": "Создайте подробный профиль, чтобы привлечь больше клиентов. Эту информацию можно будет отредактировать позже.",
+          "guidanceMessage": "Отличный профиль включает четкие фотографии, дружелюбный заголовок и подробное описание вашего опыта и того, что делает вас замечательным ситтером.",
+          "viewExampleProfileLink": "Посмотреть пример профиля",
+          "mediaSectionTitle": "Ваши фото и видео",
+          "noMediaPlaceholder": "Фото и видео пока нет.",
+          "addFirstMediaButton": "Добавьте ваше первое фото или видео!",
+          "dragAndDropHelpText": "Перетащите для изменения порядка. Первое фото будет главной фотографией вашего профиля.",
+          "tapToSetMainHelpText": "Нажмите на фото, чтобы сделать его главным.",
+          "videoDurationLimitText": "Видео ограничены {{duration}} секундами.",
+          "mainInfoCardTitle": "Основная информация профиля",
+          "titleLabel": "Заголовок профиля*",
+          "titlePlaceholder": "Например, Любящий и опытный выгульщик собак в центре",
+          "descriptionLabel": "О вас и вашем опыте*",
+          "descriptionPlaceholder": "Расскажите клиентам о себе, вашем доме, опыте общения с питомцами, какие услуги вы предлагаете и почему вы станете отличным выбором для их пушистых членов семьи...",
+          "addressLabelOptional": "Ваш район (необязательно)",
+          "addressPlaceholder": "Например, Центр города, Район Центрального парка (Город будет из Шага 1)",
+          "addressHelpText": "Клиенты увидят только ваш общий район, а не точный адрес, до подтверждения бронирования.",
+          "addressDetailsLabelOptional": "Дополнительные детали адреса (необязательно)",
+          "addressDetailsPlaceholder": "Например, 'Рядом с большим дубом', 'Жилой комплекс с зеленым забором'. Это поможет клиентам лучше представить ваше местоположение, если это необходимо.",
+          "addressDetailsHelpText": "Любые конкретные детали о вашем местоположении или домашней обстановке, которыми вы готовы поделиться.",
+          "additionalInfoCardTitle": "Дополнительная информация",
+          "careExperienceLabel": "Опыт ухода за питомцами (лет)*",
+          "careExperiencePlaceholder": "0",
+          "careExperienceHelpText": "Сколько лет у вас опыта ухода за питомцами?",
+          "childrenPresentLabel": "Дети до 12 лет дома?",
+          "childrenPresentHelpText": "Проживают ли в вашем доме дети младше 12 лет?",
+          "constantSupervisionLabel": "Постоянный присмотр доступен?",
+          "constantSupervisionHelpText": "Обычно ли вы дома и можете обеспечить постоянный присмотр за питомцами?",
+          "uploadingMediaText": "Загрузка медиа",
+          "submitButtonText": "Создать профиль и продолжить",
+          "createdSuccessMessage": "Профиль ситтера успешно создан!",
+          "failedToCreateMessage": "Не удалось создать профиль ситтера. Пожалуйста, проверьте введенные данные и попробуйте снова.",
+          "errorSomethingWentWrong": "Что-то пошло не так. Пожалуйста, попробуйте позже."
+        },
+        sitterSafety: {
+          "title": "Безопасность превыше всего. Всегда.",
+          "subtitle": "Мы неустанно работаем, чтобы хвосты продолжали вилять, а владельцы питомцев были спокойны.",
+          "guarantee": "Каждая услуга, которую вы предлагаете на PetsOk, поддерживается Гарантией PetsOk.",
+          "payments": "Безопасные и удобные онлайн-платежи.",
+          "checks": "Возможность прохождения общей проверки биографии для каждого ситтера.",
+          "supportTeamUpdated": "Наша команда поддержки всегда готова помочь вам 24/7.",
+          "education": "Постоянное обучение и ресурсы по уходу за питомцами для ситтеров."
+        },
+        sitterFlexibility: {
+          "title": "Гибкость дает вам контроль",
+          "feature1": "Устанавливайте собственный график и доступность",
+          "feature2": "Предлагайте любую комбинацию услуг по уходу за питомцами",
+          "feature3": "Определяйте размер, возраст и другие предпочтения по питомцам, с которыми вы готовы работать",
+          "quoteText": "Это легко. Я просто захожу в календарь и отмечаю себя доступной, когда хочу.",
+          "quoteAuthor": "Ирина С."
+        },
+        sitterHowItWorks: {
+          "sectionTitle": "Как это работает для ситтеров",
+          "step1": {
+            "title": "Создайте свой профиль",
+            "desc": "Продемонстрируйте свой опыт и любовь к питомцам. Мы поможем создать профиль, который заметят."
+          },
+          "step2": {
+            "title": "Получите первый заказ",
+            "desc": "Вы устанавливаете свою доступность и цены. Мы будем присылать вам запросы от владельцев."
+          },
+          "step3": {
+            "title": "Получайте оплату. Это просто!",
+            "desc": "Деньги поступят на ваш счет уже через два дня после успешного выполнения услуги."
+          },
+          "step4": {
+            "title": "Наслаждайтесь процессом",
+            "desc": "Проводите время с замечательными питомцами и получайте позитивные эмоции."
+          }
+        },
+        sitterTools: {
+          "title": "Инструменты для вашего успеха",
+          "specialConditions": {
+            "title": "0% Комиссии",
+            "desc": "Вы получаете ровно столько, сколько установили. Никаких скрытых сборов."
+          },
+          "app": {
+            "title": "Удобное приложение",
+            "desc": "Управляйте заказами, календарем и общайтесь с клиентами в одном месте."
+          },
+          "support": {
+            "titleUpdated": "Команда поддержки",
+            "descUpdated": "Мы всегда на связи, чтобы помочь с любыми вопросами."
+          },
+          "imageAlt": "Инструменты для ситтеров PetsOk",
+          "quoteText": "Благодаря приложению PetsOk, я мгновенно узнаю о запросах и быстро отвечаю!",
+          "quoteAuthor": "Елена К."
+        },
+        whatYouCanOffer: {
+          "sectionTitleUpdated": "Выберите свои услуги – управляйте доходом",
+          "sectionSubtitleUpdated": "PetsOk предлагает гибкость: вы сами решаете, какие услуги оказывать, и устанавливаете на них цены. Больше услуг – больше возможностей заработать!",
+          "boarding": {
+            "title": "Домашняя передержка",
+            "descUpdated": "Создайте уютную атмосферу для питомцев у себя дома. Идеально, если у вас есть свободное пространство и любовь к животным."
+          },
+          "walking": {
+            "title": "Прогулки с собаками",
+            "descUpdated": "Дарите радость активным собакам и их хозяевам. Отличный способ поддерживать форму и зарабатывать."
+          },
+          "daycare": {
+            "title": "Дневная няня",
+            "descUpdated": "Присматривайте за питомцами в течение дня. Помогите хозяевам, которые не хотят оставлять любимцев одних."
+          },
+          "homevisits": {
+            "title": "Визиты на дом к питомцу",
+            "descUpdated": "Посещайте питомцев в их привычной обстановке для кормления, игр и коротких прогулок. Удобно и востребовано!"
+          }
+        },
+        sitterSettings: {
+          "title": "Настройки исполнителя",
+          "tabs": {
+            "services": "Услуги и цены",
+            "profile": "Анкета и фото"
+          },
+          "services": {
+            "basePrice": "Базовая цена",
+            "unit": "За",
+            "active": "Активно",
+            "inactive": "Неактивно",
+            "testRequired": "Требуется тест",
+            "save": "Сохранить настройки",
+            "successSaved": "Настройки услуг сохранены"
+          },
+          "profile": {
+            "mainInfo": "Основная информация",
+            "titleLabel": "Заголовок профиля",
+            "titlePlaceholder": "Например: Опытный догситтер рядом с парком",
+            "aboutLabel": "О себе",
+            "aboutPlaceholder": "Расскажите о своем опыте...",
+            "experienceLabel": "Опыт (лет)",
+            "conditions": "Условия",
+            "kidsLabel": "Есть дети до 12 лет",
+            "supervisionLabel": "Постоянный присмотр 24/7",
+            "media": "Фото и Видео",
+            "mediaHint": "Загрузите фото себя и условий содержания. Первое фото будет главным.",
+            "uploadBtn": "Загрузить",
+            "saveProfile": "Сохранить профиль",
+            "successProfile": "Профиль успешно обновлен"
+          }
         },
 
-        // --- ГЛАВНАЯ СТРАНИЦА (Home) ---
-        SearchSitter: {
-          tabs: {
-            service1: { name: "Передержка", description: "у ситтера дома" },
-            service2: { name: "Выгул собаки", description: "по вашему району" },
-            service3: { name: "Дневные визиты", description: "к вам домой" },
-            service4: { name: "Дневняя няня", description: "у ситтера дома" },
-            service5: { name: "Передержка", description: "у вас дома" },
-          },
-          itemTitle: {
-            service1: "Где нужна передержка?",
-            service2: "Где нужен выгул собаки?",
-            service3: "Где нужен визит на час?",
-            service4: "Где нужна дневная няня?",
-            service5: "Где нужен присмотр на дому?"
-          },
-          searchButtonText: "Найти",
+        // --- SEARCH & FILTER ---
+        filtersPage: {
+          "title": "Фильтры",
+          "clearAll": "Очистить все",
+          "whereAreYouSearching": "Где вы ищете?",
+          "enterCityOrAddress": "Город или адрес",
+          "whatServiceNeeded": "Какая услуга вам нужна?",
+          "petTypeQuestion": "Для какого типа питомца?",
+          "dogSizeQuestion": "Какого размера ваша собака(и)?",
+          "catSizeQuestion": "Какого размера ваша кошка(и)?",
+          "applyButton": "Применить фильтры",
+          "anyLocation": "Любая локация",
+          "notSelected": "Не выбрано",
+          "anyPetType": "Любой тип питомца",
+          "allSelected": "Все"
         },
+        serviceTypes: {
+          "boarding": {
+            "name": "Передержка у ситтера",
+            "description": "Ваш питомец насладится уютной ночевкой в доме ситтера."
+          },
+          "house_sitting": {
+            "name": "Передержка у вас дома",
+            "description": "Ситтер останется с вашим питомцем на ночь в комфорте вашего дома."
+          },
+          "drop_in_visit": {
+            "name": "Дневные визиты",
+            "description": "Ситтер заглянет к вам для кормления, игр и туалетных дел."
+          },
+          "doggy_day_care": {
+            "name": "Дневняя няня у ситтера",
+            "description": "Дневное веселье для вашей собаки в доме ситтера. Привозите утром, забирайте вечером!"
+          },
+          "walking": {
+            "name": "Выгул собак",
+            "description": "Ваша собака получит приятную прогулку по вашему району."
+          }
+        },
+        exploreHeader: {
+          "whereToSearchPlaceholder": "Куда отправимся?",
+          "anyService": "Любая услуга",
+          "anyPetPlaceholderShort": "Любой питомец",
+          "filtersAppliedShort": "Фильтры"
+        },
+        search: {
+          "location_placeholder": "Район или адрес",
+          "loading": "Поиск...",
+          "noResults": "Никого не найдено в этой области.",
+          "placeholders": {
+            "boarding": "В каком районе искать ситтера?",
+            "walking": "В каком районе нужен выгул?",
+            "doggy_day_care": "Где нужна дневная няня?",
+            "drop_in_visit": "Куда должен приехать ситтер?",
+            "house_sitting": "Где требуется присмотр?",
+          }
+        },
+        searchResults: {
+          "foundCount": "Найдено {{count}} ситтеров",
+          "subtext": "Проверенные ситтеры рядом с вами"
+        },
+        sitterCard: {
+          "no_reviews_yet": "Отзывов пока нет",
+          "price_on_request": "Цена по запросу",
+          "price_from_label": "от",
+          "repeat_clients": "Повторных клиентов: {{count}}"
+        },
+        SearchSitter: {
+          "tabs": {
+            "service1": { "name": "Передержка", "description": "у ситтера дома" },
+            "service2": { "name": "Выгул собаки", "description": "по вашему району" },
+            "service3": { "name": "Дневные визиты", "description": "к вам домой" },
+            "service4": { "name": "Дневняя няня", "description": "у ситтера дома" },
+            "service5": { "name": "Передержка", "description": "у вас дома" },
+          },
+          "itemTitle": {
+            "service1": "Где нужна передержка?",
+            "service2": "Где нужен выгул собаки?",
+            "service3": "Где нужен визит на час?",
+            "service4": "Где нужна дневная няня?",
+            "service5": "Где нужен присмотр на дому?"
+          },
+          "searchButtonText": "Найти",
+        },
+        findServiceTitle_Typing: "Найти ситтера",
+        findServiceSubtitle_Typing: "Смотрите профили, читайте отзывы и выбирайте лучшего для вашего питомца",
+        createOrderTitle_Typing: "Создать заказ",
+        createOrderSubtitle_Typing: "Опишите, что нужно, и получайте предложения от готовых помочь ситтеров",
+        location_permission_denied_title: "Доступ к геопозиции запрещен",
+        location_permission_denied_message: "Пожалуйста, включите службы геолокации в настройках вашего устройства, чтобы использовать эту функцию.",
+        error_title: "Ошибка",
+        location_fetch_error_message: "Не удалось определить ваше текущее местоположение. Пожалуйста, попробуйте снова или проверьте сигнал GPS.",
+        map_loading: "Загрузка карты...",
+        price_on_request_short: "По запросу",
+        premium_sitter_badge_short: "PRO",
+        new_sitter_rating_short: "Новый",
+        search_in_progress: "Идёт поиск...",
+        search_error_default: "Во время поиска произошла ошибка. Пожалуйста, попробуйте снова.",
+        try_again_button: "Попробовать снова",
+        sitter_name_placeholder: "Имя ситтера",
+        listings: {
+          "noSittersFound": "Ситтеры не найдены. Попробуйте другой поиск.",
+          "sittersFound": "Ситтеров найдено: {{count}}"
+        },
+
+        // --- BOOKING ---
+        bookingScreen: {
+          "addPetButton": "Добавить питомца",
+          "applyButton": "Применить",
+          "calendarMonthFormat": "MMMM yyyy",
+          "createRequestButton": "Создать заявку",
+          "errors": {
+            "endDateBeforeStart": "Дата окончания не может быть раньше начала",
+            "fetchPets": "Не удалось загрузить питомцев",
+            "fixHighlighted": "Пожалуйста, исправьте выделенные поля",
+            "promoCodeInvalid": "Неверный промокод",
+            "promoCodeTooLong": "Промокод слишком длинный",
+            "selectDuration": "Выберите длительность",
+            "selectEndDate": "Выберите дату окончания",
+            "selectPet": "Выберите питомца",
+            "selectRecurringDays": "Выберите дни повтора",
+            "selectService": "Выберите услугу",
+            "selectStartDate": "Выберите дату начала",
+            "setVisitTime": "Укажите время визита",
+            "unknownError": "Неизвестная ошибка",
+            "visitTooSoon": "Визит запланирован слишком скоро"
+          },
+          "petSummary": {
+            "multiplePets": "и еще {{count}}",
+            "selectPets": "Выберите питомцев"
+          },
+          "petsTitle": "Питомцы",
+          "promoCodePlaceholder": "Введите промокод",
+          "promoCodeTitle": "Промокод",
+          "recurringPreview": {
+            "followingWeekStarts": "Следующая неделя с",
+            "infoText": "Информация о расписании",
+            "noVisitsScheduled": "Нет запланированных визитов",
+            "notSet": "Не задано",
+            "ongoingSuffix": "(текущая)",
+            "pastSuffix": "(прошла)",
+            "title": "Предпросмотр расписания",
+            "tooSoonSuffix": "(слишком рано)",
+            "upcomingWeekOf": "Неделя с",
+            "visitLabel": "Визит"
+          },
+          "removeButton": "Удалить",
+          "scheduleSummary": {
+            "dateRangeSingleDay": "Только эта дата",
+            "endDatePrompt": "Дата окончания?",
+            "onDays": "По дням:",
+            "selectService": "Услуга не выбрана",
+            "selectStartDate": "Дата начала?",
+            "startsAt": "Начало в"
+          },
+          "scheduleTitle": "Расписание",
+          "sections": {
+            "pets": {
+              "noPetsFound": "Питомцы не найдены",
+              "title": "Кого доверим?"
+            },
+            "promo": {
+              "appliedMessage": "Промокод применен!",
+              "inputPlaceholder": "Код скидки",
+              "title": "Промокод"
+            },
+            "schedule": {
+              "durationLabel": "Длительность",
+              "firstDayLeadTimeWarning": "Заказ на первый день нужно делать заранее",
+              "leadTimeWarning": "Минимальное время до заказа",
+              "oneTime": "Разовая",
+              "oneTimeDateInstruction": "Выберите даты",
+              "recurring": "Регулярная",
+              "recurringStartDateInstruction": "Выберите дату начала регулярных визитов",
+              "repeatOnLabel": "Повторять по",
+              "title": "Когда?",
+              "visitTimeLabel": "Время визита",
+              "visitsPerDayLabel": "Визитов в день"
+            },
+            "service": {
+              "title": "Что нужно?"
+            }
+          },
+          "selectServicePlaceholder": "Выберите услугу",
+          "title": "Бронирование"
+        },
+
+        // --- PETS ---
+        petsScreen: {
+          "addPetButton": "Добавить питомца",
+          "ageNotSpecified": "Возраст не указан",
+          "breedUnknown": "Порода неизвестна",
+          "clickToAdd": "Нажмите, чтобы добавить",
+          "errorInvalidResponse": "Неверный ответ",
+          "errorLoadingPets": "Ошибка загрузки питомцев",
+          "errorNavigating": "Ошибка навигации",
+          "errorPetDataUnavailable": "Данные недоступны",
+          "errorTimeout": "Тайм-аут",
+          "loadingMore": "Загрузка...",
+          "loadingPets": "Загрузка питомцев...",
+          "noPetsAdded": "Питомцы не добавлены",
+          "title": "Мои питомцы",
+          "unnamedPet": "Без имени"
+        },
+        petTypes: {
+          "cat": "Кошка",
+          "dog": "Собака"
+        },
+        petSizes: {
+          "big": { "description": "20-40 кг", "name": "Большой" },
+          "huge": { "description": "40+ кг", "name": "Огромный" },
+          "medium": { "description": "10-20 кг", "name": "Средний" },
+          "mini": { "description": "До 5 кг", "name": "Мини" },
+          "small": { "description": "5-10 кг", "name": "Маленький" }
+        },
+        petDetail: {
+          "catsFriendly": "Ладит с кошками",
+          "dogsFriendly": "Ладит с собаками",
+          "errorMissingData": "Нет данных",
+          "errorNoData": "Данные отсутствуют",
+          "errorParsingData": "Ошибка обработки данных",
+          "infoForSitting": "Для присмотра",
+          "infoForWalking": "Для выгула",
+          "kidsFriendly": "Ладит с детьми",
+          "stayingHomeAlone": "Остается один",
+          "sterilized": "Стерилизован",
+          "titleError": "Ошибка",
+          "unnamed": "Без имени",
+          "vaccinated": "Вакцинирован"
+        },
+        petForm: {
+          "addPhoto": "Добавить фото",
+          "avatarInfoNewPhoto": "Новое фото профиля",
+          "errorAgeRequired": "Возраст обязателен",
+          "errorBreedRequired": "Порода обязательна",
+          "errorCatsFriendlyRequired": "Поле 'Ладит с кошками' обязательно",
+          "errorDeletingPhoto": "Ошибка удаления фото",
+          "errorDogsFriendlyRequired": "Поле 'Ладит с собаками' обязательно",
+          "errorGenderRequired": "Пол обязателен",
+          "errorHomeAloneRequired": "Поле 'Остается один' обязательно",
+          "errorInfoSittingRequired": "Инфо о присмотре обязательно",
+          "errorInfoWalkingRequired": "Инфо о выгуле обязательно",
+          "errorKidsFriendlyRequired": "Поле 'Ладит с детьми' обязательно",
+          "errorLoadingDataForEdit": "Ошибка загрузки данных",
+          "errorMissingIdForEdit": "Нет ID для редактирования",
+          "errorNameRequired": "Имя обязательно",
+          "errorNoDataForEdit": "Нет данных для редактирования",
+          "errorPetIdInvalid": "Неверный ID питомца",
+          "errorPetIdUnavailable": "ID питомца недоступен",
+          "errorPetTypeRequired": "Тип питомца обязателен",
+          "errorPickingImage": "Ошибка выбора изображения",
+          "errorSelectTypeFirst": "Сначала выберите тип",
+          "errorSettingNewAvatar": "Ошибка установки аватара",
+          "errorSizeRequired": "Размер обязателен",
+          "errorSterilizedRequired": "Статус стерилизации обязателен",
+          "errorSubmitEditNoPet": "Ошибка отправки",
+          "errorVaccinatedRequired": "Статус вакцинации обязателен",
+          "labelAge": "Возраст",
+          "labelBreed": "Порода",
+          "labelCatsFriendly": "Ладит с кошками",
+          "labelDogsFriendly": "Ладит с собаками",
+          "labelGender": "Пол",
+          "labelHomeAlone": "Остается один",
+          "labelInfoSitting": "Инфо для присмотра",
+          "labelInfoWalking": "Инфо для выгула",
+          "labelKidsFriendly": "Ладит с детьми",
+          "labelName": "Имя",
+          "labelPetType": "Тип питомца",
+          "labelSize": "Размер",
+          "labelSterilized": "Стерилизован",
+          "labelVaccinated": "Вакцинирован",
+          "maxPhotosReached": "Максимум фото",
+          "petAdded": "Питомец добавлен",
+          "petUpdated": "Питомец обновлен",
+          "photoInstruction": "Загрузите фото питомца",
+          "photoRemoved": "Фото удалено",
+          "placeholderInfoSitting": "Опишите нюансы присмотра",
+          "placeholderInfoWalking": "Опишите нюансы выгула",
+          "placeholderName": "Тузик",
+          "placeholderSelectBreed": "Выберите породу",
+          "placeholderSelectTypeFirst": "Сначала выберите тип",
+          "sectionAdditionalInfo": "Доп. информация",
+          "sectionBehavior": "Поведение",
+          "sectionDetails": "Детали",
+          "sectionPhotos": "Фотографии",
+          "setAsAvatarShort": "На аватар",
+          "titleAdd": "Добавить питомца",
+          "titleEdit": "Редактировать питомца",
+          "warningPhotoUploadFailed": "Ошибка загрузки фото",
+          "photoInstructionExtended": "Рекомендуем добавить четкий портрет и фото в полный рост.",
+          "homeAloneSub": "Спокойно ли ждет дома?",
+          "kidsFriendlySub": "Безопасен ли для детей?",
+          "dogsFriendlySub": "Реакция на собак?",
+          "catsFriendlySub": "Реакция на кошек?",
+          "additionalInfoHelp": "Укажите важные детали: расписание, особенности, страхи."
+        },
+        petGender: {
+          "female": "Девочка",
+          "male": "Мальчик"
+        },
+        petSterilized: {
+          "no": "Нет",
+          "yes": "Да"
+        },
+        petVaccinated: {
+          "no": "Нет",
+          "yes": "Да"
+        },
+
+        // --- REVIEWS & CHAT ---
+        reviews: {
+          "1": "Ох, нет... 🌧️",
+          "2": "Не очень 😿",
+          "3": "Нормально 😐",
+          "4": "Хорошо! 🦴",
+          "5": "Отлично! 🐾",
+          "0": "Оцените опыт",
+          "leaveReviewTitle": "Оставить отзыв",
+          "reviewLabel": "Отзыв",
+          "reviewPlaceholder": "Напишите ваш отзыв",
+          "submittedSuccess": "Отправлено успешно",
+          "alreadyReviewedInfo": "Вы уже оставили отзыв",
+          "cannotReviewYet": "Отзыв можно оставить после завершения",
+          "ratingLabel": "Ваша оценка",
+          "status": {
+            "pending": "На проверке",
+            "rejected": "Отклонен"
+          },
+          "submitButton": "Отправить отзыв",
+          "successMessage": "Ваш отзыв опубликован",
+          "successTitle": "Спасибо!",
+          "validation": {
+            "orderIdRequired": "Ошибка: ID заказа обязателен",
+            "ratingInvalid": "Некорректный формат оценки",
+            "ratingRequired": "Пожалуйста, поставьте оценку"
+          },
+          "bothReviewed": "Обе стороны оставили отзыв",
+          "youReviewedExpired": "Вы оставили отзыв (Срок истек)",
+          "periodExpired": "Срок отзыва истек",
+          "workerLeftReviewTitle": "Исполнитель оставил отзыв!",
+          "workerLeftReviewBody": "Напишите свой, чтобы увидеть его. Осталось дней: {{days}}.",
+          "timeLeftToReview": "Осталось дней на отзыв: {{days}}",
+          "reviewsVisible": "Отзывы теперь видны",
+          "waitingForWorker": "Ждем отзыв исполнителя (дней: {{days}})",
+          "clientReviewLabel": "Ваш отзыв",
+          "workerReviewLabel": "Отзыв исполнителя",
+          "clientHasReviewed": "Клиент оставил вам отзыв!",
+          "expiresInHours": "Осталось {{hours}} ч",
+          "expiresInDays": "Осталось {{days}} дн"
+        },
+        inbox: {
+          "title": "Чат",
+          "noMessages": "Нет сообщений",
+          "typingIndicator": "Печатает...",
+          "loginPrompt": "Войдите или зарегистрируйтесь, чтобы просмотреть свои диалоги.",
+          "noAccountPrompt": "Еще нет аккаунта?",
+          "noDialogues": "У вас пока нет диалогов.\nНачните общаться!",
+          "supportTeamDefaultName": "Команда поддержки",
+          "systemMessagePrefix": "Система: ",
+          "sectionTitleSupport": "Поддержка",
+          "sectionTitleActiveChats": "Активные чаты",
+          "sectionTitleOtherChats": "Другие чаты",
+          "loadingChats": "Загрузка чатов...",
+          "file": "Файл",
+          "photo": "Фото",
+          "startConversationPrompt": "Начать диалог",
+          "video": "Видео"
+        },
+        chat: {
+          "replyBar": {
+            "photoPrefix": "Фото",
+            "videoPrefix": "Видео",
+            "attachmentPrefix": "Вложение"
+          },
+          "defaultPartnerName": "Собеседник",
+          "typingIndicator": "печатает...",
+          "error": "Ошибка",
+          "errorPicker": "Не удалось выбрать файлы.",
+          "copy": "Копировать",
+          "delete": "Удалить",
+          "messageFailed": "Ошибка сообщения",
+          "messageOptions": "Опции сообщения",
+          "reply": "Ответить",
+          "retry": "Повторить",
+          "sending": "Отправка...",
+          "inputPlaceholder": "Напишите сообщение..."
+        },
+
+        // --- MISC & TESTS ---
+        updates: {
+          "availableMessage": "Доступна новая версия",
+          "availableTitle": "Обновление"
+        },
+        walkTracker: {
+          "live": "LIVE"
+        },
+        aviaScreenTitle_Final: "Авиабилеты",
+        aviaTitle_Final: "Билеты Aviasales",
+        aviaCashbackConditionTitle_Final: "Как получить кэшбэк (Важно!)",
+        aviaCashbackCondition1_Final: "⚠️ Покупка должна полностью пройти в нашем приложении!\n\nЕсли вы перейдете в приложение Aviasales — покупка не засчитается, и кэшбэк начислен не будет. Не уходите из этого окна.",
+        aviaCashbackConditionTransparency_Final: "Мы возвращаем 100% комиссии вам. Цены такие же, как на Aviasales.",
+        aviaCashbackConditionWarning_Final: "Внимание! Кэшбэк не будет начислен, если откроется приложение Aviasales. Оставайтесь в браузере или в этом окне.",
+        aviaCashback_Badge_Clear_Final: "Кешбэк 1-3%",
+        loadingText_Final: "Загрузка...",
+        attention_Title: "Важно!",
+        continue_browser: "Понятно, открыть",
+        futurePartnersText_Final: "Скоро: больше партнеров с кешбэком",
+        partnerSectionTitle_Final: "Партнеры и Кешбэк",
+
+        passTest: {
+          "defaultHeaderTitle": "Квалификационный тест",
+          "errorNoTestId": "ID теста не предоставлен. Невозможно загрузить тест.",
+          "errorLoadingStructure": "Не удалось загрузить структуру теста. Пожалуйста, попробуйте снова.",
+          "errorPlayingAudio": "Ошибка воспроизведения аудио. Проверьте файл или ваше соединение.",
+          "errorPlayingAudioDetails": "Не удалось воспроизвести аудио: {{details}}",
+          "errorPlayingVideoDetails": "Не удалось воспроизвести видео: {{details}}",
+          "errorNoQuestions": "Для этого теста не найдено вопросов.",
+          "errorMediaNotCompleted": "Пожалуйста, прослушайте/просмотрите весь медиаконтент перед ответом.",
+          "errorAnswerAllQuestions": "Пожалуйста, ответьте на все вопросы перед отправкой.",
+          "submissionSuccess": "Ваши ответы успешно отправлены!",
+          "submissionFailed": "Ваши ответы отправлены, но тест не пройден.",
+          "errorSubmittingAnswers": "Не удалось отправить ответы. Пожалуйста, попробуйте снова.",
+          "noTestStructure": "Данные теста недоступны или тест не содержит разделов.",
+          "mediaStartPromptWithType": "Пожалуйста, запустите {{type}}, чтобы разблокировать вопросы.",
+          "mediaInProgressListenFull": "Пожалуйста, прослушайте/просмотрите {{type}} полностью, чтобы ответить.",
+          "mediaCompletedCanAnswer": "Теперь вы можете ответить на вопросы ниже.",
+          "questionsLockedFull": "Пожалуйста, прослушайте/просмотрите весь {{mediaType}} перед тем, как отвечать на вопросы.",
+          "submitAnswers": "Отправить ответы"
+        },
+        testOverview: {
+          "headerTitle": "Ваши тесты",
+          "mainTitleFull": "Квалификационные и сервисные тесты",
+          "mainSubtitleFull": "Пройдите эти тесты, чтобы продолжить работу с заявкой и получить доступ к услугам.",
+          "errorFetchingTests": "Не удалось загрузить назначенные вам тесты. Пожалуйста, повторите попытку.",
+          "noMoreAttemptsTitle": "Попытки закончились",
+          "noMoreAttemptsMessage": "Вы использовали все доступные попытки для этого теста.",
+          "sectionsInTest": "Содержание ({{count}} разделов):",
+          "moreSections": "ещё разделы",
+          "forService": "Для услуги:",
+          "generalTestsTitle": "Общие знания и правила платформы",
+          "serviceTestsTitle": "Навыки для конкретных услуг",
+          "serviceTestsSubtitle": "Прохождение этих тестов позволит вам предлагать соответствующие услуги.",
+          "noTestsAssignedTitle": "Пока всё в порядке!",
+          "noTestsAssignedMessage": "На данном этапе вам не назначено тестов, или вы уже завершили все необходимые тесты.",
+          "allTestsCompletedMessage": "Поздравляем! Все необходимые тесты для этого этапа завершены.",
+          "backToApplicationStatus": "Проверить статус заявки",
+          "attemptsLeft": "Осталось попыток: {{count}}",
+          "noAttemptsLeft": "Попыток не осталось",
+          "unlimitedAttempts": "Безлимитные попытки"
+        },
+        testStatusPill: {
+          "passed": "ПРОЙДЕНО",
+          "failed_can_retake": "ПЕРЕСДАТЬ",
+          "failed_no_retake": "НЕ ПРОЙДЕНО",
+          "pending_submission": "К СДАЧЕ"
+        },
+        test_status_messages: {
+          "activation_requires_defined_test": "Активация услуги невозможна, так как для нее не определен соответствующий тест или информация о тесте недоступна.",
+          "unknown_test_status": "Статус теста для этой услуги неизвестен. Активация может быть невозможна.",
+          "not_defined_for_service": "Не определено для услуги"
+        },
+
+        // --- SUBSCRIPTION & OFFERS ---
+        subscription: {
+          "featureTopPlacementTitleV3_marketing": "Приоритет в Поиске",
+          "featureTopPlacementDescV3_marketing": "Ваша анкета будет показываться выше других исполнителей.",
+          "featureZeroCommissionTitleV3_marketing": "0% Комиссия Сервиса",
+          "featureZeroCommissionDescV3_marketing": "Забирайте 100% от стоимости заказа себе.",
+          "featureExtraPromotionTitleV3_marketing": "Дополнительное Продвижение",
+          "featureExtraPromotionDescV3_marketing": "Мы будем активнее рекомендовать вашу анкету клиентам.",
+          "featureExclusiveOrdersTitleV3_marketing": "Эксклюзивные Заказы",
+          "featureExclusiveOrdersDesc_marketing": "Доступ к заказам, невидимым для исполнителей без подписки.",
+          "featurePremiumBadgeTitleV3_marketing": "Значок \"Premium\"",
+          "featurePremiumBadgeDescV3_marketing": "Выделитесь среди других и повысьте доверие клиентов.",
+          "specialOfferTitle_marketing": "СУПЕР ЦЕНА!",
+          "offerPrice_marketing": "Всего {{price}}",
+          "offerExpiresIn_marketing": "До конца акции: {{time}}",
+          "featuresTitleV3_marketing": "Что вы получите:",
+          "savePercentShort_marketing": "Экономия {{percent}}%",
+          "authorizationInfoV2": "Средства будут зарезервированы на вашей карте сейчас. Списание произойдет только после одобрения вашей анкеты. Если анкета не будет одобрена, авторизация будет отменена, и средства вернутся на карту.",
+          "autoRenewAndCancelHereInfoV2": "Автопродление, отмена здесь",
+          "cancelButton": "Отменить",
+          "cancelConfirmMessage": "Вы уверены, что хотите отменить подписку?",
+          "cancelConfirmTitle": "Отмена подписки",
+          "cancelSuccessMessage": "Подписка отменена",
+          "currentStatusTitle": "Текущий статус",
+          "fastPaybackMonthly": "Быстрая окупаемость (мес)",
+          "fastPaybackYearly": "Быстрая окупаемость (год)",
+          "featureExclusiveOrdersDesc": "Эксклюзивные заказы",
+          "featureExclusiveOrdersTitle": "Эксклюзив",
+          "featureExtraPromotionDescV2": "Доп. продвижение",
+          "featureExtraPromotionTitle": "Продвижение",
+          "featurePremiumBadgeDescV2": "Бейдж Премиум",
+          "featurePremiumBadgeTitle": "Премиум",
+          "featureTopPlacementDescV3": "Топ размещение",
+          "featureTopPlacementTitle": "Топ",
+          "featureZeroCommissionDescV2": "0% Комиссия",
+          "featureZeroCommissionTitle": "Без комиссии",
+          "featuresTitle": "Возможности",
+          "monthly": "Ежемесячно",
+          "monthlyOnly": "Только месяц",
+          "nextPaymentAmountLabel": "След. платеж",
+          "nextPaymentLabel": "Дата след. платежа",
+          "noActivePlansInCurrency": "Нет активных планов в валюте",
+          "noPlansAvailable": "Нет доступных планов",
+          "noPlansAvailableContactSupport": "Нет планов, свяжитесь с поддержкой",
+          "noPlansTitle": "Нет планов",
+          "offerExpiresIn": "Предложение истекает через",
+          "offerPrice": "Предложенная цена",
+          "paywallSubtitleV3": "Разблокируйте все возможности",
+          "paywallTitleV3": "Премиум доступ",
+          "planLabel": "План",
+          "reactivateButton": "Возобновить",
+          "reactivateConfirmMessagePlan": "Возобновить этот план?",
+          "reactivateConfirmTitle": "Возобновление",
+          "reactivateSuccessMessage": "Подписка возобновлена",
+          "renewsOnLabel": "Продлевается",
+          "savingsPrefix": "Выгода",
+          "screenTitle": "Подписка",
+          "specialOfferTitle": "Спецпредложение",
+          "statusLabel": "Статус",
+          "subscribeMonthCTA": "Подписаться на месяц",
+          "subscribeSuccessMessage": "Вы успешно подписались!",
+          "subscribeYearCTA": "Подписаться на год",
+          "termsLinkV2": "Условия",
+          "upgradeTitle": "Обновить подписку",
+          "validUntilLabel": "Действует до",
+          "yearly": "Ежегодно",
+          "yearlyOnly": "Только год"
+        },
+        offerSubscription: {
+          "headerTitle_marketing": "Увеличьте свой доход!",
+          "pageTitleV3_marketing": "🚀 Раскройте Полный Потенциал!",
+          "pageSubtitleV3_marketing": "Получайте больше заказов и зарабатывайте больше с премиум-статусом.",
+          "getOfferButton_marketing": "Получить Скидку!",
+          "subscribeButton_marketing": "Активировать Премиум",
+          "skipButtonV3_marketing": "Продолжить без премиума",
+          "skipConfirmTitle_marketing": "Уверены, что хотите пропустить?",
+          "skipConfirmMessage_marketing": "Премиум-подписка открывает больше возможностей для заработка.",
+          "skipAnyway_marketing": "Пропустить"
+        },
+        mobileAppPromo: {
+          sectionTitle: "Ваш питомец под надёжной опекой — всегда и везде с приложением PetsOk!",
+          sectionSubtitle: "Забудьте о переживаниях! Наше приложение — это ваш личный ключ к миру проверенных ситтеров, удобного бронирования и полного контроля над благополучием вашего любимца.",
+          featuresTitle: "Почему PetsOk в телефоне — это удобно:",
+          features: {
+            search: "Мгновенный поиск идеального ситтера",
+            chat: "Прямая связь с ситтером в любое время",
+            photos: "Фото- и видеоотчеты о вашем питомце",
+            manage: "Управление заказами в пару кликов"
+          },
+          ctaText: "Подарите себе спокойствие, а питомцу – лучшую заботу. Скачайте приложение PetsOk прямо сейчас!",
+          availabilityNote: "Бесплатно для iOS и Android",
+          videoAlt: "Демонстрация возможностей мобильного приложения PetsOk",
+          scanToDownloadStrong: "Сканируйте",
+          scanToDownloadRest: " и начните!"
+        },
+        mobileApp: {
+          downloadIOS: "Загрузить из App Store",
+          downloadIOSShort: "App Store",
+          downloadAndroid: "Загрузить из Google Play",
+          downloadAndroidShort: "Google Play"
+        },
+        appRedirect: {
+          pageTitle: "Загрузите приложение PetsOk",
+          title: "Загрузите наше приложение",
+          subtitle: "Для лучшего опыта используйте мобильное приложение PetsOk. Отсканируйте QR-код или выберите ваш магазин.",
+          redirecting: "Перенаправляем в магазин приложений..."
+        },
+
+        // --- ERRORS & MESSAGES ---
+        errors: {
+          "fetchOrdersError": "Ошибка загрузки ваших заказов.",
+          "fetchPaymentDataError": "Не удалось загрузить данные об оплате.",
+          "submitReviewError": "Не удалось отправить отзыв.",
+          "paymentFailedError": "Платеж не удался. Пожалуйста, попробуйте снова или свяжитесь с поддержкой.",
+          "getVerificationUrlError": "Не удалось получить URL для верификации.",
+          "fetchPaymentMethodsError": "Не удалось загрузить способы оплаты.",
+          "genericError": "Произошла непредвиденная ошибка.",
+          "cannotRespondToInvite": "Невозможно ответить на приглашение",
+          "fetchDashboardErrorTitle": "Ошибка панели управления",
+          "fetchGenericError": "Ошибка загрузки",
+          "genericErrorLoadingData": "Ошибка загрузки данных",
+          "invalidActivityData": "Неверные данные активности",
+          "missingRequiredData": "Отсутствуют обязательные данные",
+          "navigationError": "Ошибка навигации",
+          "orderIdNotFound": "ID заказа не найден",
+          "missingOrderId": "Отсутствует ID Заказа",
+          "invalidApiResponse": "Неверный ответ API",
+          "apiError": "Произошла ошибка. Пожалуйста, попробуйте снова.",
+          "chatError": "Не удалось открыть чат. Пожалуйста, попробуйте снова.",
+          "fetchOrderDetailsError": "Не удалось загрузить детали заказа.",
+          "errorTitle": "Ошибка",
+          "cannotOpenLink": "Не удается открыть эту ссылку.",
+          "refreshError": "Не удалось обновить данные. Пожалуйста, попробуйте снова.",
+          "authenticationRequired": "Требуется аутентификация.",
+          "fetchDashboardError": "Не удалось загрузить данные панели управления.",
+          "fetchActiveOrdersError": "Не удалось загрузить активные заказы.",
+          "fetchActivityError": "Не удалось загрузить ленту активности.",
+          "invalidOfferPrice": "Пожалуйста, введите корректную цену (0 или больше).",
+          "mustBeLoggedIn": "Вы должны войти в систему, чтобы просмотреть эту страницу.",
+          "loadingDataError": "Ошибка загрузки данных.",
+          "subscribeError": "Не удалось оформить подписку. Пожалуйста, попробуйте снова.",
+          "alreadySubscribedOrProcessing": "Вы уже подписаны или подписка находится в обработке.",
+          "paymentMethodNotFound": "Способ оплаты не найден. Пожалуйста, добавьте или обновите ваш способ оплаты.",
+          "planNotFoundOrUnavailable": "План подписки не найден или недоступен.",
+          "paymentFailedGeneric": "Платеж не удался. Пожалуйста, проверьте ваши платежные данные или попробуйте другую карту.",
+          "cancelSubscriptionError": "Не удалось отменить подписку. Пожалуйста, попробуйте снова.",
+          "subscriptionNotFoundToCancel": "Активная подписка для отмены не найдена.",
+          "subscriptionCannotBeCancelled": "Эту подписку нельзя отменить в данный момент.",
+          "reactivateSubscriptionError": "Не удалось повторно активировать подписку. Пожалуйста, попробуйте снова.",
+          "invalidOrderId": "Неверный ID заказа.",
+          "cannotOpenMapApp": "Не удалось открыть приложение карт.",
+          "missingDataForAction": "Отсутствуют необходимые данные для выполнения этого действия.",
+          "chatApiResponseError": "Не удалось инициализировать чат. Неверный ответ от сервера.",
+          "generic": "Произошла непредвиденная ошибка. Пожалуйста, попробуйте снова."
+        },
+        errorMessages: {
+          "cityLoadError": "Ошибка загрузки городов",
+          "countryLoadError": "Ошибка загрузки стран",
+          "enterCityError": "Введите город",
+          "imageUploadError": "Ошибка загрузки изображения",
+          "selectCountryCityError": "Выберите страну и город",
+          "selectCountryForCustomCity": "Выберите страну для города"
+        },
+        apiErrors: {
+          "fileDeleteFailed": "Ошибка удаления файла"
+        },
+        mediaPicker: {
+          "filePickerError": "Ошибка выбора файла",
+          "limitReached": "Лимит достигнут"
+        },
+
+        // --- LINKS ---
+        links: {
+          "subscriptionTerms": "https://petsok.com/ru/subscription-terms",
+          "cancellationPolicy": "https://petsok.ru/cancellation-policy",
+          "subscriptionTermsFull": "https://petsok.com/ru/subscription-terms"
+        },
+
+        // --- HOMEPAGE HERO ---
         hero: {
           welcome: "Поиск проверенных ситтеров для передержки и выгула",
           heroDescription: "Никаких клеток и вольеров. Только заботливая передержка в уютной домашней обстановке.",
-          // --- НОВЫЕ КЛЮЧИ ---
           orDivider: "ИЛИ",
           createRequestTitle: "Создать заявку",
           createRequestSub: "Опишите задачу — ситтеры сами откликнутся",
@@ -562,336 +2387,6 @@ i18n.use(initReactI18next).init({
           step2: { title: "Выберите ситтера", desc: "Изучите профили, отзывы или просто ожидайте откликов." },
           step3: { title: "Бронируйте и отдыхайте!", desc: "Подтвердите бронь и наслаждайтесь спокойствием, зная, что о питомце позаботятся." }
         },
-        mobileAppPromo: {
-          sectionTitle: "Ваш питомец под надёжной опекой — всегда и везде с приложением PetsOk!",
-          sectionSubtitle: "Забудьте о переживаниях! Наше приложение — это ваш личный ключ к миру проверенных ситтеров, удобного бронирования и полного контроля над благополучием вашего любимца.",
-          featuresTitle: "Почему PetsOk в телефоне — это удобно:",
-          features: {
-            search: "Мгновенный поиск идеального ситтера",
-            chat: "Прямая связь с ситтером в любое время",
-            photos: "Фото- и видеоотчеты о вашем питомце",
-            manage: "Управление заказами в пару кликов"
-          },
-          ctaText: "Подарите себе спокойствие, а питомцу – лучшую заботу. Скачайте приложение PetsOk прямо сейчас!",
-          availabilityNote: "Бесплатно для iOS и Android",
-          videoAlt: "Демонстрация возможностей мобильного приложения PetsOk",
-          scanToDownloadStrong: "Сканируйте",
-          scanToDownloadRest: " и начните!"
-        },
-        mobileApp: {
-          downloadIOS: "Загрузить из App Store",
-          downloadIOSShort: "App Store",
-          downloadAndroid: "Загрузить из Google Play",
-          downloadAndroidShort: "Google Play"
-        },
-        becomeSitter: {
-          heroBadge: "Работа мечты для любителей животных",
-          heroTitle: "Зарабатывай,\nиграя с питомцами",
-          heroSubtitle: "Преврати любовь к животным в стабильный доход. Твой график, твои цены, твои правила.",
-          ctaButton: "Стать ситтером",
-          earningsLabel: "Твой потенциальный доход",
-          earningsAmount: "40 000 ₽+",
-          earningsNote: "Средний заработок активных ситтеров",
-
-          // Секция преимуществ
-          benefitsTitle: "Почему выбирают нас?",
-
-          // Главное преимущество (0% комиссии)
-          benefit1Title: "Доход 100% твой",
-          benefit1Desc: "Уникальное условие на рынке: 0% комиссии с заказов. Ты получаешь ровно столько, сколько установил в прайсе.",
-
-          benefit2Title: "Свобода действий",
-          benefit2Desc: "Сам выбирай, кого брать: только маленьких собак, кошек или всех подряд.",
-
-          benefit3Title: "Безопасность",
-          benefit3Desc: "Проверенные клиенты, поддержка 24/7 и защита на случай экстренных ситуаций.",
-
-          benefit4Title: "Клиенты ждут",
-          benefit4Desc: "Тысячи владельцев ищут надежного друга для своего питомца прямо сейчас.",
-
-          stepsTitle: "Как начать зарабатывать?",
-          step1Title: "Создать профиль",
-          step1Desc: "Заполни анкету: расскажи о себе, загрузи фото и укажите цены.",
-          step2Title: "Пройти проверку",
-          step2Desc: "Мы быстро проверим данные, чтобы клиенты могли тебе доверять.",
-          step3Title: "Принимать заказы",
-          step3Desc: "Получай заявки в приложении, общайся и зарабатывай!",
-
-          trustFooter: "Ваши данные в безопасности. Мы не передаем личную информацию третьим лицам.",
-
-          // App Preview Section
-          appPreviewTitle: "Весь бизнес в твоем кармане",
-          appPreviewSubtitle: "Мы сделали приложение, в котором удобно управлять заказами и следить за ростом дохода.",
-          appFeature1Title: "Входящие заявки",
-          appFeature1Desc: "Клиенты сами пишут тебе. Выбирай интересные заказы.",
-          appFeature2Title: "Статистика дохода",
-          appFeature2Desc: "Следи, как растет твой заработок в реальном времени.",
-          appFeature3Title: "Выплаты по понедельникам",
-          appFeature3Desc: "Деньги поступают на карту регулярно и без задержек."
-        },
-        sitterSafety: {
-          title: "Безопасность превыше всего. Всегда.",
-          subtitle: "Мы неустанно работаем, чтобы хвосты продолжали вилять, а владельцы питомцев были спокойны.",
-          guarantee: "Каждая услуга, которую вы предлагаете на PetsOk, поддерживается Гарантией PetsOk.",
-          payments: "Безопасные и удобные онлайн-платежи.",
-          checks: "Возможность прохождения общей проверки биографии для каждого ситтера.",
-          supportTeamUpdated: "Наша команда поддержки всегда готова помочь вам 24/7.",
-          education: "Постоянное обучение и ресурсы по уходу за питомцами для ситтеров."
-        },
-        sitterFlexibility: {
-          title: "Гибкость дает вам контроль",
-          feature1: "Устанавливайте собственный график и доступность",
-          feature2: "Предлагайте любую комбинацию услуг по уходу за питомцами",
-          feature3: "Определяйте размер, возраст и другие предпочтения по питомцам, с которыми вы готовы работать",
-          quoteText: "Это легко. Я просто захожу в календарь и отмечаю себя доступной, когда хочу.",
-          quoteAuthor: "Ирина С."
-        },
-        sitterHowItWorks: {
-          sectionTitle: "Как это работает для ситтеров",
-          step1: {
-            title: "Создайте свой профиль",
-            desc: "Продемонстрируйте свой опыт и любовь к питомцам. Мы поможем создать профиль, который заметят."
-          },
-          step2: {
-            title: "Получите первый заказ",
-            desc: "Вы устанавливаете свою доступность и цены. Мы будем присылать вам запросы от владельцев."
-          },
-          step3: {
-            title: "Получайте оплату. Это просто!",
-            desc: "Деньги поступят на ваш счет уже через два дня после успешного выполнения услуги."
-          },
-          step4: {
-            title: "Наслаждайтесь процессом",
-            desc: "Проводите время с замечательными питомцами и получайте позитивные эмоции."
-          }
-        },
-        sitterTools: {
-          title: "Инструменты для вашего успеха",
-          specialConditions: {
-            title: "0% Комиссии",
-            desc: "Вы получаете ровно столько, сколько установили. Никаких скрытых сборов."
-          },
-          app: {
-            title: "Удобное приложение",
-            desc: "Управляйте заказами, календарем и общайтесь с клиентами в одном месте."
-          },
-          support: {
-            titleUpdated: "Команда поддержки",
-            descUpdated: "Мы всегда на связи, чтобы помочь с любыми вопросами."
-          },
-          imageAlt: "Инструменты для ситтеров PetsOk",
-          quoteText: "Благодаря приложению PetsOk, я мгновенно узнаю о запросах и быстро отвечаю!",
-          quoteAuthor: "Елена К."
-        },
-        whatYouCanOffer: {
-          sectionTitleUpdated: "Выберите свои услуги – управляйте доходом",
-          sectionSubtitleUpdated: "PetsOk предлагает гибкость: вы сами решаете, какие услуги оказывать, и устанавливаете на них цены. Больше услуг – больше возможностей заработать!",
-          boarding: {
-            title: "Домашняя передержка",
-            descUpdated: "Создайте уютную атмосферу для питомцев у себя дома. Идеально, если у вас есть свободное пространство и любовь к животным."
-          },
-          walking: {
-            title: "Прогулки с собаками",
-            descUpdated: "Дарите радость активным собакам и их хозяевам. Отличный способ поддерживать форму и зарабатывать."
-          },
-          daycare: {
-            title: "Дневная няня",
-            descUpdated: "Присматривайте за питомцами в течение дня. Помогите хозяевам, которые не хотят оставлять любимцев одних."
-          },
-          homevisits: {
-            title: "Визиты на дом к питомцу",
-            descUpdated: "Посещайте питомцев в их привычной обстановке для кормления, игр и коротких прогулок. Удобно и востребовано!"
-          }
-        },
-
-        wallet: {
-          title: "Финансы",
-          balanceTitle: "Текущий баланс",
-          cardsTitle: "Способы оплаты",
-          historyTitle: "История операций",
-          addCard: "Добавить карту",
-          noCards: "Нет привязанных карт",
-          noTransactions: "История операций пуста",
-          defaultCard: "Основная",
-          expires: "Годен до",
-          deleteCardConfirm: "Удалить карту?",
-          income: "Поступление",
-          outcome: "Списание",
-          processing: "Обработка...",
-          status: {
-            pending: "В ожидании",
-            success: "Успешно",
-            failed: "Ошибка"
-          }
-        },
-        sitterSettings: {
-          title: "Настройки исполнителя",
-          tabs: {
-            services: "Услуги и цены",
-            profile: "Анкета и фото"
-          },
-          services: {
-            basePrice: "Базовая цена",
-            unit: "За",
-            active: "Активно",
-            inactive: "Неактивно",
-            testRequired: "Требуется тест",
-            save: "Сохранить настройки",
-            successSaved: "Настройки услуг сохранены"
-          },
-          profile: {
-            mainInfo: "Основная информация",
-            titleLabel: "Заголовок профиля",
-            titlePlaceholder: "Например: Опытный догситтер рядом с парком",
-            aboutLabel: "О себе",
-            aboutPlaceholder: "Расскажите о своем опыте...",
-            experienceLabel: "Опыт (лет)",
-            conditions: "Условия",
-            kidsLabel: "Есть дети до 12 лет",
-            supervisionLabel: "Постоянный присмотр 24/7",
-            media: "Фото и Видео",
-            mediaHint: "Загрузите фото себя и условий содержания. Первое фото будет главным.",
-            uploadBtn: "Загрузить",
-            saveProfile: "Сохранить профиль",
-            successProfile: "Профиль успешно обновлен"
-          }
-        },
-
-        // --- ПОИСК ---
-        search: {
-          location_placeholder: "Район или адрес",
-          loading: "Поиск...",
-          noResults: "Никого не найдено в этой области.",
-          placeholders: {
-            boarding: "В каком районе искать ситтера?",
-            walking: "В каком районе нужен выгул?",
-            doggy_day_care: "Где нужна дневная няня?",
-            drop_in_visit: "Куда должен приехать ситтер?",
-            house_sitting: "Где требуется присмотр?",
-          }
-        },
-        searchResults: {
-          foundCount: "Найдено {{count}} ситтеров",
-          subtext: "Проверенные ситтеры рядом с вами"
-        },
-        sitterCard: {
-          price_on_request: "По запросу",
-          price_from_label: "от ",
-          repeat_clients: "повторных",
-          no_reviews_yet: "Нет отзывов"
-        },
-        exploreHeader: {
-          whereToSearchPlaceholder: "Где",
-          anyService: "Любая услуга",
-          filtersAppliedShort: "{{count}} фильтров",
-          anyPetPlaceholderShort: "Любой питомец"
-        },
-        SearchSitterItem: {
-          searchButtonText: "Найти"
-        },
-
-        // --- ПИТОМЦЫ ---
-        petsScreen: {
-          title: "Мои питомцы",
-          noPetsAdded: "У вас пока нет питомцев",
-          clickToAdd: "Нажмите кнопку, чтобы добавить первого!",
-          addPetButton: "Добавить питомца",
-          ageNotSpecified: "Возраст не указан",
-          unnamedPet: "Без клички",
-          breedUnknown: "Порода не указана",
-          loadingPets: "Загружаем питомцев...",
-          loadingMore: "Подгрузка...",
-          errorLoadingPets: "Не удалось загрузить питомцев",
-          errorInvalidResponse: "Ошибка ответа сервера"
-        },
-        petTypes: {
-          dog: "Собака",
-          cat: "Кошка"
-        },
-        petSizes: {
-          mini: { name: "Мини", description: "До 5 кг" },
-          small: { name: "Маленький", description: "5-10 кг" },
-          medium: { name: "Средний", description: "10-20 кг" },
-          big: { name: "Большой", description: "20-40 кг" },
-          huge: { name: "Гигант", description: "40+ кг" }
-        },
-        petForm: {
-          titleAdd: "Добавить питомца",
-          titleEdit: "Редактировать",
-          sectionPhotos: "Фотографии",
-          sectionDetails: "Детали",
-          sectionBehavior: "Характер и привычки",
-          sectionAdditionalInfo: "Дополнительно",
-          labelPetType: "Тип",
-          labelName: "Кличка",
-          labelBreed: "Порода",
-          labelGender: "Пол",
-          labelSize: "Размер",
-          labelAge: "Возраст",
-          labelSterilized: "Стерилизован?",
-          labelVaccinated: "Вакцинирован?",
-          labelHomeAlone: "Остается один?",
-          labelKidsFriendly: "Ладит с детьми?",
-          labelDogsFriendly: "Ладит с собаками?",
-          labelCatsFriendly: "Ладит с кошками?",
-          labelInfoSitting: "Для передержки",
-          labelInfoWalking: "Для выгула",
-          placeholderName: "Например, Бобик",
-          placeholderSelectBreed: "Выберите породу",
-          placeholderSelectTypeFirst: "Сначала тип питомца",
-          placeholderInfoSitting: "Особенности питания, выгула...",
-          placeholderInfoWalking: "Тянет поводок, боится машин...",
-          photoInstructionExtended: "Рекомендуем добавить четкий портрет и фото в полный рост.",
-          addPhoto: "Добавить",
-          setAsAvatarShort: "Главная",
-          avatarInfoNewPhoto: "Главное фото обновится после сохранения.",
-          errorPetIdUnavailable: "ID питомца не получен.",
-          warningPhotoUploadFailed: "Питомец сохранен, но фото не загрузились.",
-          petAdded: "Питомец добавлен.",
-          petUpdated: "Питомец обновлен.",
-          errorSubmitEditNoPet: "Ошибка данных редактирования",
-          errorPetTypeRequired: "Выберите тип питомца",
-          errorNameRequired: "Укажите кличку",
-          errorBreedRequired: "Выберите породу",
-          errorGenderRequired: "Укажите пол",
-          errorSizeRequired: "Укажите размер",
-          errorAgeRequired: "Укажите возраст",
-          errorSterilizedRequired: "Обязательное поле",
-          errorVaccinatedRequired: "Обязательное поле",
-          errorHomeAloneRequired: "Обязательное поле",
-          errorKidsFriendlyRequired: "Обязательное поле",
-          errorDogsFriendlyRequired: "Обязательное поле",
-          errorCatsFriendlyRequired: "Обязательное поле",
-          errorInfoSittingRequired: "Обязательное поле",
-          errorInfoWalkingRequired: "Обязательное поле",
-          maxPhotosReached: "Максимум 10 фото",
-          errorPickingImage: "Ошибка выбора фото",
-          photoRemoved: "Фото удалено",
-          errorDeletingPhoto: "Не удалось удалить фото",
-          homeAloneSub: "Спокойно ли ждет дома?",
-          kidsFriendlySub: "Безопасен ли для детей?",
-          dogsFriendlySub: "Реакция на собак?",
-          catsFriendlySub: "Реакция на кошек?",
-          additionalInfoHelp: "Укажите важные детали: расписание, особенности, страхи."
-        },
-        petDetail: {
-          titleError: "Ошибка",
-          errorParsingData: "Не удалось загрузить данные",
-          petNotFound: "Питомец не найден или удален",
-          errorNoData: "Нет данных",
-          infoForSitting: "Информация для передержки",
-          infoForWalking: "Информация для выгула",
-          vaccinated: "Вакцинирован?",
-          sterilized: "Стерилизован?"
-        },
-
-        // --- Апп Редирект ---
-        appRedirect: {
-          pageTitle: "Загрузите приложение PetsOk",
-          title: "Загрузите наше приложение",
-          subtitle: "Для лучшего опыта используйте мобильное приложение PetsOk. Отсканируйте QR-код или выберите ваш магазин.",
-          redirecting: "Перенаправляем в магазин приложений..."
-        }
       },
     },
   },

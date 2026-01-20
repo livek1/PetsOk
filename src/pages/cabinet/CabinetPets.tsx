@@ -18,8 +18,10 @@ const CabinetPets: React.FC = () => {
 
     const loadPets = async () => {
         try {
-            const data = await getMyPets();
-            setPets(data);
+            const response = await getMyPets();
+            // Обработка структуры { data: [...] }
+            const data = response.data || response;
+            setPets(Array.isArray(data) ? data : []);
         } catch (e) {
             console.error(e);
         } finally {
@@ -27,10 +29,10 @@ const CabinetPets: React.FC = () => {
         }
     };
 
-    if (loading) return <div>{t('loading')}</div>;
+    if (loading) return <div className={style.loader}>{t('loading')}</div>;
 
     return (
-        <div>
+        <div className={style.container}>
             <div className={style.headerRow}>
                 <h1>{t('cabinet.pets', 'Мои питомцы')}</h1>
                 <Link to="/cabinet/pets/add" className={style.addButton}>
@@ -41,7 +43,7 @@ const CabinetPets: React.FC = () => {
 
             {pets.length === 0 ? (
                 <div className={style.emptyState}>
-                    <div style={{ fontSize: '40px', marginBottom: '10px' }}>🐾</div>
+                    <div className={style.emptyIcon}>🐾</div>
                     <h3>{t('petsScreen.noPetsAdded', 'У вас пока нет питомцев')}</h3>
                     <p>{t('petsScreen.clickToAdd', 'Нажмите кнопку, чтобы добавить первого!')}</p>
                 </div>
@@ -63,7 +65,7 @@ const CabinetPets: React.FC = () => {
 
                             <div className={style.petInfo}>
                                 <h3>{pet.name}</h3>
-                                <p>
+                                <p className={style.petBreed}>
                                     {pet.type?.data?.name || (pet.type_id === 1 ? t('petTypes.dog') : t('petTypes.cat'))}
                                     {pet.breed?.data?.name ? `, ${pet.breed.data.name}` : ''}
                                 </p>
@@ -80,8 +82,8 @@ const CabinetPets: React.FC = () => {
 };
 
 export const getAgeString = (y: number | undefined, m: number | undefined, t: any) => {
-    if (!y && !m) return '';
-    const parts: string[] = []; // --- FIX: Явная типизация ---
+    if (!y && !m) return t('petsScreen.ageNotSpecified', 'Возраст не указан');
+    const parts: string[] = [];
     if (y) parts.push(`${y} ${t('common.years_short', 'л.')}`);
     if (m) parts.push(`${m} ${t('common.months_short', 'мес.')}`);
     return parts.join(' ');

@@ -1,10 +1,12 @@
-// --- File: src/pages/cabinet/CabinetPetDetails.tsx ---
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import style from '../../style/pages/cabinet/CabinetPetForm.module.scss';
 import { getPetById, deletePet, Pet } from '../../services/api';
 import { getAgeString } from './CabinetPets';
+
+// Иконки SVG
+const BackIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>;
 
 const CabinetPetDetails: React.FC = () => {
     const { id } = useParams();
@@ -13,13 +15,21 @@ const CabinetPetDetails: React.FC = () => {
     const [pet, setPet] = useState<Pet | null>(null);
 
     useEffect(() => {
-        if (id) getPetById(id).then(setPet).catch(console.error);
+        if (id) {
+            getPetById(id).then(response => {
+                setPet(response.data || response);
+            }).catch(console.error);
+        }
     }, [id]);
 
     const handleDelete = async () => {
         if (window.confirm(t('common.confirmDelete', 'Удалить питомца?'))) {
-            await deletePet(id!);
-            navigate('/cabinet/pets');
+            try {
+                await deletePet(id!);
+                navigate('/cabinet/pets');
+            } catch (e) {
+                alert('Ошибка удаления');
+            }
         }
     };
 
@@ -39,29 +49,31 @@ const CabinetPetDetails: React.FC = () => {
     return (
         <div className={style.formContainer}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <Link to="/cabinet/pets" className={style.backButton}>&larr; {t('common.back', 'Назад')}</Link>
+                <Link to="/cabinet/pets" className={style.backButton}>
+                    <BackIcon /> {t('common.back', 'Назад')}
+                </Link>
                 <div className={style.actions} style={{ marginTop: 0 }}>
-                    <Link to={`/cabinet/pets/${id}/edit`} className={style.btnPrimary} style={{ textDecoration: 'none' }}>
+                    <Link to={`/cabinet/pets/${id}/edit`} className={style.btnPrimary} style={{ textDecoration: 'none', fontSize: '14px', padding: '10px 20px' }}>
                         {t('common.edit', 'Редактировать')}
                     </Link>
-                    <button onClick={handleDelete} className={style.btnDelete}>
+                    <button onClick={handleDelete} className={style.btnDelete} style={{ fontSize: '14px', padding: '10px 20px' }}>
                         {t('common.delete', 'Удалить')}
                     </button>
                 </div>
             </div>
 
-            <div className={style.card} style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+            <div className={style.card} style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
                 <img
                     src={pet.avatar?.data?.preview_url || pet.avatar?.data?.url || '/placeholder-pet.jpg'}
-                    style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover', backgroundColor: '#f0f0f0' }}
+                    style={{ width: 120, height: 120, borderRadius: '60px', objectFit: 'cover', backgroundColor: '#f0f0f0' }}
                     alt={pet.name}
                 />
                 <div>
-                    <h1 className={style.pageTitle} style={{ marginBottom: 5 }}>{pet.name}</h1>
-                    <p style={{ fontSize: '1.1rem', color: '#666' }}>
+                    <h1 className={style.pageTitle} style={{ marginBottom: 8, fontSize: '28px' }}>{pet.name}</h1>
+                    <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: 4 }}>
                         {typeName} • {breedName}
                     </p>
-                    <p style={{ fontSize: '1rem', color: '#888' }}>
+                    <p style={{ fontSize: '1rem', color: '#888', fontWeight: 600 }}>
                         {getAgeString(pet.year, pet.month, t)}
                     </p>
                 </div>
@@ -70,7 +82,7 @@ const CabinetPetDetails: React.FC = () => {
             <div className={style.card}>
                 <h2>{t('petForm.sectionDetails', 'Характеристики')}</h2>
                 <div className={style.grid2}>
-                    <div><strong>{t('petForm.labelGender', 'Пол')}:</strong> {pet.gender === 0 || pet.gender === '0' || pet.gender_value === 'male' ? t('common.male') : t('common.female')}</div>
+                    <div><strong>{t('petForm.labelGender', 'Пол')}:</strong> {pet.gender === 0 || pet.gender === '0' || String(pet.gender_value).toLowerCase() === 'male' ? t('common.male') : t('common.female')}</div>
                     <div><strong>{t('petForm.labelSize', 'Размер')}:</strong> {sizeName}</div>
 
                     <div><strong>{t('petForm.labelSterilized', 'Стерилизован')}:</strong> {translateBool(pet.sterilized_value ?? pet.sterilized)}</div>
@@ -88,16 +100,16 @@ const CabinetPetDetails: React.FC = () => {
                 {pet.info_for_sitting && (
                     <div style={{ marginBottom: 15 }}>
                         <strong>{t('petForm.labelInfoSitting', 'Для передержки')}:</strong>
-                        <p style={{ whiteSpace: 'pre-line' }}>{pet.info_for_sitting}</p>
+                        <p style={{ whiteSpace: 'pre-line', marginTop: 4, color: '#4A5568' }}>{pet.info_for_sitting}</p>
                     </div>
                 )}
                 {pet.info_for_walking && (
                     <div>
                         <strong>{t('petForm.labelInfoWalking', 'Для выгула')}:</strong>
-                        <p style={{ whiteSpace: 'pre-line' }}>{pet.info_for_walking}</p>
+                        <p style={{ whiteSpace: 'pre-line', marginTop: 4, color: '#4A5568' }}>{pet.info_for_walking}</p>
                     </div>
                 )}
-                {!pet.info_for_sitting && !pet.info_for_walking && <p style={{ color: '#888' }}>{t('common.noInfo', 'Нет информации')}</p>}
+                {!pet.info_for_sitting && !pet.info_for_walking && <p style={{ color: '#888', fontStyle: 'italic' }}>{t('common.noInfo', 'Нет информации')}</p>}
             </div>
 
             {/* Галерея */}
@@ -109,7 +121,7 @@ const CabinetPetDetails: React.FC = () => {
                             <img src={f.preview_url || f.url} alt="Pet gallery" />
                         </div>
                     ))}
-                    {(!pet.files?.data || pet.files.data.length === 0) && <p style={{ color: '#888', gridColumn: '1/-1' }}>{t('common.noPhotos', 'Нет фото')}</p>}
+                    {(!pet.files?.data || pet.files.data.length === 0) && <p style={{ color: '#888', gridColumn: '1/-1', fontStyle: 'italic' }}>{t('common.noPhotos', 'Нет фото')}</p>}
                 </div>
             </div>
         </div>

@@ -2,13 +2,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from "react-dom";
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux'; // Добавлены хуки Redux
 import { initiateOrderPayment, getVerificationUrl } from '../../services/api';
 import style from '../../style/components/modals/PaymentModal.module.scss';
+import { AppDispatch, RootState } from '../../store';
+import { fetchPaymentMethodsAction, selectActivePaymentMethods } from '../../store/slices/paymentSlice'; // Импорт действий и селектора
 
 // Иконки
 const CloseIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
 const CardIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>;
 const WalletIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"></path><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"></path><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"></path></svg>;
+const PlusIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
 
 const PAYMENT_FLOW = {
     PLATFORM_PREPAY: 'platform_prepay',
@@ -31,32 +35,56 @@ interface PaymentModalProps {
     onClose: () => void;
     order: any;
     userBalance: any;
-    paymentMethods: any[];
+    paymentMethods?: any[]; // Делаем необязательным, так как берем из Redux
     loadingData?: boolean;
     onPaymentSuccess: () => void;
 }
 
-const modalRoot = document.getElementById('modal-root');
-
 const PaymentModal: React.FC<PaymentModalProps> = ({
-    isOpen, onClose, order, userBalance, paymentMethods, loadingData, onPaymentSuccess
+    isOpen, onClose, order, userBalance, loadingData, onPaymentSuccess
 }) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch<AppDispatch>();
 
-    // Local state
+    // Получаем карты из Redux хранилища
+    const cards = useSelector(selectActivePaymentMethods);
+    const { isLoading: isCardsLoading } = useSelector((state: RootState) => state.payment);
+
+    const [mounted, setMounted] = useState(false);
     const [selectedMethodId, setSelectedMethodId] = useState<number | null>(null);
     const [useBalance, setUseBalance] = useState(true);
     const [processing, setProcessing] = useState(false);
 
-    // Выбор карты по умолчанию
     useEffect(() => {
-        if (paymentMethods && paymentMethods.length > 0) {
-            const defaultM = paymentMethods.find((m: any) => m.is_default) || paymentMethods[0];
-            if (defaultM) setSelectedMethodId(defaultM.id);
+        setMounted(true);
+        let root = document.getElementById('modal-root');
+        if (!root) {
+            root = document.createElement('div');
+            root.id = 'modal-root';
+            document.body.appendChild(root);
         }
-    }, [paymentMethods]);
+    }, []);
 
-    // --- ЛОГИКА РАСЧЕТА (Идентична мобильной) ---
+    // При открытии модалки запускаем фоновое обновление карт
+    useEffect(() => {
+        if (isOpen) {
+            dispatch(fetchPaymentMethodsAction());
+        }
+    }, [isOpen, dispatch]);
+
+    // Логика автовыбора карты при изменении списка карт (из кэша или после загрузки)
+    useEffect(() => {
+        if (cards && cards.length > 0) {
+            // Если карта уже выбрана и она существует в списке — ничего не делаем
+            if (selectedMethodId && cards.find((c: any) => c.id === selectedMethodId)) return;
+
+            // Иначе выбираем дефолтную или первую попавшуюся
+            const defaultCard = cards.find((c: any) => c.is_default) || cards[0];
+            setSelectedMethodId(defaultCard.id);
+        }
+    }, [cards, selectedMethodId]);
+
+    // --- ЛОГИКА РАСЧЕТА ---
     const calculations = useMemo(() => {
         if (!order) return null;
         let { payment_flow_type, status } = order;
@@ -129,20 +157,18 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 
         setProcessing(true);
         try {
-            // Передаем текущий URL для редиректа
             const currentUrl = window.location.origin + window.location.pathname;
-
             const res = await initiateOrderPayment(
                 order.id,
                 selectedMethodId,
                 useBalance,
-                true, // saveNewCard
+                true,
                 currentUrl
             );
 
             if (res.success) {
                 if (res.confirmation_needed && res.confirmation_url) {
-                    window.location.href = res.confirmation_url; // 3DS Redirect
+                    window.location.href = res.confirmation_url;
                 } else {
                     onPaymentSuccess();
                 }
@@ -169,7 +195,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         }
     };
 
-    if (!isOpen || !modalRoot) return null;
+    if (!mounted || !isOpen) return null;
+    const modalRoot = document.getElementById('modal-root') || document.body;
 
     return ReactDOM.createPortal(
         <div className={style.overlay} onClick={onClose}>
@@ -180,65 +207,119 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                 </div>
 
                 {loadingData ? (
-                    <div className={style.loader}>Загрузка данных...</div>
+                    <div className={style.loaderContainer}>
+                        <div className={style.spinner}></div>
+                    </div>
                 ) : (
                     <div className={style.content}>
                         {/* Баланс */}
-                        <div className={`${style.optionRow} ${useBalance ? style.active : ''}`} onClick={() => setUseBalance(!useBalance)}>
-                            <div className={style.rowIcon}><WalletIcon /></div>
-                            <div className={style.rowInfo}>
-                                <span className={style.rowTitle}>{t('orders.payFromBalance', 'Списать с баланса')}</span>
-                                <span className={style.rowSub}>{userBalance?.amount} {userBalance?.currency_symbol}</span>
+                        {parseFloat(calculations?.dueAmount || '0') > 0 && (
+                            <div className={`${style.optionRow} ${useBalance ? style.active : ''}`} onClick={() => setUseBalance(!useBalance)}>
+                                <div className={style.rowIcon}><WalletIcon /></div>
+                                <div className={style.rowInfo}>
+                                    <span className={style.rowTitle}>{t('orders.payFromBalance', 'Списать с баланса')}</span>
+                                    <span className={style.rowSub}>{userBalance?.amount} {userBalance?.currency_symbol}</span>
+                                </div>
+                                <div className={style.checkbox}>{useBalance ? '✓' : ''}</div>
                             </div>
-                            <div className={style.checkbox}>{useBalance ? '✓' : ''}</div>
-                        </div>
+                        )}
 
                         {/* Карты */}
-                        {calculations?.cardRequired && (
+                        {(calculations?.cardRequired || (cards && cards.length > 0)) && (
                             <div className={style.section}>
-                                <h4>{t('orders.selectPaymentMethod', 'Выберите карту')}</h4>
-                                {paymentMethods && paymentMethods.map((card: any) => (
-                                    <div
-                                        key={card.id}
-                                        className={`${style.optionRow} ${selectedMethodId === card.id ? style.active : ''}`}
-                                        onClick={() => setSelectedMethodId(card.id)}
-                                    >
-                                        <div className={style.rowIcon}><CardIcon /></div>
-                                        <div className={style.rowInfo}>
-                                            <span className={style.rowTitle}>•••• {card.last4}</span>
-                                            <span className={style.rowSub}>{card.brand}</span>
-                                        </div>
-                                        <div className={style.radio}>{selectedMethodId === card.id ? '●' : ''}</div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <h4>
+                                        {calculations?.cardRequired
+                                            ? t('orders.selectPaymentMethod', 'Выберите карту для оплаты')
+                                            : t('paymentMethods.yourCards', 'Ваши карты')
+                                        }
+                                    </h4>
+                                    {/* Индикатор обновления в фоне */}
+                                    {isCardsLoading && <span style={{ fontSize: 12, color: '#A0AEC0' }}>Обновление...</span>}
+                                </div>
+
+                                {/* Если карт нет совсем и идет первая загрузка - спиннер. Иначе список. */}
+                                {isCardsLoading && cards.length === 0 ? (
+                                    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+                                        <div className={style.spinner} style={{ width: 24, height: 24, borderWidth: 2 }}></div>
                                     </div>
-                                ))}
-                                <button className={style.addCardBtn} onClick={handleAddCard}>+ {t('paymentMethods.addCard', 'Добавить карту')}</button>
+                                ) : cards && cards.length > 0 ? (
+                                    cards.map((card: any) => {
+                                        const isActive = card.status === 'active';
+                                        const expiry = card.exp_month && card.exp_year ? `${String(card.exp_month).padStart(2, '0')}/${String(card.exp_year).slice(-2)}` : '';
+
+                                        return (
+                                            <div
+                                                key={card.id}
+                                                className={`${style.optionRow} ${selectedMethodId === card.id ? style.active : ''} ${!isActive ? style.disabled : ''}`}
+                                                onClick={() => isActive && setSelectedMethodId(card.id)}
+                                            >
+                                                <div className={style.rowIcon}>
+                                                    <CardIcon />
+                                                </div>
+                                                <div className={style.rowInfo}>
+                                                    <div className={style.cardTitleRow}>
+                                                        <span className={style.rowTitle}>
+                                                            {card.brand || 'Card'} •••• {card.last4}
+                                                        </span>
+                                                        {card.is_default && isActive && (
+                                                            <span className={style.defaultBadge}>({t('common.default', 'Осн.')})</span>
+                                                        )}
+                                                    </div>
+
+                                                    {expiry && <span className={style.rowSub}>{t('paymentMethods.expires', 'Срок')}: {expiry}</span>}
+
+                                                    {!isActive && (
+                                                        <span className={style.errorText}>
+                                                            {t(`paymentMethods.status.${card.status}`, card.status)}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div className={style.radio}>
+                                                    {isActive && (selectedMethodId === card.id ? '●' : '○')}
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <p className={style.emptyText}>{t('paymentMethods.noCardsSaved', 'Нет сохраненных карт')}</p>
+                                )}
+
+                                <button className={style.addCardBtn} onClick={handleAddCard}>
+                                    <PlusIcon /> {t('paymentMethods.addCard', 'Добавить карту')}
+                                </button>
                             </div>
                         )}
 
                         {/* Итого */}
-                        <div className={style.summary}>
-                            <div className={style.sumRow}>
-                                <span>{t('orders.paymentDueFull', 'К оплате')}:</span>
-                                <span className={style.sumVal}>{calculations?.dueAmount} {calculations?.currencySymbol}</span>
-                            </div>
-                            {useBalance && parseFloat(calculations?.fromBalance || '0') > 0 && (
-                                <div className={`${style.sumRow} ${style.discount}`}>
-                                    <span>{t('orders.fromBalance', 'Баланс')}:</span>
-                                    <span>- {calculations?.fromBalance} {calculations?.currencySymbol}</span>
+                        {parseFloat(calculations?.dueAmount || '0') > 0 && (
+                            <div className={style.summary}>
+                                <div className={style.sumRow}>
+                                    <span>{t('orders.paymentDueFull', 'К оплате')}:</span>
+                                    <span className={style.sumVal}>{calculations?.dueAmount} {calculations?.currencySymbol}</span>
                                 </div>
-                            )}
-                            <div className={`${style.sumRow} ${style.total}`}>
-                                <span>{t('orders.fromCard', 'С карты')}:</span>
-                                <span>{calculations?.fromCard} {calculations?.currencySymbol}</span>
+                                {useBalance && parseFloat(calculations?.fromBalance || '0') > 0 && (
+                                    <div className={`${style.sumRow} ${style.discount}`}>
+                                        <span>{t('orders.fromBalance', 'Баланс')}:</span>
+                                        <span>- {calculations?.fromBalance} {calculations?.currencySymbol}</span>
+                                    </div>
+                                )}
+                                <div className={`${style.sumRow} ${style.total}`}>
+                                    <span>{t('orders.fromCard', 'С карты')}:</span>
+                                    <span>{calculations?.fromCard} {calculations?.currencySymbol}</span>
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         <button
                             className={style.payButton}
                             onClick={handlePay}
                             disabled={processing || (calculations?.cardRequired && !selectedMethodId)}
                         >
-                            {processing ? t('common.processing', 'Обработка...') : t(calculations?.payButtonTextKey || 'orders.payButtonAmount', { amount: calculations?.dueAmount })}
+                            {processing
+                                ? t('common.processing', 'Обработка...')
+                                : t(calculations?.payButtonTextKey || 'orders.payButtonAmount', { amount: calculations?.dueAmount, defaultValue: `Оплатить ${calculations?.dueAmount || ''}` })
+                            }
                         </button>
                     </div>
                 )}

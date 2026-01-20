@@ -187,7 +187,7 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
                 {t('header.welcomeUserShort', 'Привет, {{name}}!', { name: user.first_name || user.name || user.email })}
               </p>
               <button onClick={() => { dispatch(logout()); closeMobileMenuFully(); }} className={style.authButtonSecondary}>
-                {t('profile.logout', 'Выйти')}
+                {t('profile.logout.confirmButton', 'Выйти')}
               </button>
             </>
           ) : (

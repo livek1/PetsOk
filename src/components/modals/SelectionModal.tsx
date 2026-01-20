@@ -1,5 +1,4 @@
-// --- File: src/components/modals/SelectionModal.tsx ---
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from "react-dom";
 import { useTranslation } from 'react-i18next';
 import style from '../../style/pages/cabinet/OrderResponses.module.scss';
@@ -16,15 +15,35 @@ interface SelectionModalProps {
     currencySymbol: string;
 }
 
-const modalRoot = document.getElementById('modal-root');
-
 const SelectionModal: React.FC<SelectionModalProps> = ({ isOpen, onClose, onConfirm, calculation, currencySymbol }) => {
     const { t } = useTranslation();
+    const [mounted, setMounted] = useState(false);
 
-    if (!isOpen || !modalRoot || !calculation) return null;
+    // Логика безопасного поиска или создания root для портала
+    useEffect(() => {
+        setMounted(true);
+        // Проверяем, существует ли root элемент
+        let root = document.getElementById('modal-root');
+        if (!root) {
+            // Если нет - создаем его динамически
+            root = document.createElement('div');
+            root.id = 'modal-root';
+            document.body.appendChild(root);
+        }
+    }, []);
+
+    // Если компонент не смонтирован, закрыт или нет данных - не рендерим
+    if (!mounted || !isOpen || !calculation) {
+        // Полезно для отладки: раскомментируйте, если окно не открывается
+        // console.log("Modal not rendering. isOpen:", isOpen, "calculation:", calculation); 
+        return null;
+    }
+
+    const modalRoot = document.getElementById('modal-root') || document.body;
 
     const { workerName, priceSummary } = calculation;
-    // Используем данные из summary, если есть, иначе fallback на price
+
+    // Безопасное извлечение цен
     const finalPrice = Math.round(priceSummary?.final_price || 0);
     const originalPrice = Math.round(priceSummary?.original_price || 0);
     const promo = priceSummary?.promo_details;
@@ -33,7 +52,7 @@ const SelectionModal: React.FC<SelectionModalProps> = ({ isOpen, onClose, onConf
         <div className={style.modalOverlay} onClick={onClose}>
             <div className={style.modalContent} onClick={e => e.stopPropagation()}>
                 <div className={style.modalHeader}>
-                    <h3>{t('responses.selectionModal.title')}</h3>
+                    <h3>{t('responses.selectionModal.title', 'Подтверждение')}</h3>
                     <button className={style.closeBtn} onClick={onClose}><CloseIcon /></button>
                 </div>
 
@@ -44,13 +63,13 @@ const SelectionModal: React.FC<SelectionModalProps> = ({ isOpen, onClose, onConf
 
                     <div className={style.receiptBox}>
                         <div className={style.receiptRow}>
-                            <span>{t('responses.selectionModal.serviceCost')}</span>
+                            <span>{t('responses.selectionModal.serviceCost', 'Стоимость услуг')}</span>
                             <span>{originalPrice} {currencySymbol}</span>
                         </div>
 
                         {promo && (
                             <div className={`${style.receiptRow} ${style.promoRow}`}>
-                                <span>{t('responses.selectionModal.promoCode', { code: promo.code })}</span>
+                                <span>{t('responses.selectionModal.promoCode', { code: promo.code, defaultValue: `Промокод ${promo.code}` })}</span>
                                 <span>- {Math.round(promo.discount_amount || 0)} {currencySymbol}</span>
                             </div>
                         )}
@@ -58,7 +77,7 @@ const SelectionModal: React.FC<SelectionModalProps> = ({ isOpen, onClose, onConf
                         <div className={style.divider} />
 
                         <div className={`${style.receiptRow} ${style.totalRow}`}>
-                            <span>{t('responses.selectionModal.total')}</span>
+                            <span>{t('responses.selectionModal.total', 'Итого')}</span>
                             <span className={style.totalValue}>{finalPrice} {currencySymbol}</span>
                         </div>
                     </div>
@@ -66,13 +85,13 @@ const SelectionModal: React.FC<SelectionModalProps> = ({ isOpen, onClose, onConf
                     <div className={style.infoBox}>
                         <CardIcon />
                         <div>
-                            <h4>{t('responses.selectionModal.paymentNoteTitle')}</h4>
-                            <p>{t('responses.selectionModal.paymentNote')}</p>
+                            <h4>{t('responses.selectionModal.paymentNoteTitle', 'Платить сейчас не нужно')}</h4>
+                            <p>{t('responses.selectionModal.paymentNote', 'Это только выбор исполнителя. Оплата производится на следующем этапе.')}</p>
                         </div>
                     </div>
 
                     <button className={style.confirmBtn} onClick={onConfirm}>
-                        {t('responses.selectionModal.confirmBtn')}
+                        {t('responses.selectionModal.confirmBtn', 'Выбрать исполнителя')}
                     </button>
                 </div>
             </div>

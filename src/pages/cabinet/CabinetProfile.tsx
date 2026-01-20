@@ -175,7 +175,7 @@ const CabinetProfile: React.FC = () => {
                         className={style.logoutButtonMain}
                         onClick={() => dispatch(logout())}
                     >
-                        {t('profile.logout', 'Выйти')}
+                        {t('profile.logout.confirmButton', 'Выйти')}
                     </button>
                 </div>
             </div>

@@ -1,3 +1,4 @@
+/* --- File: src/style/layouts/CabinetLayout.module.scss --- */
 @use '../../style/variables' as *;
 
 .layoutContainer {
@@ -17,11 +18,7 @@
     top: 0;
     bottom: 0;
     left: 0;
-
-    // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
-    // Увеличиваем z-index, чтобы перекрыть чат (у чата 2000)
     z-index: 3000;
-
     transition: transform 0.3s ease;
 
     @media (max-width: $breakpoint-lg) {
@@ -58,6 +55,51 @@
     gap: 8px;
     overflow-y: auto;
 }
+
+// --- НОВЫЙ СТИЛЬ ДЛЯ КНОПКИ "СОЗДАТЬ ЗАКАЗ" ---
+.createOrderBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 16px;
+    // Отступ снизу, чтобы отделить от обычного меню
+    margin-bottom: 12px;
+
+    background-color: $primary-color;
+    color: $white;
+    border-radius: 12px;
+
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $primary-color-darker;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba($primary-color, 0.4);
+    }
+
+    &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba($primary-color, 0.3);
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        stroke-width: 2.5; // Чуть жирнее для контраста
+    }
+}
+
+// ---------------------------------------------
 
 .navItem {
     display: flex;
@@ -280,11 +322,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-
-    // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
-    // Overlay должен быть выше чата (2000), но ниже сайдбара (3000)
     z-index: 2500;
-
     display: none;
 
     &.visible {

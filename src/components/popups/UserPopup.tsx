@@ -63,7 +63,7 @@ const UserPopup: React.FC<UserPopupProps> = ({ hide, handleOpenAuthModal, onClos
 
             <hr className={style.separator} />
             <button onClick={handleLogout} className={`${style.popupLink} ${style.logoutButton}`}>
-              {t("profile.logout", "Выйти")}
+              {t("profile.logout.confirmButton", "Выйти")}
             </button>
           </>
         ) : (

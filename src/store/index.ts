@@ -16,6 +16,7 @@ import configReducer from './slices/configSlice';
 import dialoguesReducer from './slices/dialoguesSlice';
 import websocketReducer from './slices/websocketSlice';
 import searchReducer from './slices/searchSlice';
+import paymentReducer from './slices/paymentSlice';
 import { websocketMiddleware } from './middleware/websocketMiddleware';
 
 const persistConfig = {
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
     dialogues: dialoguesReducer,
     websocket: websocketReducer,
     search: searchReducer,
+    payment: paymentReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

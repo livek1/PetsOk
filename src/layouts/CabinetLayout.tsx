@@ -22,7 +22,6 @@ const pageTitles: Record<string, string> = {
     '/cabinet/orders': 'Заказы',
     '/cabinet/chat': 'Сообщения',
     '/cabinet/sitter-dashboard': 'Панель управления',
-    '/cabinet/sitter-jobs': 'Мои работы',
 };
 
 const CabinetLayout: React.FC<CabinetLayoutProps> = () => {

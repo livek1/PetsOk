@@ -1,10 +1,23 @@
-@use '../../variables' as *;
+@use '../../../style/variables' as *;
 @use 'sass:color';
+
+$primary-color: #3598FE;
+$success-color: #38A169;
+$warning-color: #DD6B20;
+$error-color: #E53E3E;
+$text-main: #1A202C;
+$text-secondary: #718096;
+$bg-color: #F7F9FC;
+$card-bg: #FFFFFF;
+$border-color: #EDF2F7;
 
 .container {
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
+    background-color: $bg-color;
+    min-height: 100vh;
+    padding: 20px;
 }
 
 .header {
@@ -12,137 +25,150 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    padding: 0 10px;
 
     h1 {
-        font-family: $font-family-headings;
-        font-size: 24px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 26px;
         font-weight: 800;
-        color: $text-color-base;
+        color: $text-main;
+        margin: 0;
     }
 }
 
 .createBtn {
-    background-color: $primary-color;
-    color: $white;
-    padding: 10px 20px;
-    border-radius: 12px;
+    background: none;
     border: none;
-    font-weight: 600;
+    color: $primary-color;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: background 0.2s;
+    gap: 5px;
+    font-weight: 600;
+    font-size: 16px;
 
     &:hover {
-        background-color: $primary-color-darker;
+        opacity: 0.8;
     }
 }
 
 .loader {
     text-align: center;
     padding: 40px;
-    color: $text-color-muted;
+    color: $text-secondary;
 }
 
 .emptyState {
-    background: $white;
-    border-radius: 16px;
+    background: $card-bg;
+    border-radius: 20px;
     padding: 60px 20px;
     text-align: center;
-    border: 1px solid $border-color-light;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 20px;
 
     h3 {
         margin: 20px 0 10px;
-        font-size: 1.2rem;
+        font-size: 20px;
+        font-weight: 700;
+        color: $text-main;
     }
 
     p {
-        color: $text-color-secondary;
-        margin-bottom: 24px;
+        color: $text-secondary;
+        margin-bottom: 30px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+}
+
+.primaryBtn {
+    background-color: $primary-color;
+    color: #fff;
+    padding: 16px 35px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba($primary-color, 0.2);
+    transition: transform 0.1s;
+
+    &:hover {
+        background-color: color.adjust($primary-color, $lightness: -5%);
+    }
+
+    &:active {
+        transform: scale(0.98);
     }
 }
 
 .ordersList {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
 .loadMoreBtn {
     background: transparent;
-    border: 1px solid $border-color-medium;
-    padding: 12px;
-    border-radius: 12px;
-    color: $text-color-secondary;
+    border: none;
+    padding: 15px;
+    color: $primary-color;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 10px auto;
 
-    &:hover {
-        background: $neutral-50;
+    &:disabled {
+        color: $text-secondary;
     }
 }
 
 // --- Order Item Card Styles ---
 .orderCard {
-    background: $white;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    border: 1px solid $border-color-light;
+    background: $card-bg;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: none;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
     overflow: hidden;
+    transition: transform 0.2s;
 
     &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 }
 
 .cardHeader {
-    padding: 16px;
-    border-bottom: 1px solid $border-color-light;
+    padding: 15px 20px 5px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-}
-
-.serviceInfo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.serviceType {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: $text-color-base;
 }
 
 .statusBadge {
-    font-size: 0.75rem;
-    padding: 4px 8px;
-    border-radius: 20px;
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 18px;
     text-transform: uppercase;
     font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .statusWarning {
-    background: #FFFAF0;
-    color: #DD6B20;
+    background: rgba($warning-color, 0.15);
+    color: $warning-color;
 }
 
 .statusSuccess {
-    background: #F0FFF4;
-    color: #38A169;
+    background: rgba($success-color, 0.15);
+    color: $success-color;
 }
 
 .statusError {
-    background: #FFF5F5;
-    color: #E53E3E;
+    background: rgba($error-color, 0.15);
+    color: $error-color;
 }
 
 .statusInfo {
@@ -152,27 +178,75 @@
 
 .statusDefault {
     background: #F7FAFC;
-    color: #718096;
+    color: $text-secondary;
 }
 
-// --- SMART BANNERS (Новое) ---
+.cardBody {
+    padding: 0 20px;
+}
+
+.headerRow {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.serviceIconCircle {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    background-color: #F0F7FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    color: $primary-color;
+}
+
+.titleContainer {
+    flex: 1;
+}
+
+.orderTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: $text-main;
+    margin-bottom: 3px;
+    display: block;
+}
+
+.durationText {
+    font-size: 14px;
+    color: $text-secondary;
+}
+
+// --- Smart Banner ---
 .smartBanner {
     display: flex;
     align-items: center;
     padding: 12px;
     border-radius: 12px;
-    margin-bottom: 12px;
+    margin: 12px 20px;
     border: 1px solid transparent;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.9;
+    }
 }
 
 .bannerContent {
+    flex: 1;
     margin-left: 12px;
+    margin-right: 8px;
 }
 
 .bannerTitle {
     font-size: 14px;
     font-weight: 700;
     margin-bottom: 2px;
+    display: block;
 }
 
 .bannerText {
@@ -183,34 +257,15 @@
 .bannerIcon {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
+    border-radius: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: $white;
+    background-color: #fff;
     flex-shrink: 0;
-
-    &.blue {
-        color: #3182CE;
-    }
-
-    &.green {
-        color: #38A169;
-    }
-
-    &.orange {
-        color: #DD6B20;
-    }
-
-    &.grey {
-        color: #718096;
-    }
-
-    &.purple {
-        color: #805AD5;
-    }
 }
 
+// Banner Variants matching RN colors
 .bannerBlue {
     background-color: #EBF8FF;
     border-color: #BEE3F8;
@@ -218,6 +273,10 @@
     .bannerTitle,
     .bannerText {
         color: #2B6CB0;
+    }
+
+    .bannerIcon {
+        color: #3182CE;
     }
 }
 
@@ -229,6 +288,10 @@
     .bannerText {
         color: #2F855A;
     }
+
+    .bannerIcon {
+        color: #38A169;
+    }
 }
 
 .bannerOrange {
@@ -238,6 +301,10 @@
     .bannerTitle,
     .bannerText {
         color: #C05621;
+    }
+
+    .bannerIcon {
+        color: #DD6B20;
     }
 }
 
@@ -249,6 +316,10 @@
     .bannerText {
         color: #4A5568;
     }
+
+    .bannerIcon {
+        color: #718096;
+    }
 }
 
 .bannerPurple {
@@ -259,87 +330,191 @@
     .bannerText {
         color: #6B46C1;
     }
-}
 
-// ----------------
-
-.cardBody {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.infoRow {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: $text-color-secondary;
-    font-size: 0.95rem;
-
-    svg {
-        color: $text-color-muted;
+    .bannerIcon {
+        color: #805AD5;
     }
 }
 
-.timerAlert {
-    margin-top: 10px;
-    background: #FFF5F5;
-    color: #C53030;
-    padding: 8px 12px;
-    border-radius: 8px;
+// --- Timer ---
+.paymentDueBanner {
+    background-color: #FEF2F2;
+    border: 1px solid #FCA5A5;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 5px 20px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &.expired {
+        background-color: #FEE2E2;
+        border-color: #F87171;
+    }
+}
+
+.paymentDueIcon {
+    margin-right: 12px;
+    color: #991B1B;
+}
+
+.paymentDueTitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #991B1B;
+    margin-bottom: 2px;
+    display: block;
+}
+
+.paymentDueText {
+    font-size: 14px;
+    color: #991B1B;
+}
+
+// --- Info Section ---
+.orderInfoSection {
+    padding: 0;
+}
+
+.infoBlock {
+    padding: 8px 0;
+    margin: 0 20px;
+
+    &.withBorder {
+        border-bottom: 1px solid $border-color;
+    }
+}
+
+.orderInfoRow {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
+    padding: 8px 0;
+
+    &.important {
+        background-color: rgba($warning-color, 0.1);
+        margin: 4px -20px;
+        padding: 8px 20px;
+        border-radius: 8px;
+    }
 }
 
-.cardFooter {
-    padding: 12px 16px;
-    background: #FAFAFA;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+.infoIcon {
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    color: #A0AEC0;
 }
 
-.payBtn,
-.detailsBtn,
-.offersBtn {
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 0.9rem;
+.orderInfoText {
+    font-size: 14px;
+    color: $text-secondary;
+    flex: 1;
+    line-height: 1.4;
+
+    .workerName {
+        font-weight: 600;
+        color: $text-main;
+    }
+
+    .link {
+        font-weight: 600;
+        color: $primary-color;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}
+
+// --- Payment Info ---
+.paymentTextContainer {
+    flex: 1;
+}
+
+.paymentLabel {
+    font-size: 14px;
+    color: $text-secondary;
+    line-height: 1.4;
+
+    &.important {
+        font-weight: 600;
+    }
+}
+
+.paymentAmount {
     font-weight: 600;
-    cursor: pointer;
-    border: none;
+    color: $text-main;
+
+    &.important {
+        font-weight: 800;
+    }
+}
+
+.paymentSubText {
+    font-size: 12px;
+    color: $text-secondary;
+    margin-top: 2px;
+}
+
+// --- Footer / Actions ---
+.cardFooter {
+    padding: 15px 20px 20px;
+    background-color: rgba($bg-color, 0.5);
+    border-top: 1px solid $border-color;
+    margin-top: 10px;
+}
+
+.actionButton {
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.payBtn {
-    background: $success-500;
-    color: $white;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 15px;
+    width: 100%;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-size: 15px;
+    font-weight: 700;
+    gap: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 
     &:hover {
-        background: color.adjust($success-500, $lightness: -5%);
+        opacity: 0.9;
     }
 }
 
-.detailsBtn {
-    background: $white;
-    border: 1px solid $border-color-medium;
-    color: $text-color-base;
+.btnPrimary {
+    background-color: $primary-color;
+    color: #fff;
+    border: none;
+}
 
-    &:hover {
-        background: $neutral-50;
+.btnSecondary {
+    background-color: #fff;
+    color: $primary-color;
+    border: 1.5px solid $primary-color;
+    box-shadow: none;
+}
+
+.btnPay {
+    background-color: $success-color;
+    color: #fff;
+    border: none;
+}
+
+.btnReview {
+    background-color: #FFB822; // Gold
+    color: #fff;
+    border: none;
+
+    &.highlight {
+        background-color: #F6E05E;
+        color: #744210;
     }
 }
 
-.offersBtn {
-    background: $primary-color;
-    color: $white;
-
-    &:hover {
-        background: $primary-color-darker;
-    }
+.btnDisabled {
+    background-color: #E0E0E0;
+    color: $text-secondary;
+    cursor: not-allowed;
+    border: 1px solid #E0E0E0;
+    box-shadow: none;
 }

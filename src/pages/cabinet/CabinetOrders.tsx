@@ -1,17 +1,17 @@
-// --- File: src/pages/cabinet/CabinetOrders.tsx ---
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+// @ts-ignore
 import { RootState } from '../../store';
 import { getMyOrders, fetchUserBalance, getPaymentMethods } from '../../services/api';
 import style from '../../style/pages/cabinet/CabinetOrders.module.scss';
 import OrderItemCard from '../../components/orders/OrderItemCard';
 import PaymentModal from '../../components/modals/PaymentModal';
 
-// Иконки
+// Иконки (SVG)
 const EmptyIcon = () => <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#A0AEC0" strokeWidth="1"><path d="M9 17h6" /><path d="M9 12h6" /><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 8 20 8" /></svg>;
-const PlusIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+const PlusIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
 
 const CabinetOrders: React.FC = () => {
     const { t } = useTranslation();
@@ -51,10 +51,11 @@ const CabinetOrders: React.FC = () => {
             if (isMounted.current && response.data) {
                 const newOrders = response.data;
                 if (isLoadMore) {
-                    setOrders(prev => [...prev, ...newOrders.filter((o: any) => !prev.find(po => po.id === o.id))]);
+                    setOrders(prev => [...prev, ...newOrders.filter((o: any) => !prev.find((po: any) => po.id === o.id))]);
                 } else {
                     setOrders(newOrders);
                 }
+                // @ts-ignore
                 setTotalPages(response.pagination?.total_pages || 1);
                 setPage(pageNum);
             }
@@ -110,13 +111,17 @@ const CabinetOrders: React.FC = () => {
         }
     };
 
-    if (loading && page === 1) return <div className={style.loader}>{t('loading')}</div>;
+    const handleAddOrder = () => {
+        navigate('/cabinet/orders/create');
+    };
+
+    if (loading && page === 1) return <div className={style.loader}>{t('loading', 'Загрузка...')}</div>;
 
     return (
         <div className={style.container}>
             <div className={style.header}>
-                <h1>{t('cabinet.orders', 'Мои заказы')}</h1>
-                <button className={style.createBtn} onClick={() => navigate('/cabinet/orders/create')}>
+                <h1>{t('orders.myOrders', 'Мои заказы')}</h1>
+                <button className={style.createBtn} onClick={handleAddOrder}>
                     <PlusIcon /> {t('orders.createOrder', 'Создать заказ')}
                 </button>
             </div>
@@ -125,9 +130,9 @@ const CabinetOrders: React.FC = () => {
                 <div className={style.emptyState}>
                     <EmptyIcon />
                     <h3>{t('orders.noOrdersYet', 'У вас пока нет заказов')}</h3>
-                    <p>{t('orders.emptyMessage', 'Создайте заказ, чтобы найти ситтера')}</p>
-                    <button onClick={() => navigate('/search')} className={style.primaryBtn}>
-                        {t('orders.createFirstOrder', 'Найти ситтера')}
+                    <p>{t('orders.emptyMessage', 'Для ваших лапок пока нет заказов. Давайте создадим первый!')}</p>
+                    <button onClick={handleAddOrder} className={style.primaryBtn}>
+                        {t('orders.createFirstOrder', 'Позаботиться о питомце')}
                     </button>
                 </div>
             ) : (
@@ -136,9 +141,12 @@ const CabinetOrders: React.FC = () => {
                         <OrderItemCard
                             key={order.id}
                             order={order}
+                            // --- ПЕРЕДАЕМ ОБРАБОТЧИК ОПЛАТЫ ---
                             onPay={() => handleInitiatePayment(order)}
+                            // Детали заказа открываются по клику
                             onDetails={() => navigate(`/cabinet/orders/${order.id}`)}
-                            onReview={() => { /* Логика отзывов */ }}
+                            // @ts-ignore
+                            onReview={() => { /* Логика отзывов не реализована в вебе в этом примере */ }}
                         />
                     ))}
 

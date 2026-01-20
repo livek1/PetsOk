@@ -326,57 +326,129 @@ export const fetchAppConfiguration = async (): Promise<AppConfigData> => {
         throw error;
     }
 };
+// ==========================================
+// PETS API (Web / Axios Implementation)
+// ==========================================
 
-export const getMyPets = async (): Promise<Pet[]> => {
-    const response = await apiClient.get<{ data: Pet[] }>('/pets?include=avatar,files,breed,type,size');
+/**
+ * Получение списка питомцев
+ */
+export const getMyPets = async (page = 1) => {
+    // include=avatar,files... чтобы сразу получить фото
+    const response = await apiClient.get(`/pets?page=${page}&include=avatar,files,breed,type,size`);
+    // Возвращаем массив data (в axios это response.data.data)
     return response.data.data;
 };
 
-export const getPetById = async (id: string | number): Promise<Pet> => {
-    const response = await apiClient.get<{ data: Pet }>(`/pets/${id}?include=avatar,files,breed,type,size`);
+/**
+ * Получение одного питомца
+ */
+export const getPetById = async (id: string | number) => {
+    const response = await apiClient.get(`/pets/${id}?include=avatar,files,breed,type,size`);
     return response.data.data;
 };
 
-export const fetchBreeds = async (query: string, typeId: number): Promise<Breed[]> => {
-    const response = await apiClient.get<{ data: Breed[] }>('/pets/breeds', { params: { q: query, type_id: typeId } });
-    return response.data.data;
+/**
+ * Удаление фото питомца (Исправление ошибки deletePetPhoto)
+ */
+export const deletePetPhoto = async (fileId: number | string) => {
+    await apiClient.delete(`/files/${fileId}`);
+    return true;
 };
 
-export const createPet = async (petData: any, files: File[]): Promise<Pet> => {
-    const response = await apiClient.post<{ data: Pet }>('/pets', petData);
+/**
+ * Загрузка фото питомца
+ * Принимает объект { files: File[], petId: ... } как в вашем компоненте
+ */
+export const uploadPetPhotos = async ({ files, petId }: { files: File[], petId: string | number }) => {
+    const formData = new FormData();
+    files.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+    });
+
+    const response = await apiClient.post(`/pets/photos/${petId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+};
+
+/**
+ * Создание питомца + загрузка фото
+ */
+export const createPet = async (petData: any, files: File[]) => {
+    // 1. Создаем питомца
+    const response = await apiClient.post('/pets', petData);
     const newPet = response.data.data;
-    if (files.length > 0 && newPet.id) {
-        await uploadPetMedia(newPet.id, files);
+
+    // 2. Если есть файлы, загружаем их
+    if (files && files.length > 0 && newPet.id) {
+        await uploadPetPhotos({ files, petId: newPet.id });
+        // Возвращаем обновленного питомца с фото
         return getPetById(newPet.id);
     }
+
     return newPet;
 };
 
-export const updatePet = async (id: string | number, petData: any, newFiles: File[]): Promise<Pet> => {
-    await apiClient.post(`/pets/${id}`, { ...petData, _method: 'PATCH' });
-    if (newFiles.length > 0) {
-        await uploadPetMedia(id, newFiles);
+/**
+ * Обновление питомца + загрузка новых фото
+ */
+export const updatePet = async (id: string | number, petData: any, newFiles: File[]) => {
+    // Laravel требует _method: PATCH для FormData или x-www-form-urlencoded, 
+    // но для JSON достаточно обычного PATCH запроса
+    await apiClient.patch(`/pets/${id}`, petData);
+
+    // Если есть новые файлы
+    if (newFiles && newFiles.length > 0) {
+        await uploadPetPhotos({ files: newFiles, petId: id });
     }
+
     return getPetById(id);
 };
 
-export const deletePet = async (id: string | number): Promise<void> => {
+/**
+ * Удаление питомца
+ */
+export const deletePet = async (id: string | number) => {
     await apiClient.delete(`/pets/${id}`);
 };
 
-export const uploadPetMedia = async (petId: string | number, files: File[]): Promise<void> => {
-    const formData = new FormData();
-    files.forEach((file, index) => formData.append(`files[${index}]`, file));
-    await apiClient.post(`/pets/photos/${petId}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+/**
+ * Установка аватарки
+ */
+export const setPetAvatar = async (petId: string | number, fileId: number) => {
+    // Используем PATCH для обновления конкретного поля
+    await apiClient.patch(`/pets/${petId}`, { avatar_id: fileId });
 };
 
-export const deleteFile = async (fileId: string | number): Promise<void> => {
-    await apiClient.delete(`/files/${fileId}`);
+/**
+ * Поиск пород (Автокомплит)
+ */
+export const fetchBreeds = async (query: string, typeId: number, page = 1) => {
+    const response = await apiClient.get('/pets/breeds', {
+        params: {
+            q: query,
+            type_id: typeId,
+            page: page
+        }
+    });
+    // Возвращаем чистый массив пород
+    return response.data.data;
 };
 
-export const setPetAvatar = async (petId: string | number, fileId: number): Promise<void> => {
-    await apiClient.post(`/pets/${petId}`, { avatar_id: fileId, _method: 'PATCH' });
+/**
+ * Добавление новой породы (если нет в списке)
+ */
+export const addBreed = async ({ query, typeId }: { query: string, typeId: number }) => {
+    const response = await apiClient.post('/pets/breeds', {
+        name: query,
+        type_id: typeId
+    });
+    return response.data;
 };
+
+// Алиас для deleteFile, если он используется где-то напрямую под этим именем
+export const deleteFile = deletePetPhoto;
 
 export const searchSitterFetch = async ({ searchParams, page }: { searchParams: SearchParams; page?: number }) => {
     let url = '/filtered/users';

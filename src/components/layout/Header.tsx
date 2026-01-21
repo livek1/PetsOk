@@ -1,3 +1,4 @@
+// --- File: src/components/layout/Header.tsx ---
 import { FC, useCallback, useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import style from "../../style/layouts/Header.module.scss";
@@ -5,7 +6,7 @@ import UserPopup from "../popups/UserPopup";
 import Language from "../modals/LanguageModal";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom'; // Добавлен useNavigate
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { logout } from '../../store/slices/authSlice';
@@ -24,6 +25,7 @@ const PAGES_WITH_TRANSPARENT_HEADER = ['/', '/become-a-sitter'];
 const Header: FC<HeaderProps> = ({ onAuthClick }) => {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate(); // Используем хук
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
 
@@ -125,6 +127,12 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
     return <IconUserPlaceholder className={style.userAvatarIcon} />;
   };
 
+  const handleMobileLogout = () => {
+    dispatch(logout());
+    closeMobileMenuFully();
+    navigate('/'); // SPA redirect
+  };
+
   return (
     <header ref={headerRef} className={`${style.headerContainer} ${useLightHeaderStyle ? style.lightBackground : ''}`}>
       <div className={`${style.headerWrapper} ${style.container}`}>
@@ -135,7 +143,6 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
         {!isCabinetPage && (
           <nav className={style.desktopNav}>
             <ul>
-              {/* Удален пункт "Найти услугу" */}
               <li className={style.navItem}><Link to="/help">{t("header.help", "Помощь")}</Link></li>
               <li className={style.navItem}><Link to="/become-a-sitter">{t("header.becomeSitter", "Стать ситтером")}</Link></li>
             </ul>
@@ -171,7 +178,6 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
         {!isCabinetPage && (
           <nav className={style.mobileNavLinks}>
             <ul>
-              {/* Удален мобильный пункт "Найти услугу" */}
               <li className={style.mobileNavItem}><Link to="/help" onClick={closeMobileMenuFully}>{t("header.help", "Помощь")}</Link></li>
               <li className={style.mobileNavItem}><Link to="/become-a-sitter" onClick={closeMobileMenuFully}>{t("header.becomeSitter", "Стать ситтером")}</Link></li>
             </ul>
@@ -186,16 +192,16 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
               <p className={style.mobileWelcomeUser}>
                 {t('header.welcomeUserShort', 'Привет, {{name}}!', { name: user.first_name || user.name || user.email })}
               </p>
-              <button onClick={() => { dispatch(logout()); closeMobileMenuFully(); }} className={style.authButtonSecondary}>
+              <button onClick={handleMobileLogout} className={style.authButtonSecondary}>
                 {t('profile.logout.confirmButton', 'Выйти')}
               </button>
             </>
           ) : (
             <>
-              <button onClick={() => onAuthClick('register')} className={style.authButton}>
+              <button onClick={() => { onAuthClick('register'); closeMobileMenuFully(); }} className={style.authButton}>
                 {t('header.register', 'Регистрация')}
               </button>
-              <button onClick={() => onAuthClick('login')} className={style.authButtonSecondary}>
+              <button onClick={() => { onAuthClick('login'); closeMobileMenuFully(); }} className={style.authButtonSecondary}>
                 {t('header.login', 'Войти')}
               </button>
             </>

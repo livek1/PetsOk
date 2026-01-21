@@ -1,6 +1,6 @@
 // --- File: src/components/cabinet/Sidebar.tsx ---
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom'; // Добавлен useNavigate
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
@@ -40,6 +40,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate(); // Используем хук навигации
     const user = useSelector((state: RootState) => state.auth.user) as User | null;
 
     const isSitter = user?.isSitter;
@@ -61,7 +62,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
     const handleLogout = () => {
         dispatch(logout());
-        window.location.href = '/';
+        onClose(); // Закрываем сайдбар (особенно важно для мобильных)
+        navigate('/'); // Используем navigate вместо window.location.href для сохранения SPA-поведения
     };
 
     return (
@@ -93,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         {t('cabinet.modeClient', 'Клиент')}
                     </div>
 
-                    {/* === НОВАЯ КНОПКА: СОЗДАТЬ ЗАКАЗ === */}
+                    {/* === КНОПКА: СОЗДАТЬ ЗАКАЗ === */}
                     <NavLink
                         to="/cabinet/orders/create"
                         className={style.createOrderBtn}
@@ -102,7 +104,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <Icons.Plus />
                         <span>{t('orders.createOrder', 'Создать заказ')}</span>
                     </NavLink>
-                    {/* =================================== */}
 
                     {clientLinks.map(link => (
                         <NavLink key={link.to} to={link.to} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`} onClick={onClose}>

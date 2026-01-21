@@ -1,6 +1,6 @@
+// --- File: src/components/popups/UserPopup.tsx ---
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../../style/components/popUp/user.scss";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from "../../store/slices/authSlice";
@@ -22,7 +22,7 @@ const UserPopup: React.FC<UserPopupProps> = ({ hide, handleOpenAuthModal, onClos
   const handleLogout = () => {
     dispatch(logout());
     onClosePopup();
-    navigate('/');
+    navigate('/'); // Навигация без перезагрузки
   };
 
   if (!hide) {

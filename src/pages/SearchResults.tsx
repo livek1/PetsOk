@@ -100,6 +100,15 @@ const SearchResults: React.FC = () => {
         return <NotFound />;
     }
 
+    // Обработчик загрузки карты - ГАРАНТИРОВАННО ОТКЛЮЧАЕТ СКРОЛЛ ЗУМ
+    const handleMapLoad = (ymaps: any) => {
+        setYmapsNamespace(ymaps);
+        if (mapRef.current) {
+            // Явно отключаем поведение scrollZoom
+            mapRef.current.behaviors.disable('scrollZoom');
+        }
+    };
+
     useEffect(() => {
         if (reduxParams.searchReason !== 'map_bounds' && reduxParams.latitude && reduxParams.longitude) {
             const currentCenter = mapRef.current?.getCenter();
@@ -158,7 +167,7 @@ const SearchResults: React.FC = () => {
         }, DEBOUNCE_DELAY);
     };
 
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const handleListScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const { scrollTop, clientHeight, scrollHeight } = e.currentTarget;
         if (scrollHeight - scrollTop <= clientHeight + 300) {
             if (!isLoading && !isFetchingMore && pagination && pagination.current_page < pagination.total_pages) {
@@ -189,12 +198,17 @@ const SearchResults: React.FC = () => {
     const scrollToCard = (id: number) => {
         const card = document.getElementById(`sitter-card-${id}`);
         const container = listContainerRef.current;
+
         if (card && container) {
             const cardTop = card.offsetTop;
             const containerHeight = container.clientHeight;
             const cardHeight = card.clientHeight;
             const targetScroll = cardTop - (containerHeight / 2) + (cardHeight / 2);
-            container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+
+            container.scrollTo({
+                top: targetScroll,
+                behavior: 'smooth'
+            });
 
             card.classList.add(style.flashEffect);
             setTimeout(() => card.classList.remove(style.flashEffect), 1000);
@@ -234,8 +248,7 @@ const SearchResults: React.FC = () => {
                 <div
                     ref={listContainerRef}
                     className={`${style.resultsListColumn} ${viewMode === 'map' ? style.hiddenOnMobile : ''}`}
-                    onScroll={handleScroll}
-                    style={{ position: 'relative' }}
+                    onScroll={handleListScroll}
                 >
                     <div className={style.resultsHeader}>
                         {citySlug ? (
@@ -277,12 +290,26 @@ const SearchResults: React.FC = () => {
                     <YMaps query={{ lang: 'ru_RU', load: 'package.full' }}>
                         <Map
                             state={mapState}
-                            options={{ suppressMapOpenBlock: true, minZoom: 3, maxZoom: 18 }}
-                            instanceRef={(ref) => { mapRef.current = ref; }}
+                            // ВАЖНО: Добавляем behaviors в defaultState, хотя основной контроль идет через handleMapLoad
+                            defaultState={{
+                                center: mapState.center,
+                                zoom: mapState.zoom,
+                                behaviors: ['default', '!scrollZoom']
+                            }}
+                            options={{
+                                suppressMapOpenBlock: true,
+                                minZoom: 3,
+                                maxZoom: 18,
+                            }}
+                            instanceRef={(ref) => {
+                                mapRef.current = ref;
+                                // Если реф уже доступен, на всякий случай отключаем
+                                if (ref) ref.behaviors.disable('scrollZoom');
+                            }}
                             className={style.yandexMapInstance}
                             width="100%" height="100%"
                             onBoundsChange={onBoundsChange}
-                            onLoad={(ymaps) => setYmapsNamespace(ymaps)}
+                            onLoad={handleMapLoad} // <-- Вот здесь происходит основное отключение
                         >
                             <ZoomControl options={{ position: { right: 10, top: 150 } }} />
                             <Clusterer

@@ -1,3 +1,4 @@
+// --- File: src/components/search/SitterCardWeb.tsx ---
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +41,10 @@ const SitterCardWeb: React.FC<SitterCardProps> = ({ data, isHovered, onHover, on
     return (
         <Link
             to={`/sitter/${data.id}`}
+            // --- ДОБАВЛЕНО ЗДЕСЬ ---
+            target="_blank"
+            rel="noopener noreferrer"
+            // -----------------------
             className={`${style.card} ${isHovered ? style.cardHovered : ''} ${data.is_premium ? style.cardPremium : ''}`}
             onMouseEnter={onHover}
             onMouseLeave={onLeave}

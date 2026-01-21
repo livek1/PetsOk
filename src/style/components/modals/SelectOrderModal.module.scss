@@ -1,0 +1,212 @@
+@use '../../../style/variables' as *;
+@use 'sass:color';
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+    background: $white;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    max-height: 85vh;
+    animation: slideUp 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.header {
+    padding: 20px 24px;
+    border-bottom: 1px solid $border-color-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: $white;
+
+    h3 {
+        margin: 0;
+        font-family: $font-family-headings;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: $text-color-base;
+    }
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: $text-color-secondary;
+    padding: 4px;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        color: $text-color-base;
+    }
+}
+
+.content {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.subTitle {
+    font-size: 0.95rem;
+    color: $text-color-secondary;
+    margin: 0 0 8px 0;
+}
+
+// Список заказов
+.ordersList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.orderCard {
+    border: 1px solid $border-color-light;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: $white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    &:hover {
+        border-color: $primary-color-lighter;
+        background-color: $neutral-50;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+}
+
+.serviceIcon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba($primary-color, 0.1);
+    color: $primary-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.orderInfo {
+    flex: 1;
+    overflow: hidden;
+
+    h4 {
+        margin: 0 0 4px 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: $text-color-base;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dates {
+        font-size: 0.85rem;
+        color: $text-color-secondary;
+        margin-bottom: 2px;
+    }
+
+    .pets {
+        font-size: 0.8rem;
+        color: $text-color-muted;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.chevron {
+    color: $border-color-medium;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 30px;
+    color: $text-color-muted;
+    font-style: italic;
+    background-color: $neutral-50;
+    border-radius: 12px;
+}
+
+.footer {
+    padding: 20px;
+    border-top: 1px solid $border-color-light;
+    background: $white;
+}
+
+.createNewBtn {
+    width: 100%;
+    background-color: $primary-color;
+    color: $white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    &:hover {
+        background-color: $primary-color-darker;
+    }
+}
+
+.loaderContainer {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    color: $primary-color;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

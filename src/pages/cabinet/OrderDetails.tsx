@@ -130,6 +130,13 @@ const OrderDetails: React.FC = () => {
     const showCancelOrder = [ORDER_STATUS.PENDING_WORKER, ORDER_STATUS.CONFIRMED, ORDER_STATUS.PENDING_PLATFORM_PAYMENT, ORDER_STATUS.PENDING_PLATFORM_FEE].includes(order.status);
     const showWorkerAddress = worker && [SERVICE_TYPE.BOARDING, SERVICE_TYPE.DOGGY_DAY_CARE].includes(order.service_type) && [ORDER_STATUS.CONFIRMED, ORDER_STATUS.IN_PROGRESS, ORDER_STATUS.COMPLETED].includes(order.status);
 
+    // --- Обработчик для открытия профиля в новой вкладке ---
+    const handleOpenProfile = () => {
+        if (worker?.id) {
+            window.open(`/sitter/${worker.id}`, '_blank');
+        }
+    };
+
     return (
         <div className={style.container}>
             <div className={style.header}>
@@ -165,19 +172,35 @@ const OrderDetails: React.FC = () => {
                         {worker ? (
                             <div className={style.workerContent}>
                                 <div className={style.workerRow}>
+                                    {/* Аватар - открывает новую вкладку */}
                                     <img
                                         src={worker.avatar?.data?.preview_url || '/placeholder-user.jpg'}
                                         alt={worker.first_name}
                                         className={style.avatar}
+                                        onClick={handleOpenProfile}
+                                        style={{ cursor: 'pointer' }}
                                     />
                                     <div className={style.workerInfo}>
-                                        <h4 className={style.workerName}>{worker.first_name} {worker.last_name}</h4>
+                                        {/* Имя - открывает новую вкладку */}
+                                        <h4
+                                            className={style.workerName}
+                                            onClick={handleOpenProfile}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            {worker.first_name} {worker.last_name}
+                                        </h4>
                                         <div className={style.rating}>
                                             <StarIcon />
                                             <span>{worker.calculated_rating || '5.0'}</span>
                                             <span className={style.reviewsCount}>({worker.reviews_count || 0})</span>
                                         </div>
-                                        <Link to={`/sitter/${worker.id}`} className={style.profileLinkText}>
+                                        {/* Ссылка текстом - открывает новую вкладку */}
+                                        <Link
+                                            to={`/sitter/${worker.id}`}
+                                            className={style.profileLinkText}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
                                             Открыть профиль
                                         </Link>
                                     </div>
@@ -200,7 +223,6 @@ const OrderDetails: React.FC = () => {
                                 )}
                             </div>
                         ) : (
-                            // --- ИСПРАВЛЕНИЕ: Добавлен стиль noWorkerState ---
                             <div className={style.noWorkerState}>
                                 <p>Исполнитель еще не назначен</p>
                             </div>
@@ -254,7 +276,6 @@ const OrderDetails: React.FC = () => {
                     {/* Financial Details */}
                     <div className={style.card}>
                         <h3 className={style.cardTitle}>{t('orders.financialDetails', 'Финансы') as string}</h3>
-                        {/* --- ИСПРАВЛЕНИЕ: Добавлен стиль emptyText --- */}
                         {billingPeriods.length === 0 && <p className={style.emptyText}>Информация о периодах оплаты отсутствует</p>}
 
                         {billingPeriods.map((period: any) => {

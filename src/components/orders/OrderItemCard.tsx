@@ -19,7 +19,6 @@ const PlayIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="non
 const PawIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /><circle cx="12" cy="12" r="3" /><path d="M12 15a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3z" /></svg>;
 const CloseIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>;
 const AlertIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>;
-// FIX: PersonIcon now accepts props to fix TS error
 const PersonIcon = ({ className }: { className?: string }) => <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
 const WalletIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>;
 const ListIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
@@ -76,7 +75,6 @@ const formatPrice = (amount: string | number | null | undefined, currency: strin
 
 const getStatusInfo = (status?: string) => { switch (status) { case ORDER_STATUS.PENDING_WORKER: return { textKey: 'orderStatus.new', className: style.statusWarning, Icon: HourglassIcon }; case ORDER_STATUS.CONFIRMED: return { textKey: 'orderStatus.confirmed', className: style.statusSuccess, Icon: CheckIcon }; case ORDER_STATUS.IN_PROGRESS: return { textKey: 'orderStatus.inProgress', className: style.statusInfo, Icon: PlayIcon }; case ORDER_STATUS.COMPLETED: return { textKey: 'orderStatus.completed', className: style.statusSuccess, Icon: PawIcon }; case ORDER_STATUS.CANCELED_CLIENT: return { textKey: 'orderStatus.canceled_client', className: style.statusError, Icon: CloseIcon }; case ORDER_STATUS.CANCELED_WORKER: return { textKey: 'orderStatus.canceled_worker', className: style.statusError, Icon: CloseIcon }; case ORDER_STATUS.CANCELED_ADMIN: return { textKey: 'orderStatus.canceled_admin', className: style.statusError, Icon: CloseIcon }; case ORDER_STATUS.DISPUTED: return { textKey: 'orderStatus.disputed', className: style.statusError, Icon: AlertIcon }; case ORDER_STATUS.PENDING_PLATFORM_PAYMENT: return { textKey: 'orderStatus.awaitingPayment', className: style.statusWarning, Icon: CardIcon }; case ORDER_STATUS.PENDING_PLATFORM_FEE: return { textKey: 'orderStatus.awaitingBookingFee', className: style.statusWarning, Icon: CardIcon }; case ORDER_STATUS.RECURRING_PAYMENT_FAILED: return { textKey: 'orderStatus.paymentFailed', className: style.statusError, Icon: AlertIcon }; default: return { textKey: 'orderStatus.unknown', className: style.statusDefault, Icon: HourglassIcon }; } };
 
-// --- ОБНОВЛЕННАЯ ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ИКОНКИ УСЛУГИ ---
 const getServiceTypeInfo = (serviceType?: string) => {
     switch (serviceType) {
         case SERVICE_TYPE.BOARDING: return { textKey: 'orderTypes.boarding', Icon: BoardingIcon };
@@ -239,7 +237,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
         if (isAwaitingPaymentStatus && paymentDue) {
             const formattedPaymentAmount = formatPrice(paymentDisplayInfo!.paymentButtonAmountForDisplay, item.currency);
             return (
-                // --- ИСПРАВЛЕНИЕ: Вызываем onPay, чтобы открыть модалку ---
                 <button className={`${style.actionButton} ${style.btnPay}`} onClick={() => onPay(item)}>
                     <CardIcon /> {t(paymentDisplayInfo!.paymentButtonTextKey, { amount: formattedPaymentAmount })}
                 </button>
@@ -274,7 +271,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
             <div className={style.cardBody}>
                 <div className={style.headerRow}>
                     <div className={style.serviceIconCircle}>
-                        {/* --- ИСПОЛЬЗУЕМ ФИРМЕННУЮ ИКОНКУ (Увеличили размер) --- */}
                         <typeInfo.Icon width={28} height={28} />
                     </div>
                     <div className={style.titleContainer}>
@@ -296,14 +292,23 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
                 )}
 
                 <div className={style.orderInfoSection}>
-                    {/* Padding для контента внутри */}
                     <div className={`${style.infoBlock} ${style.withBorder}`} style={{ padding: '12px 16px' }}>
                         {renderSmartBanner()}
                         {workerName && (
                             <div className={style.orderInfoRow}>
                                 <PersonIcon className={style.infoIcon} />
                                 <span className={style.orderInfoText}>
-                                    {t('orders.assignedWorker')}: <span className={style.workerName}>{workerName}</span>
+                                    {t('orders.assignedWorker')}:{' '}
+                                    <span
+                                        className={style.workerName}
+                                        style={workerData?.id ? { cursor: 'pointer', color: '#3598FE', textDecoration: 'underline' } : {}}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (workerData?.id) window.open(`/sitter/${workerData.id}`, '_blank')
+                                        }}
+                                    >
+                                        {workerName}
+                                    </span>
                                 </span>
                             </div>
                         )}
@@ -317,7 +322,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
                         )}
                     </div>
                     {paymentDisplayInfo && paymentDisplayInfo.infoLines.length > 0 && (
-                        /* Padding для контента внутри */
                         <div className={style.infoBlock} style={{ padding: '12px 16px' }}>
                             {paymentDisplayInfo.infoLines.map((info: any, index: number) => (
                                 <div key={index} className={`${style.orderInfoRow} ${info.important ? style.important : ''}`}>

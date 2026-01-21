@@ -661,6 +661,16 @@ export const updateMyProfile = async (
 // --- НОВЫЕ ФУНКЦИИ ДЛЯ ВЫБОРА ИСПОЛНИТЕЛЯ ---
 
 /**
+ * Создание запроса/оффера по заказу (Worker Offer, Client Invite).
+ * POST /v1/orders/requests
+ */
+export const createOrderRequest = async (payload: any) => {
+    // Используем apiClient, так как он автоматически добавляет Authorization из localStorage
+    const response = await apiClient.post('/orders/requests', payload);
+    return response.data;
+};
+
+/**
  * Получение запросов (офферов, приглашений) для конкретного заказа клиента.
  * GET /v1/orders/{orderId}/requests
  */

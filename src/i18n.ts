@@ -733,7 +733,10 @@ i18n.use(initReactI18next).init({
           appleErrorNoToken: 'Не удалось получить данные от Apple.',
           appleErrorGeneral: 'Ошибка входа через Apple.',
           appleCancelled: 'Вход через Apple отменен пользователем.',
-          otpTitleAirbnb: "Подтвердите ваш {{contactType, select, email {email} other {номер}}}",
+          // Базовый ключ (используется для телефона или как запасной вариант)
+          otpTitleAirbnb: "Подтвердите ваш номер",
+          // Ключ с суффиксом _email (автоматически подхватится, если context: 'email')
+          otpTitleAirbnb_email: "Подтвердите ваш email",
           otpSubtitleAirbnb: "Введите 4-значный код, отправленный на ",
           otpPlaceholderFourDigits: '----',
           finalRegisterTitleAirbnb: "Завершите регистрацию",

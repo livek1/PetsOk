@@ -1,3 +1,4 @@
+// --- File: App.tsx ---
 import { useEffect, FC, useState, useCallback } from 'react';
 import ReactDOM from "react-dom";
 import Cookies from 'js-cookie';
@@ -41,6 +42,17 @@ import HelpPage from './pages/HelpPage';
 import CabinetWallet from './pages/cabinet/CabinetWallet';
 import CabinetSitterProfile from './pages/cabinet/CabinetSitterProfile';
 import OrderResponses from './pages/cabinet/OrderResponses';
+
+// --- КОМПОНЕНТ СКРОЛЛА НАВЕРХ ---
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 // Компонент-редирект для корня кабинета (/cabinet)
 const CabinetIndexRedirect = () => {
@@ -153,6 +165,9 @@ const App: FC = () => {
   return (
     <Router>
       <>
+        {/* Компонент скролла вверх при смене страницы */}
+        <ScrollToTop />
+
         <CookieConsentBanner />
         <Routes>
           <Route path="/app" element={<AppRedirectPage />} />

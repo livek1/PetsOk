@@ -33,10 +33,11 @@ const FaqItem: React.FC<FaqItemProps> = ({ question, answer }) => {
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className={style.faqBody}
                     >
-                        <div className={style.faqContent}>
-                            {/* Здесь можно использовать dangerouslySetInnerHTML, если ответы будут с HTML с бэка */}
-                            {answer}
-                        </div>
+                        <div
+                            className={style.faqContent}
+                            // Используем dangerouslySetInnerHTML для поддержки HTML тегов в ответах с бэка
+                            dangerouslySetInnerHTML={{ __html: answer }}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>

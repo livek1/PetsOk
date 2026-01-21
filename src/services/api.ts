@@ -162,6 +162,24 @@ export interface SearchParams {
     [key: string]: any;
 }
 
+export interface HelpItem {
+    id: string;
+    category_slug: string;
+    question: string;
+    answer: string;
+    roles?: string[];
+}
+
+export interface HelpSection {
+    id: string;
+    slug: string;
+    title: string;
+    order: number;
+    items: {
+        data: HelpItem[];
+    };
+}
+
 // --- API Client Setup ---
 
 const apiClient = axios.create({
@@ -699,6 +717,23 @@ export const selectWorkerForOrder = async (orderId: string, workerId: string | n
         accepted_request_id: requestId
     };
     const response = await apiClient.post(`/orders/${orderId}/select-worker`, body);
+    return response.data;
+};
+
+
+/**
+ * Получение FAQ с фильтрацией и поиском
+ * @param query Поисковая строка
+ * @param category Slug категории (например, 'clients', 'sitters') или undefined для всех
+ */
+export const getHelpContent = async (query?: string, category?: string) => {
+    const params: any = {};
+    if (query) params.q = query;
+    // Если категория 'all', не отправляем параметр, чтобы бэкенд вернул всё
+    if (category && category !== 'all') params.category = category;
+
+    const response = await apiClient.get('/help', { params });
+    // Предполагается, что бэкенд возвращает { data: HelpSection[] } (стандарт Fractal)
     return response.data;
 };
 

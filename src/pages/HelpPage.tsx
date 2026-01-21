@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import style from '../style/pages/HelpPage.module.scss';
 import FaqItem from '../components/help/FaqItem';
+import { getHelpContent, HelpSection, HelpItem } from '../services/api'; // Убедитесь, что путь к api правильный
 
 // Иконка поиска
 const SearchIcon = () => (
@@ -12,66 +13,60 @@ const SearchIcon = () => (
     </svg>
 );
 
-// Типы данных (в будущем придут с бэка)
-type Category = 'all' | 'clients' | 'sitters' | 'safety' | 'payments';
-
-interface Question {
-    id: number;
-    category: Category;
-    questionKey: string;
-    answerKey: string;
-}
+// Категории для табов. 
+// Ключи должны совпадать со 'slug' в базе данных (HelpSection).
+const TABS = [
+    { key: 'all', labelKey: 'helpPage.categories.all' },
+    { key: 'clients', labelKey: 'helpPage.categories.clients' },
+    { key: 'sitters', labelKey: 'helpPage.categories.sitters' },
+    { key: 'safety', labelKey: 'helpPage.categories.safety' },
+    // Можно добавить 'payments', если такая секция есть в БД
+];
 
 const HelpPage: React.FC = () => {
     const { t } = useTranslation();
-    const [activeCategory, setActiveCategory] = useState<Category>('all');
+    const [activeCategory, setActiveCategory] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
 
-    // --- MOCK DATA (Имитация ответа API) ---
-    const questions: Question[] = [
-        { id: 1, category: 'clients', questionKey: 'helpPage.q1', answerKey: 'helpPage.a1' },
-        { id: 2, category: 'sitters', questionKey: 'helpPage.q2', answerKey: 'helpPage.a2' },
-        { id: 3, category: 'safety', questionKey: 'helpPage.q3', answerKey: 'helpPage.a3' },
-        { id: 4, category: 'payments', questionKey: 'helpPage.q4', answerKey: 'helpPage.a4' },
-        // Дублируем для наполнения (в реальности будут разные)
-        { id: 5, category: 'clients', questionKey: 'Как отменить заказ?', answerKey: 'Отменить заказ можно в личном кабинете. Если до начала осталось более 24 часов, возврат полный.' },
-        { id: 6, category: 'sitters', questionKey: 'Сколько я заработаю?', answerKey: 'Вы сами устанавливаете цены. Сервис не берет комиссию с ситтеров.' },
-    ];
+    // Состояние данных
+    const [sections, setSections] = useState<HelpSection[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // Категории для табов
-    const categories: { key: Category; labelKey: string }[] = [
-        { key: 'all', labelKey: 'helpPage.categories.all' },
-        { key: 'clients', labelKey: 'helpPage.categories.clients' },
-        { key: 'sitters', labelKey: 'helpPage.categories.sitters' },
-        { key: 'safety', labelKey: 'helpPage.categories.safety' },
-        { key: 'payments', labelKey: 'helpPage.categories.payments' },
-    ];
+    // Функция загрузки данных
+    const fetchData = useCallback(async (query: string, category: string) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await getHelpContent(query, category);
+            // Если используется Fractal, данные обычно в response.data
+            setSections(response.data || []);
+        } catch (err) {
+            console.error(err);
+            setError('Не удалось загрузить данные. Попробуйте позже.');
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
-    // Фильтрация
-    const filteredQuestions = useMemo(() => {
-        return questions.filter(q => {
-            // 1. Фильтр по категории
-            if (activeCategory !== 'all' && q.category !== activeCategory) return false;
+    // Эффект для дебаунса поиска и смены категории
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchData(searchQuery, activeCategory);
+        }, 500); // Задержка 500мс, чтобы не спамить API при вводе
 
-            // 2. Фильтр по поиску (ищем в переведенном тексте)
-            if (searchQuery) {
-                // Если ключ перевода есть в i18n, берем перевод, иначе сам текст
-                const qText = q.questionKey.includes('helpPage.') ? t(q.questionKey) : q.questionKey;
-                const aText = q.answerKey.includes('helpPage.') ? t(q.answerKey) : q.answerKey;
-                const query = searchQuery.toLowerCase();
+        return () => clearTimeout(timer);
+    }, [searchQuery, activeCategory, fetchData]);
 
-                return qText.toLowerCase().includes(query) || aText.toLowerCase().includes(query);
-            }
-
-            return true;
-        });
-    }, [activeCategory, searchQuery, questions, t]);
+    // Собираем все вопросы из всех секций в один плоский список для отображения
+    // (Бэкенд уже отфильтровал секции и вопросы согласно запросу)
+    const allQuestions: HelpItem[] = sections.flatMap(section => section.items.data);
 
     return (
         <div className={style.pageWrapper}>
             <Helmet>
-                <title>Помощь и поддержка - PetsOk</title>
-                <meta name="description" content="Ответы на частые вопросы о сервисе PetsOk" />
+                <title>{t('helpPage.metaTitle', 'Помощь и поддержка - PetsOk')}</title>
+                <meta name="description" content={t('helpPage.metaDesc', 'Ответы на частые вопросы о сервисе PetsOk')} />
             </Helmet>
 
             {/* Hero Section */}
@@ -94,39 +89,59 @@ const HelpPage: React.FC = () => {
             <div className={style.contentContainer}>
                 {/* Categories */}
                 <div className={style.categoriesList}>
-                    {categories.map(cat => (
+                    {TABS.map(tab => (
                         <button
-                            key={cat.key}
-                            className={`${style.categoryTab} ${activeCategory === cat.key ? style.active : ''}`}
-                            onClick={() => setActiveCategory(cat.key)}
+                            key={tab.key}
+                            className={`${style.categoryTab} ${activeCategory === tab.key ? style.active : ''}`}
+                            onClick={() => setActiveCategory(tab.key)}
                         >
-                            {t(cat.labelKey)}
+                            {t(tab.labelKey)}
                         </button>
                     ))}
                 </div>
 
+                {/* Loading State */}
+                {isLoading && (
+                    <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                        Загрузка...
+                    </div>
+                )}
+
+                {/* Error State */}
+                {!isLoading && error && (
+                    <div style={{ textAlign: 'center', padding: '40px', color: 'red' }}>
+                        {error}
+                    </div>
+                )}
+
                 {/* FAQ List */}
-                <div className={style.faqList}>
-                    {filteredQuestions.length > 0 ? (
-                        filteredQuestions.map(item => (
-                            <FaqItem
-                                key={item.id}
-                                question={item.questionKey.includes('helpPage.') ? t(item.questionKey) : item.questionKey}
-                                answer={item.answerKey.includes('helpPage.') ? t(item.answerKey) : item.answerKey}
-                            />
-                        ))
-                    ) : (
-                        <div style={{ textAlign: 'center', color: '#888', padding: '40px' }}>
-                            Ничего не найдено по запросу "{searchQuery}"
-                        </div>
-                    )}
-                </div>
+                {!isLoading && !error && (
+                    <div className={style.faqList}>
+                        {allQuestions.length > 0 ? (
+                            allQuestions.map(item => (
+                                <FaqItem
+                                    key={item.id}
+                                    // Бэкенд возвращает уже переведенный текст в полях question и answer
+                                    question={item.question}
+                                    answer={item.answer}
+                                />
+                            ))
+                        ) : (
+                            <div style={{ textAlign: 'center', color: '#888', padding: '40px' }}>
+                                {searchQuery
+                                    ? `${t('helpPage.nothingFound', 'Ничего не найдено по запросу')} "${searchQuery}"`
+                                    : t('helpPage.emptyCategory', 'В этой категории пока нет вопросов.')
+                                }
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {/* Contact Footer */}
                 <div className={style.contactSection}>
                     <h2>{t('helpPage.contactTitle')}</h2>
                     <p>{t('helpPage.contactText')}</p>
-                    <a href="mailto:support@petsok.ru" className={style.contactBtn}>
+                    <a href="mailto:contact@petsok.ru" className={style.contactBtn}>
                         {t('helpPage.contactBtn')}
                     </a>
                 </div>

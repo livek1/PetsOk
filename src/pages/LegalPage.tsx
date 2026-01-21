@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
-import style from '../style/pages/LegalPage.module.scss'; // Стили для этой страницы
+import style from '../style/pages/LegalPage.module.scss';
 
 interface LegalPageProps {
     contentKey: 'terms' | 'privacy' | 'cookie';
@@ -10,21 +10,18 @@ interface LegalPageProps {
 interface ContentItem {
     type: 'h1' | 'h2' | 'h3' | 'p' | 'ul';
     text?: string;
-    items?: string[]; // для списков ul
+    items?: string[];
 }
 
 const LegalPage: React.FC<LegalPageProps> = ({ contentKey }) => {
     const { t } = useTranslation();
 
-    // Получаем весь объект для страницы
     const pageData = t(`legalContent.${contentKey}`, { returnObjects: true }) as {
         title: string;
         updateDate?: string;
-        tableOfContents?: string[];
         content: ContentItem[];
     };
 
-    // Проверка на случай, если контент еще не добавлен
     if (!pageData || !pageData.content || pageData.content.length === 0) {
         return (
             <div className={style.legalPageContainer}>
@@ -40,25 +37,33 @@ const LegalPage: React.FC<LegalPageProps> = ({ contentKey }) => {
 
     const { title, updateDate, content } = pageData;
 
-    // Функция для рендеринга основного контента
     const renderContent = () => {
         return content.map((item, index) => {
-            // Используем dangerouslySetInnerHTML для поддержки тегов <strong>
-            const props = { key: index, dangerouslySetInnerHTML: { __html: item.text || '' } };
+            // Общие пропсы для текста
+            const commonProps = {
+                key: index,
+                dangerouslySetInnerHTML: { __html: item.text || '' }
+            };
 
             switch (item.type) {
                 case 'h1':
-                    return <h1 {...props}></h1>;
+                    return <h1 {...commonProps}></h1>;
                 case 'h2':
-                    return <h2 {...props}></h2>;
+                    return <h2 {...commonProps}></h2>;
                 case 'h3':
-                    return <h3 {...props}></h3>;
+                    return <h3 {...commonProps}></h3>;
                 case 'p':
-                    return <p {...props}></p>;
-                case 'ul': // Для возможного будущего расширения
+                    return <p {...commonProps}></p>;
+                case 'ul':
                     return (
-                        <ul key={index}>
-                            {item.items?.map((li, liIndex) => <li key={liIndex}>{li}</li>)}
+                        <ul key={index} className={style.list}>
+                            {item.items?.map((liText, liIndex) => (
+                                // ВАЖНО: Используем dangerouslySetInnerHTML для элементов списка
+                                <li
+                                    key={liIndex}
+                                    dangerouslySetInnerHTML={{ __html: liText }}
+                                />
+                            ))}
                         </ul>
                     );
                 default:
@@ -66,8 +71,6 @@ const LegalPage: React.FC<LegalPageProps> = ({ contentKey }) => {
             }
         });
     };
-
-
 
     return (
         <>
@@ -78,7 +81,6 @@ const LegalPage: React.FC<LegalPageProps> = ({ contentKey }) => {
             <div className={style.legalPageContainer}>
                 <h1>{title}</h1>
                 {updateDate && <p className={style.updateDate}>{updateDate}</p>}
-
 
                 <div className={style.legalPageContent}>
                     {renderContent()}

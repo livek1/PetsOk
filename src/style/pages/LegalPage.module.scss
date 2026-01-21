@@ -7,94 +7,118 @@
     font-family: $font-family-base;
     color: $text-color-base;
 
+    // Адаптив для мобильных
     @media (max-width: $breakpoint-md) {
         padding: $space-8 $space-4;
     }
 
-    // Главный заголовок страницы
+    // Главный заголовок страницы (H1)
     >h1 {
         font-family: $font-family-headings;
         font-size: 36px;
         font-weight: $font-weight-bold;
         color: $text-color-base;
         margin-bottom: $space-2;
+        line-height: 1.2;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 28px;
+        }
     }
 }
 
+// Дата обновления
 .updateDate {
     font-size: $font-size-sm;
     color: $text-color-muted;
-    margin-bottom: $space-10;
+    margin-bottom: $space-10; // Отступ до начала текста
+    padding-bottom: $space-4;
+    border-bottom: 1px solid $border-color-light; // Легкая линия-разделитель
 }
 
-.tableOfContents {
-    background-color: $neutral-50;
-    border-left: 3px solid $primary-color;
-    padding: $space-4 $space-5;
-    margin-bottom: $space-12;
-    border-radius: $border-radius-md;
-
-    h3 {
-        font-weight: $font-weight-semibold;
-        margin-bottom: $space-3;
-        font-size: $font-size-lg;
-    }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: $space-2;
-
-        li {
-            font-size: $font-size-base;
-            color: $text-color-secondary;
-        }
-    }
-}
-
-
+// Контейнер для всего текста политики
 .legalPageContent {
     display: flex;
     flex-direction: column;
-    gap: $space-4; // Немного уменьшил гэп между параграфами
+    gap: $space-4; // Базовый отступ между параграфами
 
-    // Заголовки разделов (1., 2., 3. и т.д.)
+    // --- Заголовки внутри текста ---
+
+    // H1 внутри контента (если вдруг используется)
+    h1 {
+        font-size: 32px;
+        font-weight: $font-weight-bold;
+        margin-top: $space-8;
+        margin-bottom: $space-4;
+    }
+
+    // H2 - Основные разделы (1. Сбор данных...)
     h2 {
         font-family: $font-family-headings;
         font-weight: $font-weight-semibold;
-        font-size: $font-size-xl;
+        font-size: $font-size-xl; // ~24px
         color: $text-color-base;
-        margin-top: $space-8; // Больший отступ перед новым разделом
+        margin-top: $space-8; // Большой отступ сверху перед новой главой
         margin-bottom: $space-3;
-        padding-bottom: $space-2;
-        border-bottom: 1px solid $border-color-light;
     }
 
-    // Заголовки более низкого уровня
+    // H3 - Подразделы
     h3 {
-        font-size: $font-size-lg;
+        font-size: $font-size-lg; // ~20px
         font-weight: $font-weight-semibold;
+        margin-top: $space-4;
+        margin-bottom: $space-2;
     }
+
+    // --- Текст и Ссылки ---
 
     p {
-        font-size: $font-size-base;
-        line-height: $line-height-relaxed;
+        font-size: $font-size-base; // ~16px
+        line-height: $line-height-relaxed; // 1.6 - чтобы удобно читать много текста
         color: $text-color-secondary;
 
-        strong {
-            font-weight: $font-weight-semibold;
-            color: $text-color-base;
+        // Жирный текст внутри параграфов
+        strong,
+        b {
+            font-weight: $font-weight-bold;
+            color: $text-color-base; // Делаем жирный текст чуть темнее обычного
         }
 
+        // Ссылки (mailto, внешние)
         a {
             color: $primary-color;
             text-decoration: underline;
+            transition: color 0.2s ease;
 
             &:hover {
                 color: $primary-color-darker;
+                text-decoration: none;
+            }
+        }
+    }
+
+    // --- Списки (UL / LI) ---
+    // Самая важная часть для вашего запроса
+    ul.list {
+        list-style-type: disc; // Стандартные круглые маркеры
+        padding-left: $space-6; // Отступ слева, чтобы маркеры не вылезали
+        margin-top: $space-2;
+        margin-bottom: $space-4;
+        display: flex;
+        flex-direction: column;
+        gap: $space-2; // Расстояние между пунктами списка
+
+        li {
+            font-size: $font-size-base;
+            line-height: $line-height-relaxed;
+            color: $text-color-secondary;
+            padding-left: $space-1; // Небольшой отступ от маркера до текста
+
+            // Жирный текст внутри LI (ваши заголовки пунктов)
+            strong,
+            b {
+                font-weight: $font-weight-bold;
+                color: $text-color-base;
             }
         }
     }

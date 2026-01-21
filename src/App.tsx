@@ -181,6 +181,7 @@ const App: FC = () => {
             <Route path="/sitter/:id" element={<SitterPage />} />
             <Route path="/terms" element={<LegalPage contentKey="terms" />} />
             <Route path="/privacy-policy" element={<LegalPage contentKey="privacy" />} />
+            <Route path="/privacy" element={<LegalPage contentKey="privacy" />} />
             <Route path="/cookie-policy" element={<LegalPage contentKey="cookie" />} />
 
             <Route path="*" element={<NotFound />} />

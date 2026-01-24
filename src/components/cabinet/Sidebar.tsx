@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom'; // Добавлен use
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { logout } from '../../store/slices/authSlice';
+import { logout, logoutUser } from '../../store/slices/authSlice';
 import style from '../../style/layouts/CabinetLayout.module.scss';
 import { User } from '../../services/api';
 
@@ -61,9 +61,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     ];
 
     const handleLogout = () => {
-        dispatch(logout());
-        onClose(); // Закрываем сайдбар (особенно важно для мобильных)
-        navigate('/'); // Используем navigate вместо window.location.href для сохранения SPA-поведения
+        // --- ИСПРАВЛЕНИЕ: Асинхронный выход ---
+        dispatch(logoutUser()).then(() => {
+            onClose();
+            navigate('/');
+        });
     };
 
     return (

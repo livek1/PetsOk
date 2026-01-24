@@ -3,7 +3,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from "../../store/slices/authSlice";
+import { logout, logoutUser } from "../../store/slices/authSlice";
 import { AppDispatch, RootState } from "../../store";
 import style from "./UserPopup.module.scss";
 
@@ -20,9 +20,11 @@ const UserPopup: React.FC<UserPopupProps> = ({ hide, handleOpenAuthModal, onClos
   const { user, isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
 
   const handleLogout = () => {
-    dispatch(logout());
-    onClosePopup();
-    navigate('/'); // Навигация без перезагрузки
+    // --- ИСПРАВЛЕНИЕ: Асинхронный выход ---
+    dispatch(logoutUser()).then(() => {
+      onClosePopup();
+      navigate('/');
+    });
   };
 
   if (!hide) {

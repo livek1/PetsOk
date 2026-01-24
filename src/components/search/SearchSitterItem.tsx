@@ -6,7 +6,6 @@ import { fetchAddressSuggestions } from "../../services/api";
 import style from '../../style/components/search/SearchSitterItem.module.scss';
 import LocationPinIcon from '../icons/LocationPinIcon';
 import SearchIcon from '../icons/SearchIcon';
-// Удален импорт TargetIcon, так как кнопка убрана
 import { useDispatch } from "react-redux";
 
 const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
@@ -25,9 +24,10 @@ interface SearchSitterItemProp {
 const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  // dispatch не используется напрямую здесь, но оставлен, если понадобится расширение
   const dispatch = useDispatch();
+
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null); // 1. Создаем реф для инпута
 
   const [locationInput, setLocationInput] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -66,7 +66,6 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
     if (locationInput) params.append('address', locationInput);
     params.append('service_key', serviceType);
 
-    // Переход на страницу поиска с параметрами в URL
     navigate(`/search?${params.toString()}`);
   };
 
@@ -74,6 +73,13 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
     setLocationInput(s);
     setSuggestions([]);
     setIsActive(false);
+  };
+
+  // 2. Функция для клика по контейнеру
+  const handleContainerClick = () => {
+    setIsActive(true);
+    // Принудительно ставим фокус в инпут
+    inputRef.current?.focus();
   };
 
   useEffect(() => {
@@ -89,11 +95,16 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
 
   return (
     <div className={style.searchContainer} ref={wrapperRef}>
-      <form className={`${style.searchBar} ${isActive ? style.activeBar : ''}`} onSubmit={handleSearch} onClick={() => setIsActive(true)}>
+      {/* 3. Вешаем обработчик на форму/контейнер */}
+      <form
+        className={`${style.searchBar} ${isActive ? style.activeBar : ''}`}
+        onSubmit={handleSearch}
+        onClick={handleContainerClick}
+      >
         <div className={style.inputWrapper}>
           <input
+            ref={inputRef} // 4. Привязываем реф к инпуту
             type="text"
-            // Используем динамический плейсхолдер
             placeholder={getPlaceholder(serviceType)}
             value={locationInput}
             onChange={(e) => { setLocationInput(e.target.value); debouncedFetch(e.target.value); }}
@@ -101,13 +112,8 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
           />
         </div>
 
-        {/* 
-           --- УДАЛЕНО: Кнопка "Моя геолокация" ---
-           Раньше здесь был блок {locationInput === '' && ... button with TargetIcon ...}
-        */}
-
         <div className={style.searchBtnWrapper}>
-          <button type="submit" className={style.searchBtn}>
+          <button type="submit" className={style.searchBtn} onClick={(e) => e.stopPropagation()}>
             <SearchIcon width={24} height={24} />
             <span className={style.searchBtnText}>{t('SearchSitterItem.searchButtonText', 'Найти')}</span>
           </button>

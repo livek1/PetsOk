@@ -224,7 +224,7 @@ const StepProfile = ({ onNext, isResubmission, adminMessage }: { onNext: () => v
 
             {/* ВЕРНУЛИ ПОЛЕ АДРЕСА */}
             <div className={style.formGroup}>
-                <label>{t('additionalProfile.addressLabel', 'Район / Метро')} <span>*</span></label>
+                <label>{t('additionalProfile.addressLabel', 'Ваш адрес')} <span>*</span></label>
                 <input
                     className={`${style.input} ${errors.address ? style.error : ''}`}
                     value={address}

@@ -23,6 +23,12 @@ import {
 } from '../../services/api';
 import { RootState } from '../index';
 
+// --- ИМПОРТЫ ДЛЯ ПОЛНОГО ВЫХОДА ---
+import { clearPaymentMethods } from './paymentSlice';
+import { resetDialogues } from './dialoguesSlice';
+import { WEBSOCKET_DISCONNECT } from '../middleware/websocketMiddleware';
+// ----------------------------------
+
 export interface AuthState {
     user: User | null;
     token: string | null;
@@ -58,25 +64,45 @@ interface CheckContactThunkArg { contactValue: string; contactType: 'phone' | 'e
 interface SendOtpThunkArg { contactValue: string; contactType: 'phone' | 'email'; operation: 'register' | 'reset'; }
 interface VerifyOtpThunkArg { contactValue: string; contactType: 'phone' | 'email'; code: string; operation: 'register' | 'reset'; }
 
-// --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ЗАГРУЗКИ ПРОФИЛЯ ПОСЛЕ АВТОРИЗАЦИИ ---
 const fetchProfileAfterAuth = async (authResponse: AuthApiResponse) => {
-    // Сохраняем токен, чтобы последующий запрос прошел успешно
     localStorage.setItem('authToken', authResponse.accessToken);
     if (authResponse.refreshToken) {
         localStorage.setItem('refreshToken', authResponse.refreshToken);
     }
 
     try {
-        // Сразу запрашиваем профиль
         const userProfile = await fetchUserProfileApi();
-        // Возвращаем объединенный объект: токены из первого ответа, юзер из второго
         return { ...authResponse, user: userProfile, data: userProfile };
     } catch (e) {
         console.error("Failed to fetch profile immediately after auth", e);
-        // Если не удалось загрузить профиль, возвращаем только токены (компонент попробует загрузить позже или выкинет ошибку)
         return authResponse;
     }
 };
+
+// --- НОВЫЙ THUNK ДЛЯ ПОЛНОГО ВЫХОДА ИЗ СИСТЕМЫ ---
+export const logoutUser = createAsyncThunk<void, void, { state: RootState }>(
+    'auth/logoutUser',
+    async (_, { dispatch }) => {
+        // 1. Отключаем веб-сокеты (чтобы не приходили новые события)
+        dispatch({ type: WEBSOCKET_DISCONNECT });
+
+        // 2. Очищаем данные других слайсов
+        dispatch(clearPaymentMethods());
+        dispatch(resetDialogues());
+
+        // 3. Выполняем синхронный выход (чистит auth slice)
+        dispatch(logout());
+
+        // 4. Гарантированно очищаем localStorage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('refreshToken');
+
+        // 5. Опционально: небольшая задержка, чтобы React успел обработать изменения стейта
+        // перед тем как navigate сработает в компоненте
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+);
+// ---------------------------------------------------
 
 
 export const checkContactExists = createAsyncThunk<CheckContactResponse, CheckContactThunkArg, { rejectValue: string }>(
@@ -132,7 +158,6 @@ export const register = createAsyncThunk<AuthApiResponse, RegisterThunkArg, { re
             });
 
             const response = await registerUserApi(augmentedPayload);
-            // Запрашиваем профиль сразу
             return await fetchProfileAfterAuth(response);
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || error.message || 'Registration failed');
@@ -144,7 +169,6 @@ export const login = createAsyncThunk<AuthApiResponse, LoginPayload, { rejectVal
     'auth/login', async (credentials, { rejectWithValue }) => {
         try {
             const response = await loginUserApi(credentials);
-            // Запрашиваем профиль сразу
             return await fetchProfileAfterAuth(response);
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.message || error.message || 'Login failed');
@@ -214,7 +238,6 @@ const authSlice = createSlice({
         const handleAuthFulfilled = (state: AuthState, action: PayloadAction<AuthApiResponse>) => {
             state.isLoading = false; state.status = 'succeeded'; state.isAuthenticated = true;
 
-            // Теперь здесь гарантированно будет user, так как мы подгрузили его в Thunk
             const userDataFromApi = action.payload.user || action.payload.data;
 
             if (userDataFromApi) {

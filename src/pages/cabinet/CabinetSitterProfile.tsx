@@ -525,7 +525,7 @@ const ProfileTab = () => {
                 <div className={style.formGroup} style={{ backgroundColor: '#F8F9FB', padding: '16px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: '#718096' }}>
                         <MapPinIcon />
-                        <label style={{ margin: 0, color: 'inherit' }}>{t('sitterSettings.profile.addressLabel', 'Район / Метро')}</label>
+                        <label style={{ margin: 0, color: 'inherit' }}>{t('sitterSettings.profile.addressLabel', 'Ваш адрес')}</label>
                     </div>
                     <div style={{ paddingLeft: '28px' }}>
                         <div style={{ fontWeight: 600, fontSize: '1.05rem', color: '#1A202C', marginBottom: '8px' }}>

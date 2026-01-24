@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ReactDOM from "react-dom";
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -18,11 +19,13 @@ import DogWalkingIcon from '../../components/icons/DogWalkingIcon';
 const CheckIcon = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>;
 const PawIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 7.8 14.2 7.8 12.75 6.35C11.3 4.9 11.3 2.9 12.75 1.45C14.2 0 16.2 0 17.65 1.45C19.1 2.9 19.1 4.9 17.65 6.35ZM6.35 6.35C7.8 4.9 7.8 2.9 6.35 1.45C4.9 0 2.9 0 1.45 1.45C0 2.9 0 4.9 1.45 6.35C2.9 7.8 4.9 7.8 6.35 6.35ZM22.55 1.45C21.1 0 19.1 0 17.65 1.45C16.2 2.9 16.2 4.9 17.65 6.35C19.1 7.8 21.1 7.8 22.55 6.35C24 4.9 24 2.9 22.55 1.45ZM1.45 12.55C2.9 11.1 4.9 11.1 6.35 12.55C7.8 14 7.8 16 6.35 17.45C4.9 18.9 2.9 18.9 1.45 17.45C0 16 0 14 1.45 12.55ZM12 9C9.24 9 7 11.24 7 14C7 16.76 9.24 19 12 19C14.76 19 17 16.76 17 14C17 11.24 14.76 9 12 9ZM12 24C9.24 24 7 21.76 7 19H17C17 21.76 14.76 24 12 24Z" /></svg>;
 const ChevronDownIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"></polyline></svg>;
+const MapPinIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
+// Иконка для ожидания/информации (оранжевая)
+const HourglassIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 2v20h16V2H4zm8 9l-4 4h8l-4-4zm0-9l4 4H8l4-4z" /></svg>;
 
 const SERVICE_TYPES = {
     BOARDING: 'boarding',
     HOUSE_SITTING: 'house_sitting',
-    // --- ИСПРАВЛЕНИЕ: Переименовали константу ---
     DROP_IN_VISIT: 'drop_in_visit',
     DOGGY_DAY_CARE: 'doggy_day_care',
     WALKING: 'walking'
@@ -86,6 +89,9 @@ const DURATIONS = [
 const TIMES = Array.from({ length: 14 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`);
 const MIN_BOOKING_LEAD_TIME_HOURS = 3;
 
+// Получаем корневой элемент для порталов
+const modalRoot = document.getElementById('modal-root') || document.body;
+
 const CreateOrder: React.FC = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -112,6 +118,10 @@ const CreateOrder: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isPetLoading, setIsPetLoading] = useState(true);
+
+    // --- МОДАЛЬНЫЕ ОКНА ---
+    const [addressError, setAddressError] = useState<string | null>(null);
+    const [noWorkersMessage, setNoWorkersMessage] = useState<string | null>(null);
 
     const isPeriodOnly = useMemo(() => selectedService && PERIOD_ONLY_SERVICES.includes(selectedService), [selectedService]);
     const isVisit = useMemo(() => selectedService && VISIT_SERVICES.includes(selectedService), [selectedService]);
@@ -183,6 +193,8 @@ const CreateOrder: React.FC = () => {
     const handleSubmit = async () => {
         if (!validate()) return;
         setLoading(true);
+        setAddressError(null);
+        setNoWorkersMessage(null);
 
         const payload = {
             service_type: selectedService,
@@ -209,7 +221,28 @@ const CreateOrder: React.FC = () => {
             }
         } catch (e: any) {
             console.error(e);
-            alert(e.message || t('bookingScreen.errors.unknownError') as string);
+
+            const responseData = e.response?.data;
+            const errorMessage = responseData?.message || e.message;
+
+            // 1. Проверка на ошибку отсутствия адреса
+            if (errorMessage && (
+                errorMessage.toLowerCase().includes('адрес') ||
+                errorMessage.toLowerCase().includes('address') ||
+                errorMessage.toLowerCase().includes('местоположение')
+            )) {
+                setAddressError(errorMessage);
+                return;
+            }
+
+            // 2. Проверка на отсутствие воркеров (Код 422 и ключ workers_availability)
+            if (responseData?.errors?.workers_availability && responseData.errors.workers_availability.length > 0) {
+                setNoWorkersMessage(responseData.errors.workers_availability[0]);
+                return;
+            }
+
+            // 3. Остальные ошибки
+            alert(errorMessage || t('bookingScreen.errors.unknownError') as string);
         } finally {
             setLoading(false);
         }
@@ -392,6 +425,61 @@ const CreateOrder: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* --- МОДАЛЬНОЕ ОКНО ОШИБКИ АДРЕСА --- */}
+            {addressError && ReactDOM.createPortal(
+                <div className={style.modalOverlay}>
+                    <div className={style.modalContent}>
+                        <div className={style.modalIcon}>
+                            <MapPinIcon />
+                        </div>
+                        <h3 className={style.modalTitle}>Требуется адрес</h3>
+                        <p className={style.modalText}>
+                            {addressError}
+                        </p>
+                        <div className={style.modalActions}>
+                            <button
+                                className={`${style.modalBtn} ${style.modalBtnPrimary}`}
+                                onClick={() => navigate('/cabinet/profile')}
+                            >
+                                Указать адрес в профиле
+                            </button>
+                            <button
+                                className={`${style.modalBtn} ${style.modalBtnSecondary}`}
+                                onClick={() => setAddressError(null)}
+                            >
+                                Отмена
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                modalRoot
+            )}
+
+            {/* --- МОДАЛЬНОЕ ОКНО "НЕТ ИСПОЛНИТЕЛЕЙ" --- */}
+            {noWorkersMessage && ReactDOM.createPortal(
+                <div className={style.modalOverlay}>
+                    <div className={style.modalContent}>
+                        <div className={style.modalIcon} style={{ backgroundColor: '#FFF8E1', color: '#DD6B20' }}>
+                            <HourglassIcon />
+                        </div>
+                        <h3 className={style.modalTitle}>{t('common.info', 'Информация')}</h3>
+                        <p className={style.modalText} style={{ marginBottom: 20 }}>
+                            {noWorkersMessage}
+                        </p>
+                        <div className={style.modalActions}>
+                            <button
+                                className={`${style.modalBtn} ${style.modalBtnPrimary}`}
+                                onClick={() => setNoWorkersMessage(null)}
+                            >
+                                {t('common.understood', 'Понятно')}
+                            </button>
+                        </div>
+                    </div>
+                </div>,
+                modalRoot
+            )}
+
         </div>
     );
 };

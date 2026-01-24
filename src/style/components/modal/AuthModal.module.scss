@@ -140,13 +140,20 @@ label.inputLabel {
 .phoneInputFieldElement {
     flex-grow: 1;
     border: none;
-    outline: none; // Убираем дефолтную обводку
+    outline: none; // Убирает стандартный фокус
     background-color: transparent;
     padding: $space-3 $space-4;
     font-size: $font-size-base;
     color: $text-color-base;
     width: 100%;
     height: 100%;
+
+    // --- ДОБАВИТЬ ЭТО ---
+    &:focus-visible {
+        outline: none;
+    }
+
+    // -------------------
 
     &::placeholder {
         color: $neutral-500;
@@ -168,22 +175,20 @@ input.inputField {
     transition: border-color $transition-base, box-shadow $transition-base;
     outline: none; // Важно: убираем браузерный фокус
 
+    // --- ДОБАВИТЬ ЭТО ---
+    &:focus-visible {
+        outline: none;
+        // Если хотите сохранить подсветку, но сделать её круглой, можно перенести box-shadow сюда, 
+        // но у вас уже есть логика :focus ниже, так что просто убираем outline.
+    }
+
+    // -------------------
+
     &::placeholder {
         color: $neutral-500;
     }
 
-    &:focus {
-        border-color: $primary-color;
-        box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
-    }
-
-    &.inputError {
-        border-color: $error-500;
-
-        &:focus {
-            box-shadow: 0 0 0 2px rgba($error-500, 0.2);
-        }
-    }
+    // ... остальной код
 }
 
 

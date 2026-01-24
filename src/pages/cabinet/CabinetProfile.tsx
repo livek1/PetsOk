@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { RootState, AppDispatch } from '../../store';
-import { loadUser, logout } from '../../store/slices/authSlice';
+import { loadUser, logoutUser } from '../../store/slices/authSlice';
 import { updateUser, fetchAddressSuggestions } from '../../services/api';
 import style from '../../style/pages/cabinet/CabinetProfile.module.scss';
+import { useNavigate } from 'react-router-dom';
 
 // Иконки
 const CameraIcon = () => (
@@ -31,6 +32,7 @@ interface ProfileFormValues {
 const CabinetProfile: React.FC = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate(); // Добавлено для навигации при логауте
     const { user, isLoading: isAuthLoading, token } = useSelector((state: RootState) => state.auth);
 
     const [isSaving, setIsSaving] = useState(false);
@@ -41,7 +43,8 @@ const CabinetProfile: React.FC = () => {
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
-    const { register, handleSubmit, setValue, reset, watch, formState: { errors } } = useForm<ProfileFormValues>({
+    // Добавили setError для обработки серверных ошибок
+    const { register, handleSubmit, setValue, reset, watch, setError, formState: { errors } } = useForm<ProfileFormValues>({
         defaultValues: {
             first_name: '',
             last_name: '',
@@ -126,8 +129,23 @@ const CabinetProfile: React.FC = () => {
             alert(t('editProfileScreen.flash.updateSuccess', 'Профиль успешно обновлен!'));
         } catch (error: any) {
             console.error(error);
-            const msg = error.response?.data?.message || t('editProfileScreen.flash.updateFailed', 'Ошибка обновления');
-            alert(msg);
+
+            // --- ОБРАБОТКА ОШИБОК ВАЛИДАЦИИ (422) ---
+            if (error.response && error.response.data && error.response.data.errors) {
+                const serverErrors = error.response.data.errors;
+                // Проходимся по ключам ошибок и устанавливаем их в форму
+                Object.keys(serverErrors).forEach((key) => {
+                    setError(key as keyof ProfileFormValues, {
+                        type: "server",
+                        message: serverErrors[key][0]
+                    });
+                });
+                // Можно добавить общий алерт, чтобы пользователь заметил
+                alert(t('validationErrors.fillAllFields', 'Пожалуйста, проверьте правильность заполнения полей.'));
+            } else {
+                const msg = error.response?.data?.message || t('editProfileScreen.flash.updateFailed', 'Ошибка обновления');
+                alert(msg);
+            }
         } finally {
             setIsSaving(false);
         }
@@ -173,7 +191,7 @@ const CabinetProfile: React.FC = () => {
                 <div className={style.headerActions}>
                     <button
                         className={style.logoutButtonMain}
-                        onClick={() => dispatch(logout())}
+                        onClick={() => dispatch(logoutUser()).then(() => navigate('/'))}
                     >
                         {t('profile.logout.confirmButton', 'Выйти')}
                     </button>
@@ -319,19 +337,29 @@ const CabinetProfile: React.FC = () => {
                     <div className={style.formGrid}>
                         <div className={style.inputGroup}>
                             <label className={style.label}>{t('editProfileScreen.labels.emergencyName', 'Имя')}</label>
+                            {/* ДОБАВЛЕНА ВАЛИДАЦИЯ */}
                             <input
-                                {...register("additional_contact_name")}
-                                className={style.input}
+                                {...register("additional_contact_name", {
+                                    required: t('editProfileScreen.validation.emergencyNameRequired', 'Имя контакта обязательно')
+                                })}
+                                className={`${style.input} ${errors.additional_contact_name ? style.inputError : ''}`}
                                 placeholder={t('editProfileScreen.placeholders.emergencyName', 'Имя родственника или друга')}
                             />
+                            {/* ВЫВОД ОШИБКИ */}
+                            {errors.additional_contact_name && <span className={style.errorText}>{errors.additional_contact_name.message}</span>}
                         </div>
                         <div className={style.inputGroup}>
                             <label className={style.label}>{t('editProfileScreen.labels.emergencyPhone', 'Телефон')}</label>
+                            {/* ДОБАВЛЕНА ВАЛИДАЦИЯ */}
                             <input
-                                {...register("additional_contact_phone")}
-                                className={style.input}
+                                {...register("additional_contact_phone", {
+                                    required: t('editProfileScreen.validation.emergencyPhoneRequired', 'Телефон контакта обязателен')
+                                })}
+                                className={`${style.input} ${errors.additional_contact_phone ? style.inputError : ''}`}
                                 placeholder="+7..."
                             />
+                            {/* ВЫВОД ОШИБКИ */}
+                            {errors.additional_contact_phone && <span className={style.errorText}>{errors.additional_contact_phone.message}</span>}
                         </div>
                     </div>
                 </div>

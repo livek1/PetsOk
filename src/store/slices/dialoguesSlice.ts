@@ -141,7 +141,6 @@ const dialoguesSlice = createSlice({
 
             const newMessageObj: Message = {
                 id: message.id,
-                // --- ИСПРАВЛЕНИЕ ЗДЕСЬ: Убрали (message.gallery?.length ? '📷 Фото' : '') ---
                 text: message.message || message.text || '',
                 createdAt: message.createdAt || message.created_at || new Date().toISOString(),
                 user: msgUser,
@@ -175,6 +174,13 @@ const dialoguesSlice = createSlice({
             const groupId = action.payload;
             const dialogue = state.dialoguesList.find(d => String(d.id) === groupId);
             if (dialogue) dialogue.unread_count = 0;
+        },
+        // --- ИСПРАВЛЕНИЕ: Новый редюсер для очистки при выходе ---
+        resetDialogues(state) {
+            state.dialoguesList = [];
+            state.currentChatGroupId = null;
+            state.lastReceivedMessage = null;
+            state.typingStates = {};
         }
     },
     extraReducers: (builder) => {
@@ -198,7 +204,8 @@ export const {
     setDialogueTyping,
     clearTypingForUserInGroup,
     updateDialogueFromWs,
-    markDialogueAsReadOptimistic
+    markDialogueAsReadOptimistic,
+    resetDialogues // Экспорт
 } = dialoguesSlice.actions;
 
 export default dialoguesSlice.reducer;

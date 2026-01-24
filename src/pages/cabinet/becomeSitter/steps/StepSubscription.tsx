@@ -1,7 +1,9 @@
+// --- File: src/pages/cabinet/becomeSitter/steps/StepSubscription.tsx ---
 import React, { useEffect, useState } from 'react';
 import { getSubscriptionPlans, createSubscription } from '../../../../services/api';
 import style from '../../../../style/pages/cabinet/becomeSitter/StepSubscription.module.scss';
 import wizardStyle from '../BecomeSitterWizard.module.scss';
+import { useTranslation } from 'react-i18next'; // Импортируем хук переводов
 
 // Иконки
 const PercentIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>;
@@ -10,6 +12,8 @@ const StarIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="non
 const BoltIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>;
 
 const StepSubscription = ({ onNext }: { onNext: () => void }) => {
+    const { t } = useTranslation(); // Инициализация переводов
+
     const [monthlyPlan, setMonthlyPlan] = useState<any>(null);
     const [yearlyPlan, setYearlyPlan] = useState<any>(null);
     const [selectedPeriod, setSelectedPeriod] = useState<'month' | 'year'>('year');
@@ -220,6 +224,19 @@ const StepSubscription = ({ onNext }: { onNext: () => void }) => {
             <button className={style.skipButton} onClick={handleSkip}>
                 {isDiscountOffered ? 'Отказаться от 0% комиссии' : 'Продолжить с комиссией 20%'}
             </button>
+
+            {/* --- НОВЫЙ БЛОК: Юридическая информация (Как на мобильном) --- */}
+            <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '11px', color: '#718096', lineHeight: '1.4' }}>
+                {t('subscription.legalStart', 'Нажимая кнопку, вы соглашаетесь с ')}
+                <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#3B82F6', textDecoration: 'underline' }}>
+                    {t('common.termsOfService', 'Условиями использования')}
+                </a>
+                {t('subscription.legalAnd', ' и ')}
+                <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: '#3B82F6', textDecoration: 'underline' }}>
+                    {t('common.privacyPolicy', 'Политикой конфиденциальности')}
+                </a>.
+            </div>
+            {/* ------------------------------------------------------------- */}
         </div>
     );
 };

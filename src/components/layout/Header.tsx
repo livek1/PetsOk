@@ -9,7 +9,7 @@ import i18n from "i18next";
 import { useLocation, Link, useNavigate } from 'react-router-dom'; // Добавлен useNavigate
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { logout } from '../../store/slices/authSlice';
+import { logoutUser } from '../../store/slices/authSlice'; // <--- Импортируем logoutUser вместо logout
 
 // Иконки
 const IconGlobe: FC<{ className?: string }> = ({ className }) => (<svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M2 12H22" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M12 2C14.5013 4.46682 15.9105 8.16734 16 12C15.9105 15.8327 14.5013 19.5332 12 22C9.49872 19.5332 8.08951 15.8327 8 12C8.08951 8.16734 9.49872 4.46682 12 2V2Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>);
@@ -128,9 +128,11 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
   };
 
   const handleMobileLogout = () => {
-    dispatch(logout());
-    closeMobileMenuFully();
-    navigate('/'); // SPA redirect
+    // --- ИСПРАВЛЕНИЕ: Используем асинхронный выход ---
+    dispatch(logoutUser()).then(() => {
+      closeMobileMenuFully();
+      navigate('/');
+    });
   };
 
   return (

@@ -10,11 +10,13 @@ import wizardStyle from '../BecomeSitterWizard.module.scss';
 import { loadUser } from '../../../../store/slices/authSlice';
 import { AppDispatch } from '../../../../store';
 
-// Анимации (Если их нет, закомментируйте и используйте null)
-import pendingAnimation from '../../../../assets/Pending.lottie';
-import againAnimation from '../../../../assets/Again.lottie';
-import failAnimation from '../../../../assets/Fail.lottie';
-import approveAnimation from '../../../../assets/Approve.lottie';
+// --- ИЗМЕНЕНИЕ: Используем пути к файлам в папке /public/animations/ ---
+// Это предотвращает включение тяжелых файлов внутрь JavaScript-бандла.
+// Файлы должны лежать в: public/animations/Pending.lottie и т.д.
+const pendingAnimation = '/animations/Pending.lottie';
+const againAnimation = '/animations/Again.lottie';
+const failAnimation = '/animations/Fail.lottie';
+const approveAnimation = '/animations/Approve.lottie';
 
 // Иконки
 const TelegramIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.697-1.653-1.123-2.678-1.799-1.185-.781-.417-1.21.258-1.911.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.314-.913.468-1.302.459-.428-.01-1.254-.241-1.866-.44-.751-.244-1.349-.374-1.297-.789.027-.216.324-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.477-1.635.099-.002.321.023.473.146.158.143.201.338.223.519.02.164.01.332.01.332z" /></svg>;
@@ -95,6 +97,7 @@ const StepStatus = ({ statusKey, details }: { statusKey: string, details: any })
             <div className={wizardStyle.stepCard}>
 
                 <div className={style.animationContainer}>
+                    {/* Плеер автоматически подгрузит файл по ссылке из public */}
                     <DotLottiePlayer
                         src={config.src}
                         autoplay

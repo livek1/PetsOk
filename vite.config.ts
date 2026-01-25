@@ -2,17 +2,14 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-	plugins: [
-		react(),
-	],
+	plugins: [react()],
 	assetsInclude: ['**/*.lottie'],
 	build: {
 		target: 'esnext',
 		minify: 'esbuild',
 		chunkSizeWarningLimit: 1000,
 
-		// 🔴 КРИТИЧНО ВАЖНО: Отключаем предзагрузку, 
-		// чтобы тяжелые файлы не качались на главной сами по себе
+		// Отключаем предзагрузку, чтобы не качать Lottie сразу
 		modulePreload: {
 			polyfill: false,
 		},
@@ -22,47 +19,25 @@ export default defineConfig({
 				manualChunks(id) {
 					if (id.includes('node_modules')) {
 
-						// 1. Ядро React (грузим сразу)
-						if (
-							id.includes('/react/') ||
-							id.includes('/react-dom/') ||
-							id.includes('/react-router/') ||
-							id.includes('/scheduler/') ||
-							id.includes('/prop-types/')
-						) {
-							return 'vendor-react-core';
-						}
-
-						// 2. Lottie (грузим ТОЛЬКО когда нужно)
-						// Список всех возможных названий пакетов плеера
-						if (
-							id.includes('@dotlottie') ||
-							id.includes('lottie-web') ||
-							id.includes('lottie-react')
-						) {
+						// 1. ИЗОЛЯЦИЯ LOTTIE (Самое важное для нас)
+						if (id.includes('@dotlottie') || id.includes('lottie')) {
 							return 'vendor-lottie-player';
 						}
 
-						// 3. Карты (грузим отдельно)
-						if (
-							id.includes('yandex') ||
-							id.includes('react-yandex-maps')
-						) {
+						// 2. ИЗОЛЯЦИЯ КАРТ (Yandex Maps)
+						if (id.includes('yandex') || id.includes('react-yandex-maps')) {
 							return 'vendor-maps';
 						}
 
-						// 4. Тяжелые UI либы
+						// 3. ИЗОЛЯЦИЯ ТЯЖЕЛОЙ ГРАФИКИ
 						if (id.includes('framer-motion')) {
 							return 'vendor-framer';
 						}
 
-						// 5. Данные
-						if (id.includes('redux') || id.includes('axios')) {
-							return 'vendor-data';
-						}
-
-						// Все остальное
-						return 'vendor-libs';
+						// 4. ВСЁ ОСТАЛЬНОЕ - В ОДИН ФАЙЛ (Чобы не было белого экрана)
+						// React, Router, Redux, Axios и прочее будут здесь.
+						// Это гарантирует, что приложение запустится.
+						return 'vendor-main';
 					}
 				},
 			},

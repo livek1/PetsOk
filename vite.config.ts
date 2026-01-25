@@ -1,38 +1,29 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [react()],
 	assetsInclude: ['**/*.lottie'],
 	build: {
-		// Возвращаем стандартный лимит (или чуть выше), так как теперь чанки будут меньше
 		chunkSizeWarningLimit: 1000,
-
 		rollupOptions: {
 			output: {
+				// Мы используем более стабильную схему именования чанков
 				manualChunks(id) {
-					// Проверяем, находится ли модуль в node_modules
 					if (id.includes('node_modules')) {
-						// 1. React и его экосистема - в отдельный чанк
-						if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom') || id.includes('redux')) {
-							return 'vendor-react-core';
-						}
-						// 2. Яндекс Карты (тяжелая библиотека)
-						if (id.includes('react-yandex-maps') || id.includes('yandex-maps')) {
+						// Выносим только самые тяжелые либы, которые не нужны на главной
+						if (id.includes('yandex-maps') || id.includes('react-yandex-maps')) {
 							return 'vendor-maps';
 						}
-						// 3. Анимации и UI (Framer Motion, Lottie)
-						if (id.includes('framer-motion') || id.includes('lottie') || id.includes('dotlottie')) {
-							return 'vendor-ui-libs';
+						if (id.includes('framer-motion')) {
+							return 'vendor-framer';
 						}
-						// 4. Axios и утилиты
-						if (id.includes('axios') || id.includes('moment') || id.includes('i18next')) {
-							return 'vendor-utils';
+						if (id.includes('lottie')) {
+							return 'vendor-lottie';
 						}
-
-						// Все остальные библиотеки пойдут в общий vendor файл
-						return 'vendor';
+						// Все остальное (axios, redux, i18n) пусть живет в общем vendor или main
+						// Это гарантирует, что зависимости React загрузятся правильно
+						return 'vendor-others';
 					}
 				},
 			},

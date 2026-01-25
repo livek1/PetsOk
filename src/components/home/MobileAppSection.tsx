@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { QRCodeCanvas } from "qrcode.react";
 import { useSelector } from 'react-redux';
+import Cookies from 'js-cookie'; // Импортируем Cookies
 import { RootState } from '../../store';
 import "../../style/components/MobileAppPromoSection.scss";
 
@@ -23,10 +24,54 @@ const BookingManageIcon: FC = () => (<svg xmlns="http://www.w3.org/2000/svg" wid
 
 const MOBILE_BREAKPOINT = 768;
 
-const addQueryParamToUrl = (url: string, paramName: string, paramValue: string): string => {
-    if (!paramValue) return url;
-    const separator = url.includes('?') ? '&' : '?';
-    return `${url}${separator}${paramName}=${paramValue}`;
+// Функция для формирования правильной ссылки с UTM и Ref
+const buildTrackingUrl = (baseUrl: string, platform: 'ios' | 'android' | 'universal'): string => {
+    try {
+        const url = new URL(baseUrl);
+        const searchParams = new URLSearchParams(url.search);
+
+        // 1. Referral Code
+        const refCode = getReferralCode();
+        if (refCode) {
+            searchParams.set(defaultConfig.referralParamName, refCode);
+        }
+
+        // 2. UTM Parameters
+        const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+        const utmValues: Record<string, string> = {};
+
+        utmKeys.forEach(key => {
+            const value = Cookies.get(key);
+            if (value) {
+                utmValues[key] = value;
+                // Для iOS и Universal добавляем как есть
+                if (platform !== 'android') {
+                    searchParams.set(key, value);
+                }
+            }
+        });
+
+        // 3. Android Google Play Referrer Logic
+        if (platform === 'android' && Object.keys(utmValues).length > 0) {
+            // Google Play требует, чтобы все utm метки были внутри одного параметра 'referrer',
+            // закодированного как URL query string
+            const referrerParams = new URLSearchParams();
+            Object.entries(utmValues).forEach(([k, v]) => referrerParams.set(k, v));
+
+            // Если есть реферальный код, его тоже полезно добавить в referrer
+            if (refCode) referrerParams.set(defaultConfig.referralParamName, refCode);
+
+            searchParams.set('referrer', referrerParams.toString());
+        }
+
+        // Восстанавливаем URL
+        url.search = searchParams.toString();
+        return url.toString();
+
+    } catch (e) {
+        console.error('Error building tracking URL:', e);
+        return baseUrl;
+    }
 };
 
 const MobileAppPromoSection: React.FC = () => {
@@ -53,22 +98,15 @@ const MobileAppPromoSection: React.FC = () => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Эффект для обновления ссылок
+    // Эффект для обновления ссылок с учетом UTM и Config
     useEffect(() => {
         const baseAppStoreUrl = versionConfig?.ios?.url || defaultConfig.appStoreUrl;
         const baseGooglePlayUrl = versionConfig?.android?.url || defaultConfig.googlePlayUrl;
         const baseUniversalUrl = defaultConfig.appUniversalUrl;
 
-        const refCode = getReferralCode();
-        if (refCode) {
-            setFinalUniversalAppUrl(addQueryParamToUrl(baseUniversalUrl, defaultConfig.referralParamName, refCode));
-            setFinalAppStoreUrl(addQueryParamToUrl(baseAppStoreUrl, defaultConfig.referralParamName, refCode));
-            setFinalGooglePlayUrl(addQueryParamToUrl(baseGooglePlayUrl, defaultConfig.referralParamName, refCode));
-        } else {
-            setFinalUniversalAppUrl(baseUniversalUrl);
-            setFinalAppStoreUrl(baseAppStoreUrl);
-            setFinalGooglePlayUrl(baseGooglePlayUrl);
-        }
+        setFinalUniversalAppUrl(buildTrackingUrl(baseUniversalUrl, 'universal'));
+        setFinalAppStoreUrl(buildTrackingUrl(baseAppStoreUrl, 'ios'));
+        setFinalGooglePlayUrl(buildTrackingUrl(baseGooglePlayUrl, 'android'));
     }, [versionConfig]);
 
     const appFeatures = [
@@ -100,13 +138,13 @@ const MobileAppPromoSection: React.FC = () => {
 
     return (
         <motion.section
-            className="mobile-app-promo-section" // Убрали класс wrapper отсюда
+            className="mobile-app-promo-section"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={sectionVariants}
         >
-            <div className="wrapper"> {/* Добавили div.wrapper внутрь */}
+            <div className="wrapper">
                 <div className="mobile-app-promo-section__main-title-wrapper">
                     <motion.h2 variants={itemVariantsLeft}>
                         {t("mobileAppPromo.sectionTitle", "PetsOk в вашем кармане: Максимум удобства для вас и вашего любимца!")}

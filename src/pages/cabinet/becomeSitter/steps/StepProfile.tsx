@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { createAdditionalWorkerProfile } from '../../../../services/api';
+import { createAdditionalWorkerProfile, fetchAddressSuggestions } from '../../../../services/api';
 import style from '../../../../style/pages/cabinet/becomeSitter/StepProfile.module.scss';
 
 // Иконки
@@ -21,10 +21,14 @@ const StepProfile = ({ onNext, isResubmission, adminMessage }: { onNext: () => v
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [address, setAddress] = useState(''); // Вернули адрес
+    const [address, setAddress] = useState('');
     const [careExperience, setCareExperience] = useState('');
     const [constantSupervision, setConstantSupervision] = useState(false);
     const [childrenUnderTwelve, setChildrenUnderTwelve] = useState(false);
+
+    // Состояния для автокомплита адреса
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
 
     const [mediaItems, setMediaItems] = useState<MediaFile[]>([]);
     const [mainMediaId, setMainMediaId] = useState<string | null>(null);
@@ -32,6 +36,24 @@ const StepProfile = ({ onNext, isResubmission, adminMessage }: { onNext: () => v
     const [loading, setLoading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    // Логика поиска адресов с задержкой (debounce)
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (address && address.length > 2 && showSuggestions) {
+                try {
+                    const results = await fetchAddressSuggestions(address);
+                    setSuggestions(results);
+                } catch (e) {
+                    console.error("Error fetching suggestions", e);
+                }
+            } else {
+                setSuggestions([]);
+            }
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [address, showSuggestions]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -71,7 +93,6 @@ const StepProfile = ({ onNext, isResubmission, adminMessage }: { onNext: () => v
         const newErrors: Record<string, string> = {};
         if (!title.trim()) newErrors.title = t('validation.titleRequired', 'Заголовок обязателен');
         if (!description.trim()) newErrors.description = t('validation.descriptionRequired', 'Описание обязательно');
-        // Добавили валидацию адреса
         if (!address.trim()) newErrors.address = t('validation.addressRequired', 'Укажите район или метро');
         if (!careExperience.trim()) newErrors.care_experience = t('validation.experienceRequired', 'Укажите опыт');
         if (mediaItems.length === 0) newErrors.media = t('validation.mediaRequired', 'Загрузите хотя бы одно фото');
@@ -99,7 +120,7 @@ const StepProfile = ({ onNext, isResubmission, adminMessage }: { onNext: () => v
             const profileData = {
                 title,
                 description,
-                address_q: address, // Вернули в отправку
+                address_q: address,
                 care_experience: parseInt(careExperience) || 0,
                 constant_supervision: constantSupervision ? 1 : 0,
                 children_under_twelve_yo: childrenUnderTwelve ? 1 : 0,
@@ -143,7 +164,7 @@ const StepProfile = ({ onNext, isResubmission, adminMessage }: { onNext: () => v
                 <BulbIcon />
                 <span>
                     {t('additionalProfile.guidanceMessage', 'Заполните профиль подробно.')} {' '}
-                    <a href="/sitter/30" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 'bold', textDecoration: 'underline', color: 'inherit' }}>
+                    <a href="/sitter/b572a4a4-370b-4a36-8518-b663bc907fea" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 'bold', textDecoration: 'underline', color: 'inherit' }}>
                         {t('additionalProfile.viewExampleProfileLink', 'Посмотреть пример')}
                     </a>
                 </span>
@@ -222,16 +243,67 @@ const StepProfile = ({ onNext, isResubmission, adminMessage }: { onNext: () => v
                 {errors.description && <div className={style.errorText}>{errors.description}</div>}
             </div>
 
-            {/* ВЕРНУЛИ ПОЛЕ АДРЕСА */}
-            <div className={style.formGroup}>
+            {/* ПОЛЕ АДРЕСА С АВТОКОМПЛИТОМ */}
+            <div className={style.formGroup} style={{ position: 'relative' }}>
                 <label>{t('additionalProfile.addressLabel', 'Ваш адрес')} <span>*</span></label>
                 <input
                     className={`${style.input} ${errors.address ? style.error : ''}`}
                     value={address}
-                    onChange={e => { setAddress(e.target.value); setErrors(p => ({ ...p, address: '' })); }}
+                    onChange={e => {
+                        setAddress(e.target.value);
+                        setErrors(p => ({ ...p, address: '' }));
+                        setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    // Задержка при блюре, чтобы клик по списку успел пройти
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                     placeholder={t('additionalProfile.addressPlaceholder', 'Например: м. Тверская, район Хамовники')}
+                    autoComplete="off"
                 />
                 {errors.address && <div className={style.errorText}>{errors.address}</div>}
+
+                {/* Выпадающий список подсказок */}
+                {showSuggestions && suggestions.length > 0 && (
+                    <ul style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        width: '100%',
+                        backgroundColor: 'white',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        maxHeight: '200px',
+                        overflowY: 'auto',
+                        zIndex: 10,
+                        listStyle: 'none',
+                        padding: 0,
+                        marginTop: '4px'
+                    }}>
+                        {suggestions.map((suggestion, index) => (
+                            <li
+                                key={index}
+                                style={{
+                                    padding: '10px 15px',
+                                    cursor: 'pointer',
+                                    borderBottom: '1px solid #F7FAFC',
+                                    fontSize: '0.95rem',
+                                    color: '#1A202C'
+                                }}
+                                onMouseDown={(e) => {
+                                    e.preventDefault(); // Предотвращаем потерю фокуса перед кликом
+                                    setAddress(suggestion);
+                                    setSuggestions([]);
+                                    setShowSuggestions(false);
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F7FAFC'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                            >
+                                {suggestion}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
 
             <div className={style.formGroup}>

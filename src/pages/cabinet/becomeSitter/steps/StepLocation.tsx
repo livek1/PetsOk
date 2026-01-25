@@ -137,20 +137,30 @@ const StepLocation = ({ onNext }: { onNext: () => void }) => {
             {countryId && (
                 <>
                     {!showCustomCity ? (
-                        <div className={style.formGroup}>
-                            <label>{t('common.city', 'Город')}</label>
-                            <select
-                                className={style.select}
-                                value={cityId}
-                                onChange={e => setCityId(e.target.value)}
-                                disabled={loadingCities}
-                            >
-                                <option value="">
-                                    {loadingCities ? 'Загрузка...' : cities.length > 0 ? t('common.selectCity', 'Выберите город...') : t('common.noCitiesFound', 'Города не найдены')}
-                                </option>
-                                {cities.map(c => <option key={c.id} value={c.id}>{c.city_name}</option>)}
-                            </select>
-                        </div>
+                        <>
+                            <div className={style.formGroup}>
+                                <label>{t('common.city', 'Город')}</label>
+                                <select
+                                    className={style.select}
+                                    value={cityId}
+                                    onChange={e => setCityId(e.target.value)}
+                                    disabled={loadingCities}
+                                >
+                                    <option value="">
+                                        {loadingCities ? 'Загрузка...' : cities.length > 0 ? t('common.selectCity', 'Выберите город...') : t('common.noCitiesFound', 'Города не найдены')}
+                                    </option>
+                                    {cities.map(c => <option key={c.id} value={c.id}>{c.city_name}</option>)}
+                                </select>
+                            </div>
+
+                            {/* --- БЛОК ПОДСКАЗКИ ПРО 20-30 КМ --- */}
+                            <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '20px', gap: '10px', color: '#718096', fontSize: '0.9rem', lineHeight: '1.4' }}>
+                                <div style={{ marginTop: '2px', flexShrink: 0, opacity: 0.7 }}><InfoIcon /></div>
+                                <span>
+                                    {t('becomeSitter.step1.cityHint', 'Если вашего города нет, выберите ближайший крупный город (в пределах 20-30 км) или укажите свой ниже.')}
+                                </span>
+                            </div>
+                        </>
                     ) : (
                         <div className={style.customCityBlock}>
                             <div className={style.formGroup}>

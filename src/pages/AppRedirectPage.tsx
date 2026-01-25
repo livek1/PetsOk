@@ -1,12 +1,15 @@
+// --- File: src/pages/AppRedirectPage.tsx ---
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useSelector } from 'react-redux';
-import { motion } from 'framer-motion'; // Добавляем анимацию
+import { motion } from 'framer-motion';
+import Cookies from 'js-cookie'; // Импорт
 import { RootState } from '../store';
 import { config as defaultConfig } from '../config/appConfig';
 import style from '../style/pages/AppRedirectPage.module.scss';
+import { getReferralCode } from '../App';
 
 // Импорт логотипов
 import AppleLogo from '../components/logos/AppleLogo';
@@ -24,13 +27,54 @@ const getMobileOperatingSystem = (): 'iOS' | 'Android' | 'unknown' => {
     return "unknown";
 };
 
+// Функция построения ссылки (дублируется для изолированности или можно вынести в utils)
+const buildTrackingUrl = (baseUrl: string, platform: 'ios' | 'android' | 'universal'): string => {
+    try {
+        const url = new URL(baseUrl);
+        const searchParams = new URLSearchParams(url.search);
+
+        const refCode = getReferralCode();
+        if (refCode) searchParams.set(defaultConfig.referralParamName, refCode);
+
+        const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+        const utmValues: Record<string, string> = {};
+
+        utmKeys.forEach(key => {
+            const value = Cookies.get(key);
+            if (value) {
+                utmValues[key] = value;
+                if (platform !== 'android') searchParams.set(key, value);
+            }
+        });
+
+        if (platform === 'android' && Object.keys(utmValues).length > 0) {
+            const referrerParams = new URLSearchParams();
+            Object.entries(utmValues).forEach(([k, v]) => referrerParams.set(k, v));
+            if (refCode) referrerParams.set(defaultConfig.referralParamName, refCode);
+            searchParams.set('referrer', referrerParams.toString());
+        }
+
+        url.search = searchParams.toString();
+        return url.toString();
+    } catch (e) {
+        return baseUrl;
+    }
+};
+
 const AppRedirectPage: React.FC = () => {
     const { t } = useTranslation();
     const [status, setStatus] = useState<'redirecting' | 'fallback'>('redirecting');
     const { versionConfig } = useSelector((state: RootState) => state.config);
 
-    const appStoreUrl = versionConfig?.ios?.url || defaultConfig.appStoreUrl;
-    const googlePlayUrl = versionConfig?.android?.url || defaultConfig.googlePlayUrl;
+    // Вычисляем финальные ссылки с метками
+    const baseAppStoreUrl = versionConfig?.ios?.url || defaultConfig.appStoreUrl;
+    const baseGooglePlayUrl = versionConfig?.android?.url || defaultConfig.googlePlayUrl;
+
+    // Используем useMemo, чтобы ссылки пересчитывались только при изменении конфига
+    // (Cookies читаются внутри buildTrackingUrl, который мы вызываем здесь)
+    const appStoreUrl = React.useMemo(() => buildTrackingUrl(baseAppStoreUrl, 'ios'), [baseAppStoreUrl]);
+    const googlePlayUrl = React.useMemo(() => buildTrackingUrl(baseGooglePlayUrl, 'android'), [baseGooglePlayUrl]);
+    const universalUrl = React.useMemo(() => buildTrackingUrl(defaultConfig.appUniversalUrl, 'universal'), []);
 
     useEffect(() => {
         const os = getMobileOperatingSystem();
@@ -98,7 +142,7 @@ const AppRedirectPage: React.FC = () => {
                             <div className={style.qrBlock}>
                                 <div className={style.qrWrapper}>
                                     <QRCodeCanvas
-                                        value={defaultConfig.appUniversalUrl}
+                                        value={universalUrl}
                                         size={100}
                                         bgColor={"#ffffff"}
                                         fgColor={"#1A202C"}

@@ -1,0 +1,44 @@
+.snowContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 9999;
+    pointer-events: none;
+    /* Важно: чтобы клики проходили сквозь снег */
+}
+
+.snowflake {
+    position: absolute;
+    top: -20px;
+    background: white;
+    border-radius: 50%;
+    filter: blur(1px);
+    animation-name: fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-20px) translateX(0);
+    }
+
+    25% {
+        transform: translateY(25vh) translateX(15px);
+    }
+
+    50% {
+        transform: translateY(50vh) translateX(-15px);
+    }
+
+    75% {
+        transform: translateY(75vh) translateX(15px);
+    }
+
+    100% {
+        transform: translateY(110vh) translateX(0);
+    }
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { YMaps, Map, Placemark, Clusterer, ZoomControl } from '@pbe/react-yandex-maps';
+import { YMaps, Map, Placemark, Clusterer, ZoomControl, GeolocationControl } from '@pbe/react-yandex-maps';
 import { RootState, AppDispatch } from '../store';
 import { performSearch, setSearchParams } from '../store/slices/searchSlice';
 import SitterCardWeb from '../components/search/SitterCardWeb';
@@ -11,6 +11,7 @@ import style from '../style/pages/SearchResults.module.scss';
 import { Helmet } from 'react-helmet-async';
 import { SERVICE_SLUGS, getCityNameFromSlug, getSeoMeta } from '../config/seoConfig';
 import NotFound from './NotFound';
+import { config } from '../config/appConfig';
 
 const MapIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>;
 const ListIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>;
@@ -287,14 +288,13 @@ const SearchResults: React.FC = () => {
                 </div>
 
                 <div className={`${style.mapColumn} ${viewMode === 'list' ? style.hiddenOnMobile : ''}`}>
-                    <YMaps query={{ lang: 'ru_RU', load: 'package.full' }}>
+                    <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU', load: 'package.full' }}>
                         <Map
-                            state={mapState}
-                            // ВАЖНО: Добавляем behaviors в defaultState, хотя основной контроль идет через handleMapLoad
+                            state={{ ...mapState, controls: [] }}
                             defaultState={{
                                 center: mapState.center,
                                 zoom: mapState.zoom,
-                                behaviors: ['default', '!scrollZoom']
+                                behaviors: ['default', '!scrollZoom'],
                             }}
                             options={{
                                 suppressMapOpenBlock: true,
@@ -311,6 +311,8 @@ const SearchResults: React.FC = () => {
                             onBoundsChange={onBoundsChange}
                             onLoad={handleMapLoad} // <-- Вот здесь происходит основное отключение
                         >
+                            <GeolocationControl options={{ position: { right: 10, top: 100 } }} />
+
                             <ZoomControl options={{ position: { right: 10, top: 150 } }} />
                             <Clusterer
                                 options={{

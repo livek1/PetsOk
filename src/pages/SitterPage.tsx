@@ -29,6 +29,7 @@ import DogWalkingIcon from '../components/icons/DogWalkingIcon';
 import DropInVisitsIcon from '../components/icons/DropInVisitsIcon';
 import DoggyDayCareIcon from '../components/icons/DoggyDayCareIcon';
 import HouseSittingIcon from '../components/icons/HouseSittingIcon';
+import { config } from '../config/appConfig';
 
 // SVG Icons
 const IconStar = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg>;
@@ -391,7 +392,7 @@ const SitterPage: React.FC = () => {
                             <div className={style.mapSection}>
                                 <h2>{t('sitterPage.location', 'Местоположение')}</h2>
                                 <div className={style.mapContainer}>
-                                    <YMaps query={{ lang: 'ru_RU' }}>
+                                    <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU' }}>
                                         <Map
                                             defaultState={{ center: [parseFloat(sitter.latitude as any), parseFloat(sitter.longitude as any)], zoom: 13, controls: [] }}
                                             width="100%" height="100%"

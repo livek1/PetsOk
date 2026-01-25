@@ -9,35 +9,52 @@ export default defineConfig({
 		minify: 'esbuild',
 		chunkSizeWarningLimit: 1000,
 
-		// Отключаем предзагрузку, чтобы не качать Lottie сразу
+		// ⬇️ ВОТ ГЛАВНОЕ ИСПРАВЛЕНИЕ ⬇️
 		modulePreload: {
 			polyfill: false,
+			// Эта функция говорит Vite: "Не добавляй никакие <link rel='modulepreload'> в HTML"
+			// Браузер загрузит файл ТОЛЬКО когда React реально до него дойдет.
+			resolveDependencies: () => [],
 		},
 
 		rollupOptions: {
 			output: {
 				manualChunks(id) {
 					if (id.includes('node_modules')) {
+						// 1. ЯДРО (React + Router)
+						if (
+							id.includes('/react/') ||
+							id.includes('/react-dom/') ||
+							id.includes('/react-router/') ||
+							id.includes('/scheduler/') ||
+							id.includes('/prop-types/')
+						) {
+							return 'vendor-react-core';
+						}
 
-						// 1. ИЗОЛЯЦИЯ LOTTIE (Самое важное для нас)
-						if (id.includes('@dotlottie') || id.includes('lottie')) {
+						// 2. LOTTIE (Плеер) - Выносим жестко
+						// Ловит @dotlottie/react-player, lottie-web и т.д.
+						if (id.includes('lottie') || id.includes('dotlottie')) {
 							return 'vendor-lottie-player';
 						}
 
-						// 2. ИЗОЛЯЦИЯ КАРТ (Yandex Maps)
+						// 3. КАРТЫ
 						if (id.includes('yandex') || id.includes('react-yandex-maps')) {
 							return 'vendor-maps';
 						}
 
-						// 3. ИЗОЛЯЦИЯ ТЯЖЕЛОЙ ГРАФИКИ
+						// 4. ТЯЖЕЛАЯ ГРАФИКА
 						if (id.includes('framer-motion')) {
 							return 'vendor-framer';
 						}
 
-						// 4. ВСЁ ОСТАЛЬНОЕ - В ОДИН ФАЙЛ (Чобы не было белого экрана)
-						// React, Router, Redux, Axios и прочее будут здесь.
-						// Это гарантирует, что приложение запустится.
-						return 'vendor-main';
+						// 5. ДАННЫЕ
+						if (id.includes('redux') || id.includes('axios')) {
+							return 'vendor-data';
+						}
+
+						// Остальное
+						return 'vendor-libs';
 					}
 				},
 			},

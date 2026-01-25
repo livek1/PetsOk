@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { DotLottiePlayer } from '@dotlottie/react-player';
+import LazyLottiePlayer from '../../../../components/common/LazyLottiePlayer';
 import style from '../../../../style/pages/cabinet/becomeSitter/StepStatus.module.scss';
 import wizardStyle from '../BecomeSitterWizard.module.scss';
 
@@ -98,7 +98,7 @@ const StepStatus = ({ statusKey, details }: { statusKey: string, details: any })
 
                 <div className={style.animationContainer}>
                     {/* Плеер автоматически подгрузит файл по ссылке из public */}
-                    <DotLottiePlayer
+                    <LazyLottiePlayer
                         src={config.src}
                         autoplay
                         loop={!isApproved}

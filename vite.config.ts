@@ -2,28 +2,67 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [
+		react(),
+	],
 	assetsInclude: ['**/*.lottie'],
 	build: {
+		target: 'esnext',
+		minify: 'esbuild',
 		chunkSizeWarningLimit: 1000,
+
+		// 🔴 КРИТИЧНО ВАЖНО: Отключаем предзагрузку, 
+		// чтобы тяжелые файлы не качались на главной сами по себе
+		modulePreload: {
+			polyfill: false,
+		},
+
 		rollupOptions: {
 			output: {
-				// Мы используем более стабильную схему именования чанков
 				manualChunks(id) {
 					if (id.includes('node_modules')) {
-						// Выносим только самые тяжелые либы, которые не нужны на главной
-						if (id.includes('yandex-maps') || id.includes('react-yandex-maps')) {
+
+						// 1. Ядро React (грузим сразу)
+						if (
+							id.includes('/react/') ||
+							id.includes('/react-dom/') ||
+							id.includes('/react-router/') ||
+							id.includes('/scheduler/') ||
+							id.includes('/prop-types/')
+						) {
+							return 'vendor-react-core';
+						}
+
+						// 2. Lottie (грузим ТОЛЬКО когда нужно)
+						// Список всех возможных названий пакетов плеера
+						if (
+							id.includes('@dotlottie') ||
+							id.includes('lottie-web') ||
+							id.includes('lottie-react')
+						) {
+							return 'vendor-lottie-player';
+						}
+
+						// 3. Карты (грузим отдельно)
+						if (
+							id.includes('yandex') ||
+							id.includes('react-yandex-maps')
+						) {
 							return 'vendor-maps';
 						}
+
+						// 4. Тяжелые UI либы
 						if (id.includes('framer-motion')) {
 							return 'vendor-framer';
 						}
-						if (id.includes('lottie')) {
-							return 'vendor-lottie';
+
+						// 5. Данные
+						if (id.includes('redux') || id.includes('axios')) {
+							return 'vendor-data';
 						}
-						// Все остальное (axios, redux, i18n) пусть живет в общем vendor или main
-						// Это гарантирует, что зависимости React загрузятся правильно
-						return 'vendor-others';
+
+						// Все остальное
+						return 'vendor-libs';
 					}
 				},
 			},

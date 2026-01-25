@@ -1,5 +1,5 @@
 // --- File: App.tsx ---
-import { useEffect, FC, useState, useCallback } from 'react';
+import { useEffect, FC, useState, useCallback, Suspense, lazy } from 'react';
 import ReactDOM from "react-dom";
 import Cookies from 'js-cookie';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation, Outlet } from 'react-router-dom';
@@ -8,40 +8,60 @@ import { Helmet } from 'react-helmet-async';
 import { useTranslation } from "react-i18next";
 
 import { config as defaultConfig } from './config/appConfig';
-
-// Существующие импорты страниц
-import Home from './pages/Home';
-import BecomeASitterPage from './pages/BecomeASitterPage';
-import CookieConsentBanner from './components/layout/CookieConsentBanner';
 import { loadUser, logout, clearAuthErrors } from './store/slices/authSlice';
 import { loadAppConfig } from './store/slices/configSlice';
 import { AppDispatch, RootState } from './store';
+import { supportedLngs } from './i18n';
+import { AuthModal } from './components/modals/AuthModal';
+
+// Компоненты лейаута оставляем статичными, они нужны всегда
 import Header from './components/layout/Header';
 import MainLayout from './layouts/MainLayout';
-import { supportedLngs } from './i18n';
-import LegalPage from './pages/LegalPage';
-import AppRedirectPage from './pages/AppRedirectPage';
-import { AuthModal } from './components/modals/AuthModal';
-import SearchResults from './pages/SearchResults';
-import SitterPage from './pages/SitterPage';
+import CookieConsentBanner from './components/layout/CookieConsentBanner';
 
-// --- НОВЫЕ ИМПОРТЫ ДЛЯ КАБИНЕТА ---
-import CabinetLayout from './layouts/CabinetLayout';
-import CabinetChat from './pages/cabinet/CabinetChat';
-import CabinetProfile from './pages/cabinet/CabinetProfile';
-import CabinetPets from './pages/cabinet/CabinetPets';
-import CabinetOrders from './pages/cabinet/CabinetOrders';
-import SitterDashboard from './pages/cabinet/SitterDashboard';
-import CabinetPetForm from './pages/cabinet/CabinetPetForm';
-import CabinetPetDetails from './pages/cabinet/CabinetPetDetails';
-import BecomeSitterWizard from './pages/cabinet/becomeSitter/BecomeSitterWizard';
-import OrderDetails from './pages/cabinet/OrderDetails';
-import CreateOrder from './pages/cabinet/CreateOrder';
-import NotFound from './pages/NotFound';
-import HelpPage from './pages/HelpPage';
-import CabinetWallet from './pages/cabinet/CabinetWallet';
-import CabinetSitterProfile from './pages/cabinet/CabinetSitterProfile';
-import OrderResponses from './pages/cabinet/OrderResponses';
+// --- КРИТИЧЕСКИЕ СТРАНИЦЫ (Оставляем статичный импорт для мгновенной загрузки) ---
+import Home from './pages/Home';
+
+// --- ЛЕНИВЫЕ ИМПОРТЫ (Lazy Loading) ---
+// Публичные страницы
+const BecomeASitterPage = lazy(() => import('./pages/BecomeASitterPage'));
+const SearchResults = lazy(() => import('./pages/SearchResults'));
+const SitterPage = lazy(() => import('./pages/SitterPage'));
+const LegalPage = lazy(() => import('./pages/LegalPage'));
+const AppRedirectPage = lazy(() => import('./pages/AppRedirectPage'));
+const HelpPage = lazy(() => import('./pages/HelpPage'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+
+// Кабинет (Самый тяжелый блок, его обязательно лениво)
+const CabinetLayout = lazy(() => import('./layouts/CabinetLayout'));
+const CabinetChat = lazy(() => import('./pages/cabinet/CabinetChat'));
+const CabinetProfile = lazy(() => import('./pages/cabinet/CabinetProfile'));
+const CabinetPets = lazy(() => import('./pages/cabinet/CabinetPets'));
+const CabinetOrders = lazy(() => import('./pages/cabinet/CabinetOrders'));
+const SitterDashboard = lazy(() => import('./pages/cabinet/SitterDashboard'));
+const CabinetPetForm = lazy(() => import('./pages/cabinet/CabinetPetForm'));
+const CabinetPetDetails = lazy(() => import('./pages/cabinet/CabinetPetDetails'));
+const BecomeSitterWizard = lazy(() => import('./pages/cabinet/becomeSitter/BecomeSitterWizard'));
+const OrderDetails = lazy(() => import('./pages/cabinet/OrderDetails'));
+const CreateOrder = lazy(() => import('./pages/cabinet/CreateOrder'));
+const CabinetWallet = lazy(() => import('./pages/cabinet/CabinetWallet'));
+const CabinetSitterProfile = lazy(() => import('./pages/cabinet/CabinetSitterProfile'));
+const OrderResponses = lazy(() => import('./pages/cabinet/OrderResponses'));
+
+// --- КОМПОНЕНТ ЗАГРУЗКИ (Спиннер при переходе между страницами) ---
+const PageLoader = () => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '60vh',
+    width: '100%',
+    color: '#3598FE'
+  }}>
+    {/* Можно заменить на ваш фирменный спиннер */}
+    Загрузка...
+  </div>
+);
 
 // --- КОМПОНЕНТ СКРОЛЛА НАВЕРХ ---
 const ScrollToTop = () => {
@@ -165,69 +185,72 @@ const App: FC = () => {
   return (
     <Router>
       <>
-        {/* Компонент скролла вверх при смене страницы */}
         <ScrollToTop />
-
         <CookieConsentBanner />
-        <Routes>
-          <Route path="/app" element={<AppRedirectPage />} />
 
-          {/* Публичные страницы */}
-          <Route element={<PageLayout onAuthClick={handleOpenAuthModal} />}>
-            <Route path="/" element={<Home isPreloading={isPreloading} />} />
-            <Route path="/help" element={<HelpPage />} />
-            <Route path="/become-a-sitter" element={<BecomeASitterPage isPreloading={isPreloading} />} />
-            <Route path="/search" element={<SearchResults />} />
-            <Route path="/sitter/:id" element={<SitterPage />} />
-            <Route path="/terms" element={<LegalPage contentKey="terms" />} />
-            <Route path="/privacy-policy" element={<LegalPage contentKey="privacy" />} />
-            <Route path="/privacy" element={<LegalPage contentKey="privacy" />} />
-            <Route path="/cookie-policy" element={<LegalPage contentKey="cookie" />} />
+        {/* Suspense оборачивает все Routes, чтобы показывать лоадер, пока грузится ленивый компонент */}
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Оставляем AppRedirectPage ленивым, но вне основного лейаута */}
+            <Route path="/app" element={<AppRedirectPage />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Route>
+            {/* Публичные страницы */}
+            <Route element={<PageLayout onAuthClick={handleOpenAuthModal} />}>
+              <Route path="/" element={<Home isPreloading={isPreloading} />} />
+              <Route path="/help" element={<HelpPage />} />
+              <Route path="/become-a-sitter" element={<BecomeASitterPage isPreloading={isPreloading} />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/sitter/:id" element={<SitterPage />} />
+              <Route path="/terms" element={<LegalPage contentKey="terms" />} />
+              <Route path="/privacy-policy" element={<LegalPage contentKey="privacy" />} />
+              <Route path="/privacy" element={<LegalPage contentKey="privacy" />} />
+              <Route path="/cookie-policy" element={<LegalPage contentKey="cookie" />} />
 
-          {/* --- ПРИВАТНАЯ ЗОНА: КАБИНЕТ --- */}
-          <Route
-            path="/cabinet"
-            element={
-              <ProtectedRoute>
-                <CabinetLayout>
-                  <Outlet />
-                </CabinetLayout>
-              </ProtectedRoute>
-            }
-          >
-            {/* Редирект с /cabinet на нужный подраздел */}
-            <Route index element={<CabinetIndexRedirect />} />
-            <Route path="orders/create" element={<CreateOrder />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
 
-            {/* ЧАТЫ: Добавлен роут с ID */}
-            <Route path="chat" element={<CabinetChat />} />
-            <Route path="chat/:id" element={<CabinetChat />} />
+            {/* --- ПРИВАТНАЯ ЗОНА: КАБИНЕТ --- */}
+            <Route
+              path="/cabinet"
+              element={
+                <ProtectedRoute>
+                  {/* CabinetLayout тоже ленивый */}
+                  <CabinetLayout>
+                    <Outlet />
+                  </CabinetLayout>
+                </ProtectedRoute>
+              }
+            >
+              {/* Редирект с /cabinet на нужный подраздел */}
+              <Route index element={<CabinetIndexRedirect />} />
+              <Route path="orders/create" element={<CreateOrder />} />
 
-            {/* Клиентские маршруты */}
-            <Route path="profile" element={<CabinetProfile />} />
-            <Route path="orders/:id" element={<OrderDetails />} />
-            <Route path="orders/:id/responses" element={<OrderResponses />} />
+              {/* ЧАТЫ */}
+              <Route path="chat" element={<CabinetChat />} />
+              <Route path="chat/:id" element={<CabinetChat />} />
 
-            <Route path="pets" element={<CabinetPets />} />
-            <Route path="pets/add" element={<CabinetPetForm mode="create" />} />
-            <Route path="pets/:id" element={<CabinetPetDetails />} />
-            <Route path="pets/:id/edit" element={<CabinetPetForm mode="edit" />} />
-            <Route path="become-sitter" element={<BecomeSitterWizard />} />
-            <Route path="orders" element={<CabinetOrders />} />
-            <Route path="wallet" element={<CabinetWallet />} />
-            <Route path="sitter-settings" element={<CabinetSitterProfile />} />
+              {/* Клиентские маршруты */}
+              <Route path="profile" element={<CabinetProfile />} />
+              <Route path="orders/:id" element={<OrderDetails />} />
+              <Route path="orders/:id/responses" element={<OrderResponses />} />
 
-            {/* Маршруты ситтера */}
-            <Route path="sitter-dashboard" element={<SitterDashboard />} />
-            <Route path="sitter-jobs" element={<div style={{ padding: 20, textAlign: 'center', color: '#666' }}>Список работ в разработке.</div>} />
+              <Route path="pets" element={<CabinetPets />} />
+              <Route path="pets/add" element={<CabinetPetForm mode="create" />} />
+              <Route path="pets/:id" element={<CabinetPetDetails />} />
+              <Route path="pets/:id/edit" element={<CabinetPetForm mode="edit" />} />
+              <Route path="become-sitter" element={<BecomeSitterWizard />} />
+              <Route path="orders" element={<CabinetOrders />} />
+              <Route path="wallet" element={<CabinetWallet />} />
+              <Route path="sitter-settings" element={<CabinetSitterProfile />} />
 
-            {/* Фолбэк */}
-            <Route path="*" element={<CabinetIndexRedirect />} />
-          </Route>
-        </Routes>
+              {/* Маршруты ситтера */}
+              <Route path="sitter-dashboard" element={<SitterDashboard />} />
+
+              {/* Фолбэк */}
+              <Route path="*" element={<CabinetIndexRedirect />} />
+            </Route>
+          </Routes>
+        </Suspense>
 
         {modalRoot && authModalOpen && ReactDOM.createPortal(
           <AuthModal

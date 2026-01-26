@@ -14,14 +14,14 @@ import StepSubscription from './steps/StepSubscription';
 import StepProfile from './steps/StepProfile';
 import StepStatus from './steps/StepStatus';
 
-// Константы статусов (приводим к нижнему регистру для удобства сравнения)
+// Константы статусов
 const STAGE_KEYS = {
     APPLICATION_NOT_STARTED: 'application_not_started',
     KYC_SUBMISSION_PENDING: 'kyc_submission_pending',
     KYC_RESUBMISSION_REQUIRED: 'kyc_resubmission_required',
     GENERAL_TESTS_PENDING: 'general_tests_pending',
     SERVICE_SETTINGS_PENDING_SUBMISSION: 'service_settings_pending_submission',
-    CARD_SETUP_PENDING: 'card_setup_pending', // В нижнем регистре
+    CARD_SETUP_PENDING: 'card_setup_pending',
     SUBSCRIPTION_OFFER_PENDING: 'subscription_offer_pending',
     ADDITIONAL_PROFILE_PENDING_SUBMISSION: 'additional_profile_pending_submission',
     ADDITIONAL_PROFILE_RESUBMISSION_REQUIRED: 'additional_profile_resubmission_required',
@@ -39,6 +39,9 @@ const BecomeSitterWizard: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+    // 1. ДОБАВЛЕНО: Локальное состояние для пропуска подписки
+    const [isSubscriptionSkipped, setIsSubscriptionSkipped] = useState(false);
+
     const refreshStatus = () => {
         setLoading(true);
         setRefreshTrigger(prev => prev + 1);
@@ -48,7 +51,7 @@ const BecomeSitterWizard: React.FC = () => {
         const fetchStatus = async () => {
             try {
                 const data = await getWorkerStatus();
-                console.log("Worker Status Response:", data); // Для отладки
+                // console.log("Worker Status Response:", data);
                 setStatusData(data);
             } catch (error: any) {
                 if (error.response?.status === 404) {
@@ -69,7 +72,6 @@ const BecomeSitterWizard: React.FC = () => {
 
     if (!statusData) return <div>Ошибка загрузки данных.</div>;
 
-    // ВАЖНО: Приводим ключ к нижнему регистру, так как сервер может присылать CARD_SETUP_PENDING
     const stage = statusData.current_stage_key?.toLowerCase();
     const details = statusData.details || {};
 
@@ -86,15 +88,21 @@ const BecomeSitterWizard: React.FC = () => {
                 return <StepTests onNext={refreshStatus} />;
 
             case STAGE_KEYS.SERVICE_SETTINGS_PENDING_SUBMISSION:
-                // Здесь мы проверяем, нужно ли показать экран тестов или услуг
-                // Но так как мы добавили логику переключения внутри StepServices, просто рендерим его.
                 return <StepServices onNext={refreshStatus} />;
 
             case STAGE_KEYS.CARD_SETUP_PENDING:
                 return <StepAddCard onNext={refreshStatus} />;
 
+            // 2. ИЗМЕНЕНО: Логика отображения подписки или профиля
             case STAGE_KEYS.SUBSCRIPTION_OFFER_PENDING:
-                return <StepSubscription onNext={refreshStatus} />;
+                // Если пользователь нажал "Пропустить", мы визуально показываем StepProfile.
+                // Когда он заполнит профиль и нажмет "Сохранить", вызовется refreshStatus.
+                // Тогда бэкенд увидит, что профиль создан, и сам переключит статус дальше.
+                if (isSubscriptionSkipped) {
+                    return <StepProfile onNext={refreshStatus} isResubmission={false} />;
+                }
+                // Передаем функцию переключения флага вместо refreshStatus
+                return <StepSubscription onNext={() => setIsSubscriptionSkipped(true)} />;
 
             case STAGE_KEYS.ADDITIONAL_PROFILE_PENDING_SUBMISSION:
             case STAGE_KEYS.ADDITIONAL_PROFILE_RESUBMISSION_REQUIRED:
@@ -105,11 +113,9 @@ const BecomeSitterWizard: React.FC = () => {
             case STAGE_KEYS.APPLICATION_PENDING_ADMIN_REVIEW:
             case STAGE_KEYS.APPLICATION_APPROVED_BY_ADMIN:
             default:
-                // Если статус содержит 'rejected' или 'fail', но не попал в кейсы выше
                 if (stage?.includes('rejected') || stage?.includes('fail')) {
                     return <StepStatus statusKey={stage} details={details} />;
                 }
-                // Для всех остальных статусов ожидания
                 return <StepStatus statusKey={stage} details={details} />;
         }
     };

@@ -236,7 +236,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
 
             <div className={style.inputGroup}>
                 <label htmlFor="contact" className={style.inputLabel}>
-                    {contactType === 'email' ? t('authModal.labelEmail') : t('authModal.labelPhone')}
+                    {/* Если телефон выключен в конфиге, показываем только "Ваш Email" */}
+                    {!appConfig.enablePhoneAuth
+                        ? t('authModal.labelEmailOnly', 'Ваш Email')
+                        : (contactType === 'email' ? t('authModal.labelEmail') : t('authModal.labelPhone'))
+                    }
                 </label>
 
                 <div className={`${style.contactInputContainer} ${contactErrors.contact ? style.inputError : ""}`}>
@@ -264,7 +268,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                                 {...field}
                                 id="contact"
                                 type={contactType === 'email' ? 'email' : 'tel'}
-                                placeholder={t('authModal.contactPlaceholderAirbnb')}
+                                // Если телефон выключен, просим только Email
+                                placeholder={!appConfig.enablePhoneAuth ? t('authModal.emailPlaceholder', 'Введите ваш email') : t('authModal.contactPlaceholderAirbnb')}
                                 className={style.contactInputFieldElement}
                                 onChange={(e) => handleContactInputChange(e.target.value)}
                             />
@@ -297,6 +302,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 {t('authModal.otpSubtitleAirbnb', `Введите 4-значный код, отправленный на `)}
                 <strong>{savedContactValue}</strong>
             </p>
+
+            {/* --- ВАЖНО: Хинт про папку Спам, если это Email --- */}
+            {contactType === 'email' && (
+                <p style={{ textAlign: 'center', fontSize: '13px', color: '#718096', marginTop: '-15px', marginBottom: '20px', lineHeight: '1.4' }}>
+                    {t('authModal.checkSpamHint', 'Если письмо не пришло во входящие, проверьте папку «Спам».')}
+                </p>
+            )}
 
             <div className={style.inputGroup}>
                 <Controller

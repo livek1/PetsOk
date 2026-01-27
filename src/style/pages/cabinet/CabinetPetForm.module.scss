@@ -614,6 +614,7 @@ $error-color: #E53E3E;
     margin-top: 40px;
     display: flex;
     justify-content: flex-end;
+    gap: 16px; // Отступ между кнопками
 }
 
 .btnPrimary {

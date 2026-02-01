@@ -512,7 +512,7 @@
     // 2 Images: Split vertical
     &.layout-2 {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr;
+        grid-template-rows: 1fr 1fr;
     }
 
     // 3 Images: Big left, 2 stacked right
@@ -887,6 +887,28 @@
         }
     }
 }
+
+// --- NEW MOBILE HIGHLIGHTS WRAPPER ---
+.mobileHighlightsWrapper {
+    display: none; // Скрываем на десктопе
+
+    @media (max-width: $breakpoint-md) {
+        display: block; // Показываем на мобильных
+        margin-bottom: 24px;
+
+        // Переопределяем фон элементов на белый для контраста, 
+        // так как основной фон страницы серый
+        .highlightItem {
+            background-color: $white;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+
+            &:hover {
+                background-color: #f7f9fc;
+            }
+        }
+    }
+}
+
 
 .mobileFooter {
     display: none;

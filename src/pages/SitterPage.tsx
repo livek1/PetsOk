@@ -65,7 +65,6 @@ const IconChild = () => (
     </svg>
 );
 
-// --- ИСПРАВЛЕНИЕ 1: Добавляем возможность принимать props ---
 const IconInfo = (props: React.SVGProps<SVGSVGElement>) => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
         <circle cx="12" cy="12" r="10"></circle>
@@ -395,6 +394,71 @@ const SitterPage: React.FC = () => {
 
     const disclaimerText = "Исполнитель может предложить другую цену в зависимости от сложности заказа. Указанные цены являются ориентировочными и не являются публичной офертой.";
 
+    // --- RENDER HIGHLIGHTS FUNCTION ---
+    const renderHighlights = () => (
+        <div className={style.highlightsGrid}>
+            <div
+                className={style.highlightItem}
+                onClick={() => openInfo("Личность подтверждена", "Документы исполнителя (паспорт) были проверены и подтверждены администрацией платформы. Мы гарантируем, что это реальный человек.")}
+            >
+                <div className={`${style.iconBox} ${style.success}`}><IconShield /></div>
+                <span>Личность подтверждена</span>
+            </div>
+
+            <div
+                className={style.highlightItem}
+                onClick={() => openInfo("Тест пройден", "Исполнитель успешно прошел внутреннее тестирование на знание правил сервиса, основ ухода за животными и техники безопасности.")}
+            >
+                <div className={`${style.iconBox} ${style.primary}`}><IconAcademic /></div>
+                <span>Тест пройден</span>
+            </div>
+
+            <div
+                className={style.highlightItem}
+                onClick={() => openInfo("Опыт с животными", "Количество лет, в течение которых исполнитель активно взаимодействует с животными (своими или чужими).")}
+            >
+                <div className={style.iconBox}><IconRibbon /></div>
+                <span>{sitter.care_experience} {getPluralForm(sitter.care_experience, ['год', 'года', 'лет'])}</span>
+                <small>опыта с животными</small>
+            </div>
+
+            {sitter.repeat_order_count > 0 && (
+                <div className={style.highlightItem} style={{ cursor: 'default' }}>
+                    <div className={style.iconBox}><IconRepeat /></div>
+                    <span>{sitter.repeat_order_count}+</span>
+                    <small>повторных</small>
+                </div>
+            )}
+
+            {sitter.constant_supervision === 1 && (
+                <div
+                    className={style.highlightItem}
+                    onClick={() => openInfo("Постоянный присмотр", "Ваш питомец не останется один в квартире или доме. Ситтер большую часть времени присутствует дома.")}
+                >
+                    <div className={style.iconBox}><IconHomeHeart /></div>
+                    <span>Постоянный присмотр</span>
+                </div>
+            )}
+            {sitter.children_under_twelve_yo === 0 ? (
+                <div
+                    className={style.highlightItem}
+                    onClick={() => openInfo("Дети в доме", "В доме исполнителя нет детей младше 12 лет, что обеспечивает спокойную обстановку для питомцев, не привыкших к детям.")}
+                >
+                    <div className={style.iconBox}><IconChild /></div>
+                    <span>Нет детей дома до 12 лет</span>
+                </div>
+            ) : (
+                <div
+                    className={style.highlightItem}
+                    onClick={() => openInfo("Дети в доме", "В доме исполнителя проживают дети. Учитывайте это, если ваш питомец не ладит с детьми.")}
+                >
+                    <div className={style.iconBox}><IconChild /></div>
+                    <span>Есть дети дома до 12 лет</span>
+                </div>
+            )}
+        </div>
+    );
+
     return (
         <div className={style.pageWrapper}>
             <Helmet><title>{sitter.name} | PetsOk</title></Helmet>
@@ -442,69 +506,8 @@ const SitterPage: React.FC = () => {
 
                             <button className={style.ctaButton} onClick={handleOfferOrderClick}>Предложить заказ</button>
 
-                            {/* Highlights Grid - CLICKABLE with EXPLANATIONS */}
-                            <div className={style.highlightsGrid}>
-                                <div
-                                    className={style.highlightItem}
-                                    onClick={() => openInfo("Личность подтверждена", "Документы исполнителя (паспорт) были проверены и подтверждены администрацией платформы. Мы гарантируем, что это реальный человек.")}
-                                >
-                                    <div className={`${style.iconBox} ${style.success}`}><IconShield /></div>
-                                    <span>Личность подтверждена</span>
-                                </div>
-
-                                <div
-                                    className={style.highlightItem}
-                                    onClick={() => openInfo("Тест пройден", "Исполнитель успешно прошел внутреннее тестирование на знание правил сервиса, основ ухода за животными и техники безопасности.")}
-                                >
-                                    <div className={`${style.iconBox} ${style.primary}`}><IconAcademic /></div>
-                                    <span>Тест пройден</span>
-                                </div>
-
-                                <div
-                                    className={style.highlightItem}
-                                    onClick={() => openInfo("Опыт с животными", "Количество лет, в течение которых исполнитель активно взаимодействует с животными (своими или чужими).")}
-                                >
-                                    <div className={style.iconBox}><IconRibbon /></div>
-                                    <span>{sitter.care_experience} {getPluralForm(sitter.care_experience, ['год', 'года', 'лет'])}</span>
-                                    <small>опыта с животными</small>
-                                </div>
-
-                                {sitter.repeat_order_count > 0 && (
-                                    <div className={style.highlightItem} style={{ cursor: 'default' }}>
-                                        <div className={style.iconBox}><IconRepeat /></div>
-                                        <span>{sitter.repeat_order_count}+</span>
-                                        <small>повторных</small>
-                                    </div>
-                                )}
-
-                                {/* Friendlier Icons for Supervision & Kids */}
-                                {sitter.constant_supervision === 1 && (
-                                    <div
-                                        className={style.highlightItem}
-                                        onClick={() => openInfo("Постоянный присмотр", "Ваш питомец не останется один в квартире или доме. Ситтер большую часть времени присутствует дома.")}
-                                    >
-                                        <div className={style.iconBox}><IconHomeHeart /></div>
-                                        <span>Постоянный присмотр</span>
-                                    </div>
-                                )}
-                                {sitter.children_under_twelve_yo === 0 ? (
-                                    <div
-                                        className={style.highlightItem}
-                                        onClick={() => openInfo("Дети в доме", "В доме исполнителя нет детей младше 12 лет, что обеспечивает спокойную обстановку для питомцев, не привыкших к детям.")}
-                                    >
-                                        <div className={style.iconBox}><IconChild /></div>
-                                        <span>Нет детей дома до 12 лет</span>
-                                    </div>
-                                ) : (
-                                    <div
-                                        className={style.highlightItem}
-                                        onClick={() => openInfo("Дети в доме", "В доме исполнителя проживают дети. Учитывайте это, если ваш питомец не ладит с детьми.")}
-                                    >
-                                        <div className={style.iconBox}><IconChild /></div>
-                                        <span>Есть дети дома до 12 лет</span>
-                                    </div>
-                                )}
-                            </div>
+                            {/* Highlights Grid - Rendered from function */}
+                            {renderHighlights()}
                         </div>
 
                         {/* Detailed Services in Sidebar for Desktop */}
@@ -557,6 +560,11 @@ const SitterPage: React.FC = () => {
                                 </div>
                                 <div className={style.locationRow}>{sitter.city?.name} • {sitter.age} {ageLabel}</div>
                             </div>
+                        </div>
+
+                        {/* MOBILE HIGHLIGHTS WRAPPER (NEW) */}
+                        <div className={style.mobileHighlightsWrapper}>
+                            {renderHighlights()}
                         </div>
 
                         {/* 2. DESCRIPTION */}

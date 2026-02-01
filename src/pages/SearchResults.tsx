@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
-import { useSearchParams, useParams } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { YMaps, Map, Placemark, Clusterer, ZoomControl, GeolocationControl } from '@pbe/react-yandex-maps';
@@ -13,16 +13,101 @@ import { SERVICE_SLUGS, getCityNameFromSlug, getSeoMeta } from '../config/seoCon
 import NotFound from './NotFound';
 import { config } from '../config/appConfig';
 
+// Иконки UI
 const MapIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>;
 const ListIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>;
+
+// ИКОНКА ДЛЯ "НИЧЕГО НЕ НАЙДЕНО" (Собака-детектив, реалистичные уши, без лупы)
+const DogDetectiveIcon = () => (
+    <svg width="240" height="240" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Фоновый круг */}
+        <circle cx="100" cy="100" r="96" fill="#FFF8E1" />
+
+        <g transform="translate(25, 35) scale(0.75)">
+
+            {/* --- ТЕЛО --- */}
+            <path d="M60 130 Q50 180, 30 200 H170 Q150 180, 140 130" fill="#FFA726" />
+
+            {/* --- УШИ (Реалистичные, висячие, за головой) --- */}
+            {/* Левое ухо */}
+            <path d="M52 65 C 15 80, 25 145, 55 145 C 70 145, 65 110, 60 100" fill="#EF6C00" stroke="#E65100" strokeWidth="2" />
+            {/* Правое ухо */}
+            <path d="M148 65 C 185 80, 175 145, 145 145 C 130 145, 135 110, 140 100" fill="#EF6C00" stroke="#E65100" strokeWidth="2" />
+
+            {/* --- ГОЛОВА --- */}
+            <rect x="50" y="55" width="100" height="90" rx="45" fill="#FFA726" />
+
+            {/* Пятнышко вокруг левого глаза */}
+            <circle cx="75" cy="85" r="18" fill="#FFCC80" opacity="0.6" />
+
+            {/* --- МОРДОЧКА --- */}
+            <ellipse cx="100" cy="115" rx="35" ry="24" fill="#FFE0B2" />
+
+            {/* Нос */}
+            <path d="M90 107 Q100 103, 110 107 Q105 120, 95 120 Q85 115, 90 107" fill="#3E2723" />
+
+            {/* Рот (немного грустный/вопросительный, так как ничего не найдено) */}
+            <path d="M100 120 L100 128" stroke="#3E2723" strokeWidth="2" />
+            <path d="M92 128 Q100 132, 108 128" stroke="#3E2723" strokeWidth="2" fill="none" strokeLinecap="round" />
+
+            {/* --- ГЛАЗА (Симметричные) --- */}
+            {/* Левый глаз */}
+            <circle cx="75" cy="85" r="6" fill="#3E2723" />
+            <circle cx="77" cy="83" r="2" fill="white" /> {/* Блик */}
+            {/* Бровь левая */}
+            <path d="M68 75 Q75 70, 82 75" stroke="#3E2723" strokeWidth="2" fill="none" strokeLinecap="round" />
+
+            {/* Правый глаз */}
+            <circle cx="125" cy="85" r="6" fill="#3E2723" />
+            <circle cx="127" cy="83" r="2" fill="white" /> {/* Блик */}
+            {/* Бровь правая */}
+            <path d="M118 75 Q125 70, 132 75" stroke="#3E2723" strokeWidth="2" fill="none" strokeLinecap="round" />
+
+
+            {/* --- ШЛЯПА ДЕТЕКТИВА --- */}
+            {/* Задний козырек */}
+            <path d="M45 60 Q100 50, 155 60" fill="#8D6E63" />
+
+            {/* Уши шапки (сверху, завязаны) */}
+            <path d="M90 20 Q80 30, 92 35 H108 Q120 30, 110 20" fill="#8D6E63" stroke="#5D4037" strokeWidth="2" />
+            <path d="M100 35 L100 28" stroke="#5D4037" strokeWidth="2" />
+
+            {/* Купол */}
+            <path d="M55 60 C55 15, 145 15, 145 60" fill="#8D6E63" stroke="#5D4037" strokeWidth="1" />
+
+            {/* Лента */}
+            <path d="M55 60 Q100 50, 145 60 L145 45 Q100 35, 55 45 Z" fill="#4E342E" />
+
+            {/* Текст PetsOk */}
+            <text x="100" y="55" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="bold" fill="white" textAnchor="middle">
+                PetsOk
+            </text>
+
+            {/* Передний козырек */}
+            <path d="M55 60 Q100 80, 145 60 Q100 70, 55 60" fill="#A1887F" stroke="#5D4037" strokeWidth="1" />
+        </g>
+    </svg>
+);
+
+const CROWN_SVG_STRING = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5ZM19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z" fill="currentColor"/></svg>`;
 
 const DEBOUNCE_DELAY = 600;
 const RUSSIA_VIEW = { center: [55.75, 37.57], zoom: 10 };
 
+// Интерфейс для контекста (чтобы взять функцию авторизации)
+interface PageContextType {
+    onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter') => void;
+}
+
 const SearchResults: React.FC = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
     const [searchParamsUrl, setSearchParamsUrl] = useSearchParams();
+
+    // Получаем контекст для вызова модалки
+    const { onAuthClick } = useOutletContext<PageContextType>();
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
     const { citySlug, serviceSlug } = useParams<{ citySlug?: string; serviceSlug?: string }>();
 
@@ -97,15 +182,22 @@ const SearchResults: React.FC = () => {
         dispatch(performSearch({ params: initialParams, page: 1, isNewSearch: true }));
     }, [citySlug, serviceSlug, isSystemRoute]);
 
+    // Обработчик кнопки создания заказа (конверсия из пустого поиска)
+    const handleCreateOrderClick = () => {
+        if (isAuthenticated) {
+            navigate('/cabinet/orders/create');
+        } else {
+            onAuthClick('register', 'client');
+        }
+    };
+
     if (isSystemRoute) {
         return <NotFound />;
     }
 
-    // Обработчик загрузки карты - ГАРАНТИРОВАННО ОТКЛЮЧАЕТ СКРОЛЛ ЗУМ
     const handleMapLoad = (ymaps: any) => {
         setYmapsNamespace(ymaps);
         if (mapRef.current) {
-            // Явно отключаем поведение scrollZoom
             mapRef.current.behaviors.disable('scrollZoom');
         }
     };
@@ -283,7 +375,24 @@ const SearchResults: React.FC = () => {
 
                         {isLoading && searchResults.length === 0 && <div className={style.loaderContainer}>Загрузка...</div>}
                         {isFetchingMore && <div className={style.miniLoader}>Подгрузка...</div>}
-                        {!isLoading && searchResults.length === 0 && <div className={style.emptyState}><p>{t('search.noResults', 'Никого не найдено в этой области.')}</p></div>}
+
+                        {/* --- НОВЫЙ БЛОК "НИЧЕГО НЕ НАЙДЕНО" С ИКОНКОЙ СОБАКИ-ДЕТЕКТИВА --- */}
+                        {!isLoading && searchResults.length === 0 && (
+                            <div className={style.noResultsCard}>
+                                <div className={style.noResultsIcon}>
+                                    <DogDetectiveIcon />
+                                </div>
+                                <h3 className={style.noResultsTitle}>
+                                    {t('search.noResultsTitle', 'Здесь пока тихо...')}
+                                </h3>
+                                <p className={style.noResultsText}>
+                                    {t('search.noResultsCTA', 'Не нашли подходящего ситтера? Не беда! Создайте заказ, и мы оповестим всех исполнителей поблизости. Они сами откликнутся на вашу заявку.')}
+                                </p>
+                                <button onClick={handleCreateOrderClick} className={style.createRequestBtn}>
+                                    {t('orders.createOrder', 'Создать заказ')}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -303,13 +412,12 @@ const SearchResults: React.FC = () => {
                             }}
                             instanceRef={(ref) => {
                                 mapRef.current = ref;
-                                // Если реф уже доступен, на всякий случай отключаем
                                 if (ref) ref.behaviors.disable('scrollZoom');
                             }}
                             className={style.yandexMapInstance}
                             width="100%" height="100%"
                             onBoundsChange={onBoundsChange}
-                            onLoad={handleMapLoad} // <-- Вот здесь происходит основное отключение
+                            onLoad={handleMapLoad}
                         >
                             <GeolocationControl options={{ position: { right: 10, top: 100 } }} />
 
@@ -323,33 +431,50 @@ const SearchResults: React.FC = () => {
                             >
                                 {searchResults.map((sitter: any) => {
                                     if (!sitter.latitude || !sitter.longitude) return null;
+
                                     const isHovered = hoveredSitterId === sitter.id;
                                     const isPremium = sitter.is_premium;
                                     const price = Math.round(sitter.service_price || 0);
-                                    const textColor = isPremium ? '#B45309' : '#000000';
-                                    const fontWeight = isPremium ? '800' : '600';
-                                    const contentHtml = isPremium
-                                        ? `<span style="font-weight:${fontWeight}; color:${textColor}; font-family: sans-serif;">👑 ${price}₽</span>`
-                                        : `<span style="font-weight:${fontWeight}; color:${textColor}; font-family: sans-serif;">${price}₽</span>`;
+
+                                    // Формируем классы
                                     let markerClass = '';
                                     if (isHovered) markerClass = 'is-hovered';
                                     else if (isPremium) markerClass = 'is-premium';
+
+                                    // Формируем HTML контент маркера
+                                    let contentHtml = '';
+                                    if (isPremium) {
+                                        // Для PRO: Иконка + Цена
+                                        contentHtml = `<span class="marker-icon">${CROWN_SVG_STRING}</span>${price}₽`;
+                                    } else {
+                                        // Для обычных: Только цена
+                                        contentHtml = `${price}₽`;
+                                    }
 
                                     return (
                                         <Placemark
                                             key={sitter.id}
                                             geometry={[parseFloat(sitter.latitude), parseFloat(sitter.longitude)]}
                                             properties={{
+                                                // Передаем HTML контент внутрь шаблона
                                                 iconContent: contentHtml,
                                                 markerClass: markerClass,
                                                 hintContent: `<b>${sitter.name}</b><br/>${sitter.title || ''}`
                                             }}
                                             options={{
+                                                // Используем наш CSS шаблон
                                                 iconLayout: customIconLayout || 'default#image',
-                                                zIndex: isHovered ? 2000 : (isPremium ? 100 : 1),
+                                                // Z-index: Наведенные > Премиум > Обычные
+                                                zIndex: isHovered ? 10000 : (isPremium ? 1000 : 100),
+                                                // Важно: переопределяем shape, чтобы кликабельная область совпадала с "таблеткой"
+                                                // Приблизительные размеры (ширина зависит от цены, но 60x30 покрывает большинство)
                                                 // @ts-ignore
-                                                iconShape: { type: 'Rectangle', coordinates: [[-30, -15], [30, 15]] }
+                                                iconShape: { type: 'Rectangle', coordinates: [[-30, -15], [30, 15]] },
+                                                // Отключаем стандартный "хвостик" балуна, так как у нас свой стиль
+                                                iconImageHref: '',
+                                                iconImageSize: [0, 0],
                                             }}
+                                            // Обработчики событий
                                             onMouseEnter={() => setHoveredSitterId(sitter.id)}
                                             onMouseLeave={() => setHoveredSitterId(null)}
                                             onClick={() => onMarkerClick(sitter.id)}

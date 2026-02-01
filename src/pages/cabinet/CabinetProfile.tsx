@@ -183,9 +183,6 @@ const CabinetProfile: React.FC = () => {
                 <div className={style.userInfo}>
                     <h1 className={style.userName}>{user?.name || user?.email}</h1>
                     <p className={style.userEmail}>{user?.email}</p>
-                    <p style={{ fontSize: '0.9rem', color: '#666' }}>
-                        {user?.isSitter ? t('userRoles.sitter', 'Ситтер') : t('cabinet.modeClient', 'Клиент')}
-                    </p>
                 </div>
 
                 <div className={style.headerActions}>

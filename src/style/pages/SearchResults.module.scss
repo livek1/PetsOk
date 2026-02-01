@@ -202,45 +202,166 @@
 
 :global {
     .petsok-map-marker {
-        position: relative;
-        pointer-events: auto;
-        width: max-content;
-        min-width: 40px;
+        position: absolute; // Важно для позиционирования макета
         display: inline-flex;
         align-items: center;
         justify-content: center;
         white-space: nowrap;
-        padding: 8px 14px;
-        border-radius: 24px;
+
+        // Размер и форма
+        padding: 6px 12px;
+        border-radius: 20px;
         background-color: #FFFFFF;
-        color: #000000;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #1A202C; // $text-color-base
+
+        // Типографика
+        font-family: 'Raleway', sans-serif;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 13px;
         line-height: 1;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
-        cursor: pointer;
+
+        // Тень (App-like shadow)
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.02);
+
+        // Анимация
         transform: translate(-50%, -50%);
-        transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.2s, z-index 0s;
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+            background-color 0.2s,
+            color 0.2s,
+            box-shadow 0.2s,
+            z-index 0s;
+        cursor: pointer;
 
-        &:hover {
-            z-index: 10000;
+        // Иконка короны внутри маркера
+        .marker-icon {
+            margin-right: 4px;
+            display: flex;
+            align-items: center;
+
+            svg {
+                width: 12px;
+                height: 12px;
+                display: block;
+            }
         }
 
-        &.is-premium {
-            background-color: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 1.5px #FFD700;
-            color: #B45309;
-            font-weight: 800;
-            z-index: 100;
-        }
-
+        // --- СОСТОЯНИЕ: Наведение (Самый высокий приоритет) ---
         &.is-hovered {
-            background-color: #3598FE;
+            background-color: #3598FE; // $primary-color
             color: #FFFFFF;
             transform: translate(-50%, -50%) scale(1.15);
             box-shadow: 0 8px 20px rgba(53, 152, 254, 0.4);
-            z-index: 1000 !important;
+            z-index: 9999 !important; // Всегда поверх всех
+            border-color: transparent; // Убираем бордер если был
+
+            // Красим иконку короны в белый при наведении
+            .marker-icon svg path {
+                fill: #FFFFFF;
+            }
         }
+
+        // --- СОСТОЯНИЕ: Premium / PRO ---
+        &.is-premium:not(.is-hovered) {
+            background-color: #FFFBEB; // Очень светлый золотой фон
+            color: #B45309; // Темно-золотой текст
+            border: 2px solid #FFD700; // Золотая рамка
+            padding: 4px 10px; // Компенсация толщины рамки (6px - 2px)
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.25);
+            z-index: 100; // Поверх обычных
+
+            .marker-icon svg path {
+                fill: #F59E0B; // Оранжевая корона
+            }
+        }
+    }
+}
+
+// --- НОВЫЕ СТИЛИ ДЛЯ КАРТОЧКИ "НИЧЕГО НЕ НАЙДЕНО" ---
+.noResultsCard {
+    background-color: $white;
+    border-radius: 24px;
+    padding: 40px 30px;
+    text-align: center;
+    border: 2px dashed $border-color-medium; // Пунктирная рамка
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: fadeIn 0.5s ease-out;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 30px 20px;
+    }
+}
+
+.noResultsIcon {
+    width: 140px;
+    height: 140px;
+    background-color: #FFF8E1; // Светло-желтый/оранжевый фон для внимания
+    color: #F59E0B;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+
+    svg {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+.noResultsTitle {
+    font-family: $font-family-headings;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: $text-color-base;
+    margin: 0;
+}
+
+.noResultsText {
+    font-size: 0.95rem;
+    color: $text-color-secondary;
+    line-height: 1.5;
+    max-width: 400px;
+    margin: 0;
+}
+
+.createRequestBtn {
+    background-color: $primary-color;
+    color: $white;
+    padding: 14px 32px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+    transition: transform 0.2s, background-color 0.2s;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    &:hover {
+        background-color: $primary-color-darker;
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

@@ -186,7 +186,7 @@ export const legalContentRu = {
       },
       {
         "type": "p",
-        "text": "Если у вас есть вопросы касательно данной Политики, свяжитесь с нами по адресу: <a href='mailto:contact@petsok.ru'>support@petsok.ru</a>"
+        "text": "Если у вас есть вопросы касательно данной Политики, свяжитесь с нами по адресу: <a href='mailto:contact@petsok.ru'>contact@petsok.ru</a>"
       }
     ]
   },

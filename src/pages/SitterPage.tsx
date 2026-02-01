@@ -9,6 +9,7 @@ import Video from "yet-another-react-lightbox/plugins/video";
 import "yet-another-react-lightbox/styles.css";
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+// @ts-ignore
 import heic2any from "heic2any";
 import { format, parseISO, formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -45,11 +46,16 @@ const IconChevronUp = (props: React.SVGProps<SVGSVGElement>) => <svg width="16" 
 const IconShield = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>;
 const IconRibbon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>;
 const IconRepeat = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>;
+const IconChecklist = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" /></svg>;
 const IconCalendar = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
 const IconClock = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
 
 // New Friendlier Icons
 const IconHomeHeart = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M12 14.5c1.5-1.5 3-1.5 3.5 0 1 1.5-1.5 3-3.5 3-2 0-4.5-1.5-3.5-3 .5-1.5 2-1.5 3.5 0z" fill="currentColor" fillOpacity="0.2" /></svg>;
+const IconDiamond = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 3h12l4 6-10 13L2 9z"></path></svg>;
+const IconAcademic = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>;
+
+// Иконка ребенка (улыбающееся лицо)
 const IconChild = () => (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -58,9 +64,15 @@ const IconChild = () => (
         <line x1="15" y1="9" x2="15.01" y2="9" />
     </svg>
 );
-const IconDiamond = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 3h12l4 6-10 13L2 9z"></path></svg>;
-const IconAcademic = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>;
-const IconInfo = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
+
+// --- ИСПРАВЛЕНИЕ 1: Добавляем возможность принимать props ---
+const IconInfo = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+);
 
 // --- Interfaces ---
 interface PageContextType {
@@ -434,7 +446,7 @@ const SitterPage: React.FC = () => {
                             <div className={style.highlightsGrid}>
                                 <div
                                     className={style.highlightItem}
-                                    onClick={() => openInfo("Личность подтверждена", "Документы исполнителя были проверены и подтверждены администрацией платформы. Мы гарантируем, что это реальный человек.")}
+                                    onClick={() => openInfo("Личность подтверждена", "Документы исполнителя (паспорт) были проверены и подтверждены администрацией платформы. Мы гарантируем, что это реальный человек.")}
                                 >
                                     <div className={`${style.iconBox} ${style.success}`}><IconShield /></div>
                                     <span>Личность подтверждена</span>
@@ -469,7 +481,7 @@ const SitterPage: React.FC = () => {
                                 {sitter.constant_supervision === 1 && (
                                     <div
                                         className={style.highlightItem}
-                                        onClick={() => openInfo("Постоянный присмотр", "Ваш питомец не останется один в квартире или доме. Ситтер большую часть времени присутствует рядом с питомцами.")}
+                                        onClick={() => openInfo("Постоянный присмотр", "Ваш питомец не останется один в квартире или доме. Ситтер большую часть времени присутствует дома.")}
                                     >
                                         <div className={style.iconBox}><IconHomeHeart /></div>
                                         <span>Постоянный присмотр</span>
@@ -489,7 +501,7 @@ const SitterPage: React.FC = () => {
                                         onClick={() => openInfo("Дети в доме", "В доме исполнителя проживают дети. Учитывайте это, если ваш питомец не ладит с детьми.")}
                                     >
                                         <div className={style.iconBox}><IconChild /></div>
-                                        <span>Есть дети до 12 лет</span>
+                                        <span>Есть дети дома до 12 лет</span>
                                     </div>
                                 )}
                             </div>
@@ -583,11 +595,19 @@ const SitterPage: React.FC = () => {
                                 <div className={style.mapContainer}>
                                     <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU' }}>
                                         <Map
-                                            defaultState={{ center: [parseFloat(sitter.latitude as any), parseFloat(sitter.longitude as any)], zoom: 13, controls: [] }}
+                                            defaultState={{
+                                                center: [Number(sitter.latitude || 0), Number(sitter.longitude || 0)],
+                                                zoom: 13,
+                                                controls: []
+                                            }}
                                             width="100%" height="100%"
                                         >
                                             <ZoomControl options={{ position: { right: 10, top: 50 } }} />
-                                            <Circle geometry={[[parseFloat(sitter.latitude), parseFloat(sitter.longitude)], 500]} options={{ fillColor: 'rgba(255, 112, 67, 0.2)', strokeColor: '#FF7043', strokeWidth: 2 }} />
+                                            {/* ИСПРАВЛЕНИЕ 2: parseFloat -> Number(), безопасная проверка */}
+                                            <Circle
+                                                geometry={[[Number(sitter.latitude || 0), Number(sitter.longitude || 0)], 500]}
+                                                options={{ fillColor: 'rgba(108, 134, 219, 0.2)', strokeColor: '#3598FE', strokeWidth: 2 }}
+                                            />
                                         </Map>
                                     </YMaps>
                                 </div>

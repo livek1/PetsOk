@@ -3,6 +3,9 @@
 // Декларация для Moment.js локали
 declare module 'moment/locale/ru';
 
+// --- ДОБАВЛЕНО: Исправление ошибки heic2any ---
+declare module 'heic2any';
+
 // Декларация для Lottie файлов
 declare module '*.lottie' {
     const content: string;

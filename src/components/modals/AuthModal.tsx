@@ -19,7 +19,7 @@ import {
 import { AppDispatch, RootState } from "../../store";
 import style from "../../style/components/modal/AuthModal.module.scss";
 import { config as appConfig } from '../../config/appConfig';
-import type { RegistrationPayload, LoginPayload } from '../../services/api';
+import { resetUserPassword, type RegistrationPayload, type LoginPayload, type ResetPasswordPayload } from '../../services/api';
 
 // Типы форм
 type ContactFormValues = { contact: string };
@@ -59,6 +59,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
     const [savedOtpCode, setSavedOtpCode] = useState("");
     const [operationType, setOperationType] = useState<'register' | 'login' | 'reset'>(initialMode);
 
+    // Локальный стейт для сброса пароля, чтобы не зависеть от Redux thunk, которого может не быть
+    const [isResettingPassword, setIsResettingPassword] = useState(false);
+
     // Стейт для таймера обратного отсчета
     const [timer, setTimer] = useState(0);
 
@@ -76,6 +79,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         setSavedOtpCode("");
         setTimer(0); // Сбрасываем таймер
         setOperationType(initialMode);
+        setIsResettingPassword(false);
         dispatch(resetAuthFlow()); // Сброс статусов в Redux
         resetContactForm({ contact: '' });
         resetOtpForm({ code: '' });
@@ -214,18 +218,81 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         }
         dispatch(clearAuthErrors());
 
-        const loginPayload: LoginPayload = { password: data.password };
-        if (contactType === 'email') loginPayload.email = savedContactValue;
-        if (contactType === 'phone') loginPayload.phone = savedContactValue;
-
+        // --- ЛОГИКА СБРОСА ПАРОЛЯ ---
         if (operationType === 'reset') {
             if (data.password !== data.password_confirmation) {
                 (setLoginError as any)("password_confirmation", { type: "manual", message: t('validation.passwordsDoNotMatch') });
                 return;
             }
-            alert(t('resetPassword.notImplemented', "Функционал сброса пароля в разработке."));
+
+            if (!savedOtpCode) {
+                // Если код каким-то образом потерялся, возвращаем на шаг ввода кода
+                console.error("OTP code missing for reset.");
+                setCurrentStep("otpEntry");
+                return;
+            }
+
+            setIsResettingPassword(true);
+            try {
+                const resetPayload: ResetPasswordPayload = {
+                    code: savedOtpCode,
+                    password: data.password,
+                    password_confirmation: data.password_confirmation || data.password
+                };
+
+                if (contactType === 'email') resetPayload.email = savedContactValue;
+                if (contactType === 'phone') resetPayload.phone = savedContactValue;
+
+                // Прямой вызов API для сброса пароля
+                const result = await resetUserPassword(resetPayload);
+
+                if (result && result.success !== false) {
+                    // Успешный сброс
+                    alert(t('resetPassword.success', 'Пароль успешно изменен. Теперь вы можете войти с новым паролем.'));
+
+                    // Переключаем режим на логин
+                    setOperationType('login');
+                    // Сбрасываем форму, но можно оставить контакт
+                    resetLoginForm({ password: '', password_confirmation: '' });
+                    // Возвращаемся на шаг ввода контакта или сразу показываем поле пароля для логина
+                    // Лучше показать сразу ввод пароля, так как контакт уже введен
+                    setCurrentStep("contactEntry");
+                    // Или можно сразу вызвать checkContactExists чтобы перейти на шаг пароля, но это сложнее синхронизировать
+                    // Простой вариант: вернуть на начало
+                    setSavedOtpCode("");
+                } else {
+                    // Ошибка от сервера в формате { success: false, message: ... }
+                    (setLoginError as any)("root.serverError", { type: "manual", message: result.message || t('resetPassword.genericError') });
+                }
+            } catch (error: any) {
+                console.error("Reset password error:", error);
+                // Обработка ошибок валидации от API (422)
+                if (error.response && error.response.data && error.response.data.errors) {
+                    const apiErrors = error.response.data.errors;
+                    // Проходимся по ошибкам и устанавливаем их в форму
+                    Object.keys(apiErrors).forEach((key) => {
+                        if (key === 'password') {
+                            (setLoginError as any)("password", { type: "manual", message: apiErrors[key][0] });
+                        } else if (key === 'password_confirmation') {
+                            (setLoginError as any)("password_confirmation", { type: "manual", message: apiErrors[key][0] });
+                        } else {
+                            (setLoginError as any)("root.serverError", { type: "manual", message: `${key}: ${apiErrors[key][0]}` });
+                        }
+                    });
+                } else {
+                    const message = error?.response?.data?.message || error?.message || t('resetPassword.genericError');
+                    (setLoginError as any)("root.serverError", { type: "manual", message: message });
+                }
+            } finally {
+                setIsResettingPassword(false);
+            }
             return;
         }
+
+        // --- ЛОГИКА ВХОДА ---
+        const loginPayload: LoginPayload = { password: data.password };
+        if (contactType === 'email') loginPayload.email = savedContactValue;
+        if (contactType === 'phone') loginPayload.phone = savedContactValue;
 
         dispatch(loginAction(loginPayload));
     };
@@ -539,8 +606,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 <p className={style.apiError}>{(loginErrors.root?.serverError as any)?.message || globalAuthError}</p>
             }
 
-            <button type="submit" disabled={isLoading && (authStatus === 'logging_in' || authStatus === 'resetting_password')} className={`${style.submitButton} ${style.submitButtonPrimary}`}>
-                {(isLoading && authStatus === 'logging_in') ? t('login.loggingIn') : (isLoading && authStatus === 'resetting_password') ? t('resetPassword.resetting') : operationType === 'login' ? t('profile.logIn') : t('resetPassword.setNewPasswordButton')}
+            <button type="submit" disabled={(isLoading && authStatus === 'logging_in') || isResettingPassword} className={`${style.submitButton} ${style.submitButtonPrimary}`}>
+                {(isLoading && authStatus === 'logging_in') ? t('login.loggingIn') : (isResettingPassword) ? t('resetPassword.resetting', 'Обновление...') : operationType === 'login' ? t('profile.logIn') : t('resetPassword.setNewPasswordButton')}
             </button>
 
             {operationType === 'login' && (

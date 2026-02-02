@@ -124,6 +124,15 @@ export interface RegistrationPayload {
     [key: string]: any;
 }
 
+// --- Reset Password Payload (НОВОЕ) ---
+export interface ResetPasswordPayload {
+    email?: string;
+    phone?: string;
+    code: string;
+    password: string;
+    password_confirmation: string;
+}
+
 // --- Subscription Payload Interface (НОВОЕ) ---
 export interface CreateSubscriptionPayload {
     plan_id: string | number;
@@ -288,6 +297,11 @@ export const registerUser = async (data: RegistrationPayload): Promise<AuthApiRe
 export const loginUser = async (credentials: LoginPayload): Promise<AuthApiResponse> => {
     const response = await apiClient.post<any>('/login', credentials);
     return mapAuthResponse(response.data);
+};
+
+export const resetUserPassword = async (payload: ResetPasswordPayload): Promise<{ success: boolean; message?: string }> => {
+    const response = await apiClient.post('/password/reset', payload);
+    return response.data;
 };
 
 export const loginWithGoogleApi = async (idToken: string): Promise<AuthApiResponse> => {

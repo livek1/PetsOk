@@ -1,4 +1,3 @@
-// --- File: src/style/pages/cabinet/CabinetProfile.module.scss ---
 @use '../../../style/variables' as *;
 @use 'sass:color';
 
@@ -7,172 +6,194 @@
     flex-direction: column;
     gap: $space-6;
     width: 100%;
-    max-width: 900px; // Чуть уже, чтобы на десктопе не разъезжалось слишком сильно
+    max-width: 800px;
     margin: 0 auto;
 }
 
-/* --- Секция: Шапка с аватаром --- */
+/* --- Статус сообщения (Success/Error) --- */
+.statusMessage {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    animation: slideDown 0.3s ease;
+
+    svg {
+        flex-shrink: 0;
+    }
+}
+
+.statusSuccess {
+    background-color: #F0FFF4;
+    color: #2F855A;
+    border: 1px solid #C6F6D5;
+}
+
+.statusError {
+    background-color: #FFF5F5;
+    color: #C53030;
+    border: 1px solid #FED7D7;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Шапка --- */
 .headerSection {
     background-color: $white;
     border-radius: $border-radius-xl;
-    padding: $space-6;
+    padding: 24px;
     border: 1px solid $border-color-light;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: $space-6;
+    gap: 24px;
     box-shadow: $box-shadow-sm;
-    position: relative;
 
-    @media (max-width: $breakpoint-md) {
+    @media (max-width: 600px) {
         flex-direction: column;
         text-align: center;
-        padding: $space-5;
-        gap: $space-4;
+        padding: 20px;
     }
 }
 
 .avatarWrapper {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
     flex-shrink: 0;
-    cursor: pointer;
-
-    &:hover .avatarOverlay {
-        opacity: 1;
-    }
 }
 
-.avatarImage {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid $white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
+.avatarImage,
 .avatarPlaceholder {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: $primary-100;
-    color: $primary-600;
+    object-fit: cover;
+    border: 4px solid $white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.avatarPlaceholder {
+    background-color: #EBF8FF;
+    color: $primary-color;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2.5rem;
-    font-weight: 700;
-    border: 3px solid $white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-weight: 800;
 }
 
-.avatarOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 50%;
+.userInfo {
+    flex-grow: 1;
     display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    @media (max-width: 600px) {
+        align-items: center;
+    }
+}
+
+.userName {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: $text-color-base;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Кнопка загрузки фото */
+.uploadBtnLink {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    color: $white;
+    gap: 6px;
+    color: $primary-color;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    margin-left: -10px; // Компенсация паддинга
+    border-radius: 8px;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #F0F9FF;
+        text-decoration: underline;
+    }
+
+    svg {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 .hiddenInput {
     display: none;
 }
 
-.userInfo {
-    flex-grow: 1;
-    overflow: hidden; // Чтобы длинные email не ломали верстку
+.avatarOverlay {
+    display: none;
 }
 
-.userName {
-    font-family: $font-family-headings;
-    font-size: 1.5rem;
-    font-weight: $font-weight-bold;
-    color: $text-color-base;
-    margin: 0 0 4px 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.userEmail {
-    color: $text-color-secondary;
-    font-size: 1rem;
-    margin: 0 0 8px 0;
-}
-
-.headerActions {
-    flex-shrink: 0;
-
-    @media (max-width: $breakpoint-md) {
-        width: 100%;
-    }
-}
+// Скрываем старый оверлей, используем текстовую кнопку
 
 .logoutButtonMain {
     background-color: transparent;
     color: $error-500;
     border: 1px solid rgba($error-500, 0.3);
     padding: 10px 20px;
-    border-radius: $border-radius-md;
-    font-weight: $font-weight-semibold;
+    border-radius: 10px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
 
     &:hover {
-        background-color: rgba($error-500, 0.05);
+        background-color: #FFF5F5;
         border-color: $error-500;
     }
-
-    @media (max-width: $breakpoint-md) {
-        width: 100%;
-    }
 }
 
-/* --- Секция: Формы --- */
-.profileForm {
-    display: flex;
-    flex-direction: column;
-    gap: $space-6;
-}
-
+/* --- Секции --- */
 .sectionCard {
     background-color: $white;
     border-radius: $border-radius-xl;
-    padding: $space-6;
+    padding: 28px;
     border: 1px solid $border-color-light;
     box-shadow: $box-shadow-sm;
 
     h2 {
-        font-family: $font-family-headings;
-        font-size: 1.2rem;
-        font-weight: $font-weight-bold;
+        font-size: 1.3rem;
+        font-weight: 800;
         color: $text-color-base;
-        margin-bottom: $space-5;
-        border-bottom: 1px solid $border-color-light;
-        padding-bottom: $space-3;
+        margin-bottom: 24px;
+        border-bottom: 1px solid #F0F0F0;
+        padding-bottom: 12px;
     }
 
-    @media (max-width: $breakpoint-md) {
-        padding: $space-5;
+    @media (max-width: 600px) {
+        padding: 20px;
     }
 }
 
 .formGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 24px;
 
-    @media (max-width: $breakpoint-sm) {
+    @media (max-width: 700px) {
         grid-template-columns: 1fr;
     }
 }
@@ -187,34 +208,43 @@
     grid-column: 1 / -1;
 }
 
-.label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: $text-color-secondary;
+.fullWidthMobile {
+    @media (max-width: 700px) {
+        grid-column: 1 / -1;
+    }
 }
 
-.input,
-.select {
+.label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $text-color-base;
+}
+
+.requiredStar {
+    color: $error-500;
+    margin-left: 2px;
+}
+
+/* Инпуты */
+.input {
     width: 100%;
-    padding: 14px 16px; // Увеличили высоту полей
+    padding: 14px 16px;
     border-radius: 12px;
-    border: 1px solid $border-color-medium;
+    border: 1px solid #E2E8F0;
     font-size: 1rem;
-    font-family: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    background-color: #F9FAFB;
+    color: $text-color-base;
+    background-color: #F8FAFC;
+    transition: all 0.2s;
 
     &:focus {
         border-color: $primary-color;
         background-color: $white;
-        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.15);
         outline: none;
     }
 
-    &:disabled {
-        background-color: $neutral-100;
-        color: $text-color-muted;
-        cursor: not-allowed;
+    &::placeholder {
+        color: #94A3B8;
     }
 }
 
@@ -230,30 +260,156 @@
 .errorText {
     color: $error-500;
     font-size: 0.85rem;
-    margin-top: 4px;
+    margin-top: 2px;
+    font-weight: 500;
 }
 
-/* --- Секция: Кнопки действий (FOOTER) --- */
+/* --- Segmented Control (Пол) --- */
+.segmentedControl {
+    display: flex;
+    background: #F1F5F9;
+    padding: 4px;
+    border-radius: 12px;
+}
+
+.segmentBtn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    color: $text-color-secondary;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    &.active {
+        background: $white;
+        color: $primary-color;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+}
+
+/* --- Инфо-блоки --- */
+.infoBox,
+.infoBoxGreen {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+}
+
+.infoBox {
+    background-color: #EFF6FF; // Синий
+
+    .infoIcon {
+        color: #3B82F6;
+    }
+
+    h4 {
+        color: #1E40AF;
+    }
+
+    p {
+        color: #1E3A8A;
+    }
+}
+
+.infoBoxGreen {
+    background-color: #F0FDF4; // Зеленый
+
+    .infoIcon {
+        color: #16A34A;
+    }
+
+    h4 {
+        color: #166534;
+    }
+
+    p {
+        color: #14532D;
+    }
+}
+
+.infoContent {
+    h4 {
+        margin: 0 0 4px 0;
+        font-size: 0.95rem;
+        font-weight: 700;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+}
+
+.infoIcon {
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+/* --- Саджесты (Выпадающий список) --- */
+.suggestionsList {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background: $white;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    list-style: none;
+    padding: 6px;
+    margin: 0;
+    z-index: 50;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    max-height: 250px;
+    overflow-y: auto;
+
+    li {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: background 0.1s;
+
+        &:hover {
+            background-color: #F1F5F9;
+            color: $primary-color;
+        }
+    }
+}
+
+/* --- Кнопка сохранить --- */
 .footer {
     margin-top: 10px;
 }
 
 .submitButton {
-    width: 100%; // На всю ширину
+    width: 100%;
     background-color: $primary-color;
     color: $white;
     border: none;
-    padding: 16px; // Высокая кнопка
-    border-radius: 12px; // Скругление как у инпутов
+    padding: 18px;
+    border-radius: 14px;
     font-weight: 700;
     font-size: 1.1rem;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3); // Тень
+    box-shadow: 0 4px 15px rgba($primary-color, 0.35);
+    transition: all 0.2s;
 
     &:hover {
-        background-color: $primary-color-darker;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba($primary-color, 0.45);
     }
 
     &:active {
@@ -261,9 +417,91 @@
     }
 
     &:disabled {
-        background-color: $neutral-300;
+        background-color: #CBD5E0;
         cursor: not-allowed;
         box-shadow: none;
         transform: none;
+    }
+}
+
+.phoneContainer {
+    width: 100% !important;
+
+    // Стили выпадающего списка флагов
+    :global(.flag-dropdown) {
+        border-color: #E2E8F0 !important;
+        background-color: transparent !important;
+        border-radius: 12px 0 0 12px !important;
+
+        &:hover,
+        &.open {
+            background-color: #EDF2F7 !important;
+        }
+
+        :global(.selected-flag) {
+            border-radius: 12px 0 0 12px !important;
+            background: transparent !important;
+            width: 46px !important; // Чуть шире для флага
+            padding-left: 12px !important;
+
+            &:hover,
+            &:focus {
+                background-color: transparent !important;
+            }
+        }
+    }
+
+    // Меню выбора стран
+    :global(.country-list) {
+        border-radius: 12px !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        margin-top: 8px !important;
+        border: 1px solid #E2E8F0 !important;
+
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #CBD5E0;
+            border-radius: 4px;
+        }
+
+        :global(.search) {
+            padding: 8px 10px !important;
+        }
+
+        :global(.search-box) {
+            width: 100% !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 6px !important;
+            padding: 8px !important;
+        }
+    }
+}
+
+.phoneInput {
+    // Важно: перебиваем стили инпута самой библиотеки
+    width: 100% !important;
+    height: 48px !important; // Высота как у обычных инпутов
+    padding-left: 58px !important; // Отступ под флаг
+    border-radius: 12px !important;
+    border: 1px solid #E2E8F0 !important;
+    font-size: 1rem !important;
+    font-family: inherit !important;
+    background-color: #F8FAFC !important;
+    color: $text-color-base !important;
+    transition: all 0.2s !important;
+
+    &:focus {
+        border-color: $primary-color !important;
+        background-color: $white !important;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.15) !important;
+        outline: none !important;
+    }
+
+    &.inputError {
+        border-color: $error-500 !important;
+        background-color: #FFF5F5 !important;
     }
 }

@@ -37,7 +37,8 @@
 }
 
 .card,
-.summaryCard {
+.summaryCard,
+.infoCard {
     background: $white;
     border-radius: 20px;
     padding: 24px;
@@ -47,6 +48,65 @@
     &.errorBorder {
         border-color: $error-500;
     }
+}
+
+// --- Info Widget Styles ---
+.infoCard {
+    background: #F8FAFC;
+    border: 1px solid $neutral-200;
+}
+
+.infoTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: $text-color-base;
+}
+
+.stepsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.stepNum {
+    background: $white;
+    color: $primary-color;
+    border: 1px solid $primary-color;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.stepsList strong {
+    display: block;
+    font-size: 0.9rem;
+    color: $text-color-base;
+    margin-bottom: 2px;
+}
+
+.stepsList p {
+    font-size: 0.8rem;
+    color: $text-color-secondary;
+    line-height: 1.3;
+    margin: 0;
 }
 
 .cardTitle,
@@ -73,37 +133,42 @@
     }
 }
 
-// --- Services Grid (Updated) ---
+// --- Services Grid ---
 .servicesGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); // Чуть шире для контента
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 16px;
 }
 
 .serviceItem {
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center; // Центрируем контент
+    align-items: center;
     text-align: center;
 
     border: 2px solid $neutral-100;
     background: $neutral-50;
     border-radius: 16px;
-    padding: 20px 12px;
+    padding: 30px 12px 20px 12px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-    height: 100%; // Одинаковая высота
+    height: 100%;
 
     &:hover {
         border-color: $primary-color-lighter;
         background: $white;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+        .moreInfoBtn {
+            opacity: 1;
+        }
     }
 
     &.selected {
         border-color: $primary-color;
-        background: #F0F7FF; // Очень светлый синий
+        background: #F0F7FF;
 
         .serviceName {
             color: $primary-color;
@@ -113,6 +178,67 @@
             color: $primary-color;
             background: $white;
         }
+    }
+}
+
+// --- Location Badges ---
+.locationBadge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.65rem;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+}
+
+.locSitter {
+    background: #EBF8FF;
+    color: $primary-color;
+}
+
+.locClient {
+    background: #F0FFF4;
+    color: #38A169;
+}
+
+.locStreet {
+    background: #FAF5FF;
+    color: #805AD5;
+}
+
+// --- More Info Button ---
+.moreInfoBtn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid $border-color-medium;
+    background: $white;
+    color: $text-color-secondary;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: all 0.2s;
+    z-index: 2;
+
+    &:hover {
+        opacity: 1;
+        background: $neutral-50;
+        color: $primary-color;
+        border-color: $primary-color;
+    }
+
+    svg {
+        width: 14px;
+        height: 14px;
     }
 }
 
@@ -329,6 +455,60 @@
     gap: 16px;
 }
 
+// --- Empty Pet State ---
+.addPetPlaceholder {
+    border: 2px dashed $border-color-medium;
+    border-radius: 16px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: $neutral-50;
+
+    &:hover {
+        border-color: $primary-color;
+        background: rgba($primary-color, 0.05);
+
+        .addPetIcon {
+            background: $primary-color;
+            color: $white;
+            transform: scale(1.1);
+            border-color: $primary-color;
+        }
+    }
+
+    span {
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: $text-color-base;
+    }
+
+    small {
+        color: $text-color-secondary;
+        max-width: 80%;
+        line-height: 1.4;
+    }
+}
+
+.addPetIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: $white;
+    border: 1px solid $border-color-medium;
+    color: $primary-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+}
+
 .petCard {
     display: flex;
     flex-direction: column;
@@ -490,6 +670,7 @@
         color: $text-color-base;
         text-align: right;
         max-width: 60%;
+        word-break: break-word; // NEW: чтобы имена или длинные даты переносились
     }
 
     span:first-child {
@@ -532,6 +713,13 @@
     }
 }
 
+.disclaimerText {
+    font-size: 0.75rem;
+    color: $text-color-muted;
+    text-align: center;
+    margin-top: 12px;
+}
+
 // --- MODAL STYLES ---
 .modalOverlay {
     position: fixed;
@@ -566,7 +754,7 @@
 .modalIcon {
     width: 64px;
     height: 64px;
-    background-color: #FFF5F5; // Light red
+    background-color: #FFF5F5;
     color: $error-500;
     border-radius: 50%;
     display: flex;
@@ -593,6 +781,39 @@
     color: $text-color-secondary;
     line-height: 1.5;
     margin-bottom: 30px;
+}
+
+// --- Service Details List inside Modal ---
+.serviceDetailsList {
+    text-align: left;
+    width: 100%;
+    margin-bottom: 24px;
+    background: $neutral-50;
+    padding: 20px;
+    border-radius: 12px;
+
+    h4 {
+        font-size: 0.95rem;
+        margin: 0 0 12px 0;
+        color: $text-color-base;
+        font-weight: 700;
+    }
+
+    ul {
+        margin: 0;
+        padding-left: 0;
+        list-style: none;
+
+        li {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: $text-color-secondary;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
 }
 
 .modalActions {

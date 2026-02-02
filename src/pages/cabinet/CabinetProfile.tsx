@@ -1,27 +1,29 @@
-// --- File: src/pages/cabinet/CabinetProfile.tsx ---
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+
+// --- БИБЛИОТЕКА ТЕЛЕФОНОВ ---
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css'; // Обязательно импортируем стили
+// Мы переопределим их в SCSS, чтобы они выглядели как наши инпуты
+
 import { RootState, AppDispatch } from '../../store';
 import { loadUser, logoutUser } from '../../store/slices/authSlice';
 import { updateUser, fetchAddressSuggestions } from '../../services/api';
 import style from '../../style/pages/cabinet/CabinetProfile.module.scss';
-import { useNavigate } from 'react-router-dom';
 
 // Иконки
-const CameraIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-        <circle cx="12" cy="13" r="4"></circle>
-    </svg>
-);
+const CameraIcon = () => (<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>);
+const CheckCircleIcon = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>);
+const AlertCircleIcon = () => (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>);
 
 interface ProfileFormValues {
     first_name: string;
     last_name: string;
     gender: string;
-    birth: string; // YYYY-MM-DD
+    birth: string;
     phone: string;
     address_q: string;
     address_details: string;
@@ -30,44 +32,33 @@ interface ProfileFormValues {
 }
 
 const CabinetProfile: React.FC = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation(); // i18n нужен для определения дефолтной страны
     const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate(); // Добавлено для навигации при логауте
+    const navigate = useNavigate();
     const { user, isLoading: isAuthLoading, token } = useSelector((state: RootState) => state.auth);
 
     const [isSaving, setIsSaving] = useState(false);
+    const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
-    // --- АВТОКОМПЛИТ АДРЕСА ---
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
 
-    // Добавили setError для обработки серверных ошибок
-    const { register, handleSubmit, setValue, reset, watch, setError, formState: { errors } } = useForm<ProfileFormValues>({
+    const { register, handleSubmit, setValue, reset, watch, setError, control, formState: { errors } } = useForm<ProfileFormValues>({
         defaultValues: {
-            first_name: '',
-            last_name: '',
-            gender: '0',
-            birth: '',
-            phone: '',
-            address_q: '',
-            address_details: '',
-            additional_contact_name: '',
-            additional_contact_phone: '',
+            first_name: '', last_name: '', gender: '0', birth: '', phone: '', address_q: '', address_details: '', additional_contact_name: '', additional_contact_phone: '',
         }
     });
 
     const addressQuery = watch('address_q');
+    const currentGender = watch('gender');
 
-    // 1. Гарантированная подгрузка свежих данных при входе
     useEffect(() => {
-        if (token) {
-            dispatch(loadUser());
-        }
+        if (token) dispatch(loadUser());
     }, [dispatch, token]);
 
-    // 2. Логика заполнения формы
     useEffect(() => {
         if (user) {
             const genderString = String(user.gender) === '1' ? '1' : '0';
@@ -91,16 +82,13 @@ const CabinetProfile: React.FC = () => {
         }
     }, [user, reset]);
 
-    // Обработка ввода адреса (Автокомплит)
     useEffect(() => {
         const timer = setTimeout(async () => {
             if (addressQuery && addressQuery.length > 2 && showSuggestions) {
                 try {
                     const results = await fetchAddressSuggestions(addressQuery);
                     setSuggestions(results);
-                } catch (e) {
-                    console.error("Error fetching suggestions", e);
-                }
+                } catch (e) { console.error(e); }
             }
         }, 500);
         return () => clearTimeout(timer);
@@ -116,9 +104,17 @@ const CabinetProfile: React.FC = () => {
 
     const onSubmit: SubmitHandler<ProfileFormValues> = async (data) => {
         setIsSaving(true);
+        setStatusMsg(null);
+
         try {
+            // PhoneInput возвращает номер без плюса в начале, но с кодом страны.
+            // Добавим плюс, если его нет, для корректного сохранения на бэке
+            const formatPhone = (p: string) => p.startsWith('+') ? p : `+${p}`;
+
             const payload = {
                 ...data,
+                phone: formatPhone(data.phone),
+                additional_contact_phone: formatPhone(data.additional_contact_phone),
                 gender: parseInt(data.gender, 10),
                 avatar: avatarFile || undefined
             };
@@ -126,174 +122,167 @@ const CabinetProfile: React.FC = () => {
             await updateUser(payload);
             await dispatch(loadUser());
 
-            alert(t('editProfileScreen.flash.updateSuccess', 'Профиль успешно обновлен!'));
+            setStatusMsg({ type: 'success', text: t('editProfileScreen.flash.updateSuccess', 'Изменения успешно сохранены!') });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
         } catch (error: any) {
             console.error(error);
-
-            // --- ОБРАБОТКА ОШИБОК ВАЛИДАЦИИ (422) ---
             if (error.response && error.response.data && error.response.data.errors) {
                 const serverErrors = error.response.data.errors;
-                // Проходимся по ключам ошибок и устанавливаем их в форму
                 Object.keys(serverErrors).forEach((key) => {
                     setError(key as keyof ProfileFormValues, {
                         type: "server",
                         message: serverErrors[key][0]
                     });
                 });
-                // Можно добавить общий алерт, чтобы пользователь заметил
-                alert(t('validationErrors.fillAllFields', 'Пожалуйста, проверьте правильность заполнения полей.'));
+                setStatusMsg({ type: 'error', text: t('validationErrors.fillAllFields', 'Проверьте ошибки в форме.') });
             } else {
                 const msg = error.response?.data?.message || t('editProfileScreen.flash.updateFailed', 'Ошибка обновления');
-                alert(msg);
+                setStatusMsg({ type: 'error', text: msg });
             }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } finally {
             setIsSaving(false);
         }
     };
 
-    if (isAuthLoading && !user) {
-        return <div style={{ padding: 40, textAlign: 'center' }}>{t('loading')}</div>;
-    }
+    // Определяем страну по языку приложения (ru -> russia, en -> usa/uk) или дефолт
+    const defaultCountry = i18n.language === 'ru' ? 'ru' : 'us';
+
+    if (isAuthLoading && !user) return <div style={{ padding: 40, textAlign: 'center' }}>{t('loading')}</div>;
 
     return (
         <div className={style.profileContainer}>
-            {/* 1. Верхняя карточка: Аватар и Основное */}
+
+            {statusMsg && (
+                <div className={`${style.statusMessage} ${statusMsg.type === 'success' ? style.statusSuccess : style.statusError}`}>
+                    {statusMsg.type === 'success' ? <CheckCircleIcon /> : <AlertCircleIcon />}
+                    <span>{statusMsg.text}</span>
+                </div>
+            )}
+
+            {/* Header */}
             <div className={style.headerSection}>
                 <div className={style.avatarWrapper}>
                     {avatarPreview ? (
                         <img src={avatarPreview} alt="Avatar" className={style.avatarImage} />
                     ) : (
-                        <div className={style.avatarPlaceholder}>
-                            {(user?.name || user?.email || 'U')[0].toUpperCase()}
-                        </div>
+                        <div className={style.avatarPlaceholder}>{(user?.name || user?.email || 'U')[0].toUpperCase()}</div>
                     )}
-
-                    <label htmlFor="avatar-upload" className={style.avatarOverlay}>
-                        <CameraIcon />
-                    </label>
-                    <input
-                        id="avatar-upload"
-                        type="file"
-                        accept="image/*"
-                        className={style.hiddenInput}
-                        onChange={onAvatarChange}
-                    />
                 </div>
 
                 <div className={style.userInfo}>
                     <h1 className={style.userName}>{user?.name || user?.email}</h1>
-                    <p className={style.userEmail}>{user?.email}</p>
+                    <label htmlFor="avatar-upload" className={style.uploadBtnLink}>
+                        <CameraIcon /> {t('common.changePhoto', 'Изменить фото')}
+                    </label>
+                    <input id="avatar-upload" type="file" accept="image/*" className={style.hiddenInput} onChange={onAvatarChange} />
                 </div>
 
                 <div className={style.headerActions}>
-                    <button
-                        className={style.logoutButtonMain}
-                        onClick={() => dispatch(logoutUser()).then(() => navigate('/'))}
-                    >
+                    <button className={style.logoutButtonMain} onClick={() => dispatch(logoutUser()).then(() => navigate('/'))}>
                         {t('profile.logout.confirmButton', 'Выйти')}
                     </button>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className={style.profileForm}>
-                {/* 2. Личные данные */}
+
+                {/* Личные данные */}
                 <div className={style.sectionCard}>
                     <h2>{t('editProfileScreen.sections.basicInfo.title', 'Личные данные')}</h2>
                     <div className={style.formGrid}>
                         <div className={style.inputGroup}>
-                            <label className={style.label}>{t('editProfileScreen.labels.firstName', 'Имя')}</label>
+                            <label className={style.label}>{t('editProfileScreen.labels.firstName', 'Имя')} <span className={style.requiredStar}>*</span></label>
                             <input
                                 {...register("first_name", { required: t('editProfileScreen.validation.firstNameRequired', 'Введите имя') })}
                                 className={`${style.input} ${errors.first_name ? style.inputError : ''}`}
-                                placeholder={t('editProfileScreen.placeholders.firstName', 'Иван')}
                             />
                             {errors.first_name && <span className={style.errorText}>{errors.first_name.message}</span>}
                         </div>
 
                         <div className={style.inputGroup}>
                             <label className={style.label}>{t('editProfileScreen.labels.lastName', 'Фамилия')}</label>
-                            <input
-                                {...register("last_name")}
-                                className={style.input}
-                                placeholder={t('editProfileScreen.placeholders.lastName', 'Иванов')}
-                            />
+                            <input {...register("last_name")} className={style.input} />
                         </div>
 
-                        <div className={style.inputGroup}>
+                        <div className={`${style.inputGroup} ${style.fullWidthMobile}`}>
                             <label className={style.label}>{t('editProfileScreen.labels.gender', 'Пол')}</label>
-                            <select {...register("gender")} className={style.select}>
-                                <option value="0">{t('common.male_people', 'Мужской')}</option>
-                                <option value="1">{t('common.female_people', 'Женский')}</option>
-                            </select>
+                            <div className={style.segmentedControl}>
+                                <button type="button" className={`${style.segmentBtn} ${currentGender === '0' ? style.active : ''}`} onClick={() => setValue('gender', '0')}>
+                                    {t('common.male_people', 'Мужской')}
+                                </button>
+                                <button type="button" className={`${style.segmentBtn} ${currentGender === '1' ? style.active : ''}`} onClick={() => setValue('gender', '1')}>
+                                    {t('common.female_people', 'Женский')}
+                                </button>
+                                <input type="hidden" {...register('gender')} />
+                            </div>
                         </div>
 
-                        <div className={style.inputGroup}>
+                        <div className={`${style.inputGroup} ${style.fullWidthMobile}`}>
                             <label className={style.label}>{t('editProfileScreen.labels.birthDate', 'Дата рождения')}</label>
-                            <input
-                                type="date"
-                                {...register("birth")}
-                                className={style.input}
-                            />
+                            <input type="date" {...register("birth")} className={style.input} />
                         </div>
                     </div>
                 </div>
 
-                {/* 3. Контакты и Адрес */}
+                {/* Контакты */}
                 <div className={style.sectionCard}>
                     <h2>{t('editProfileScreen.sections.contactInfo.title', 'Контакты и адрес')}</h2>
                     <div className={style.formGrid}>
                         <div className={`${style.inputGroup} ${style.fullWidth}`}>
-                            <label className={style.label}>{t('editProfileScreen.labels.phone', 'Телефон')}</label>
-                            <input
-                                {...register("phone", { required: true, minLength: 7 })}
-                                className={style.input}
-                                placeholder="+7..."
+                            <label className={style.label}>{t('editProfileScreen.labels.phone', 'Телефон')} <span className={style.requiredStar}>*</span></label>
+
+                            {/* --- УМНЫЙ ВВОД ТЕЛЕФОНА --- */}
+                            <Controller
+                                name="phone"
+                                control={control}
+                                rules={{ required: true, validate: (val) => val.length > 8 }}
+                                render={({ field }) => (
+                                    <PhoneInput
+                                        country={defaultCountry}
+                                        value={field.value}
+                                        onChange={phone => field.onChange(phone)}
+                                        // Классы для стилизации через модуль
+                                        containerClass={style.phoneContainer}
+                                        inputClass={`${style.phoneInput} ${errors.phone ? style.inputError : ''}`}
+                                        buttonClass={style.phoneButton}
+                                        // Настройки
+                                        enableSearch={true}
+                                        disableSearchIcon={true}
+                                        preferredCountries={['ru', 'kz', 'by', 'us', 'de', 'ge', 'am']}
+                                        placeholder="+7 (999) 000-00-00"
+                                    />
+                                )}
                             />
+                            {errors.phone && <span className={style.errorText}>{t('validation.phoneRequired', 'Укажите корректный номер')}</span>}
                         </div>
 
-                        <div style={{ marginBottom: 10, gridColumn: '1 / -1' }}>
-                            <div style={{ backgroundColor: '#E3F2FD', padding: '15px', borderRadius: '12px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                                <div style={{ color: '#1565C0', marginTop: '2px' }}>ℹ️</div>
-                                <div>
-                                    <h4 style={{ margin: '0 0 4px 0', fontSize: '0.95rem', color: '#1565C0' }}>
-                                        {t('editProfileScreen.info.addressPrivacy.title', "Конфиденциальность адреса")}
-                                    </h4>
-                                    <p style={{ margin: 0, fontSize: '0.85rem', color: '#1E40AF', lineHeight: '1.4' }}>
-                                        {t('editProfileScreen.info.addressPrivacy.text', "Точный адрес (квартира, этаж) будет доступен исполнителю только после подтверждения заказа.")}
-                                    </p>
-                                </div>
+                        <div className={style.infoBox}>
+                            <div className={style.infoIcon}>ℹ️</div>
+                            <div className={style.infoContent}>
+                                <h4>{t('editProfileScreen.info.addressPrivacy.title', "Адрес в безопасности")}</h4>
+                                <p>{t('editProfileScreen.info.addressPrivacy.text', "Точный адрес виден только исполнителю после подтверждения заказа.")}</p>
                             </div>
                         </div>
 
                         <div className={`${style.inputGroup} ${style.fullWidth}`}>
-                            <label className={style.label}>{t('editProfileScreen.labels.address', 'Адрес')}</label>
+                            <label className={style.label}>{t('editProfileScreen.labels.address', 'Адрес')} <span className={style.requiredStar}>*</span></label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     {...register("address_q", { required: t('editProfileScreen.validation.addressRequired', 'Введите адрес') })}
                                     className={`${style.input} ${errors.address_q ? style.inputError : ''}`}
-                                    placeholder={t('editProfileScreen.placeholders.address', "Начните вводить адрес...")}
+                                    placeholder={t('editProfileScreen.placeholders.address', "Начните вводить...")}
                                     autoComplete="off"
                                     onFocus={() => setShowSuggestions(true)}
+                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                 />
                                 {errors.address_q && <span className={style.errorText}>{errors.address_q.message}</span>}
 
                                 {showSuggestions && suggestions.length > 0 && (
-                                    <ul style={{
-                                        position: 'absolute', top: '100%', left: 0, width: '100%',
-                                        background: '#fff', border: '1px solid #ddd', borderRadius: 8,
-                                        listStyle: 'none', padding: 0, margin: 0, zIndex: 10,
-                                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                    }}>
+                                    <ul className={style.suggestionsList}>
                                         {suggestions.map((s, i) => (
-                                            <li
-                                                key={i}
-                                                style={{ padding: '10px 15px', cursor: 'pointer', borderBottom: '1px solid #eee' }}
-                                                onMouseDown={() => {
-                                                    setValue('address_q', s);
-                                                    setSuggestions([]);
-                                                    setShowSuggestions(false);
-                                                }}
-                                            >
+                                            <li key={i} onMouseDown={(e) => { e.preventDefault(); setValue('address_q', s); setSuggestions([]); setShowSuggestions(false); }}>
                                                 {s}
                                             </li>
                                         ))}
@@ -303,65 +292,59 @@ const CabinetProfile: React.FC = () => {
                         </div>
 
                         <div className={`${style.inputGroup} ${style.fullWidth}`}>
-                            <label className={style.label}>{t('editProfileScreen.labels.addressDetails', 'Детали адреса')}</label>
-                            <input
-                                {...register("address_details")}
-                                className={style.input}
-                                placeholder={t('editProfileScreen.placeholders.addressDetails', "Подъезд, этаж, домофон...")}
-                            />
+                            <label className={style.label}>{t('editProfileScreen.labels.addressDetails', 'Детали')}</label>
+                            <input {...register("address_details")} className={style.input} placeholder={t('editProfileScreen.placeholders.addressDetails', "Подъезд, этаж...")} />
                         </div>
                     </div>
                 </div>
 
-                {/* 4. Экстренный контакт */}
+                {/* Экстренный контакт */}
                 <div className={style.sectionCard}>
-                    <h2>{t('editProfileScreen.sections.emergencyContact.title', 'Доверенное лицо')}</h2>
-
-                    <div style={{ marginBottom: 20 }}>
-                        <div style={{ backgroundColor: '#E8F5E9', padding: '15px', borderRadius: '12px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                            <div style={{ color: '#2E7D32', marginTop: '2px' }}>🛡️</div>
-                            <div>
-                                <h4 style={{ margin: '0 0 4px 0', fontSize: '0.95rem', color: '#2E7D32' }}>
-                                    {t('editProfileScreen.info.emergency.title', "Зачем это нужно?")}
-                                </h4>
-                                <p style={{ margin: 0, fontSize: '0.85rem', color: '#1B5E20', lineHeight: '1.4' }}>
-                                    {t('editProfileScreen.info.emergency.text', 'Эти данные нужны нам исключительно для экстренных ситуаций.')}
-                                </p>
-                            </div>
+                    <h2>{t('editProfileScreen.sections.emergencyContact.title', 'Экстренный контакт')}</h2>
+                    <div className={style.infoBoxGreen}>
+                        <div className={style.infoIcon}>🛡️</div>
+                        <div className={style.infoContent}>
+                            <h4>{t('editProfileScreen.info.emergency.title', "Зачем это нужно?")}</h4>
+                            <p>{t('editProfileScreen.info.emergency.text', 'Мы позвоним этому человеку только в крайнем случае.')}</p>
                         </div>
                     </div>
 
                     <div className={style.formGrid}>
                         <div className={style.inputGroup}>
-                            <label className={style.label}>{t('editProfileScreen.labels.emergencyName', 'Имя')}</label>
-                            {/* ДОБАВЛЕНА ВАЛИДАЦИЯ */}
+                            <label className={style.label}>{t('editProfileScreen.labels.emergencyName', 'Имя')} <span className={style.requiredStar}>*</span></label>
                             <input
-                                {...register("additional_contact_name", {
-                                    required: t('editProfileScreen.validation.emergencyNameRequired', 'Имя контакта обязательно')
-                                })}
+                                {...register("additional_contact_name", { required: t('validation.required', 'Обязательное поле') })}
                                 className={`${style.input} ${errors.additional_contact_name ? style.inputError : ''}`}
-                                placeholder={t('editProfileScreen.placeholders.emergencyName', 'Имя родственника или друга')}
                             />
-                            {/* ВЫВОД ОШИБКИ */}
                             {errors.additional_contact_name && <span className={style.errorText}>{errors.additional_contact_name.message}</span>}
                         </div>
                         <div className={style.inputGroup}>
-                            <label className={style.label}>{t('editProfileScreen.labels.emergencyPhone', 'Телефон')}</label>
-                            {/* ДОБАВЛЕНА ВАЛИДАЦИЯ */}
-                            <input
-                                {...register("additional_contact_phone", {
-                                    required: t('editProfileScreen.validation.emergencyPhoneRequired', 'Телефон контакта обязателен')
-                                })}
-                                className={`${style.input} ${errors.additional_contact_phone ? style.inputError : ''}`}
-                                placeholder="+7..."
+                            <label className={style.label}>{t('editProfileScreen.labels.emergencyPhone', 'Телефон')} <span className={style.requiredStar}>*</span></label>
+
+                            {/* --- УМНЫЙ ВВОД ТЕЛЕФОНА (Экстренный) --- */}
+                            <Controller
+                                name="additional_contact_phone"
+                                control={control}
+                                rules={{ required: true, validate: (val) => val.length > 8 }}
+                                render={({ field }) => (
+                                    <PhoneInput
+                                        country={defaultCountry}
+                                        value={field.value}
+                                        onChange={phone => field.onChange(phone)}
+                                        containerClass={style.phoneContainer}
+                                        inputClass={`${style.phoneInput} ${errors.additional_contact_phone ? style.inputError : ''}`}
+                                        buttonClass={style.phoneButton}
+                                        enableSearch={true}
+                                        disableSearchIcon={true}
+                                        preferredCountries={['ru', 'kz', 'by']}
+                                    />
+                                )}
                             />
-                            {/* ВЫВОД ОШИБКИ */}
-                            {errors.additional_contact_phone && <span className={style.errorText}>{errors.additional_contact_phone.message}</span>}
+                            {errors.additional_contact_phone && <span className={style.errorText}>{t('validation.required', 'Обязательное поле')}</span>}
                         </div>
                     </div>
                 </div>
 
-                {/* Footer с кнопкой */}
                 <div className={style.footer}>
                     <button type="submit" disabled={isSaving} className={style.submitButton}>
                         {isSaving ? t('loading') : t('common.save', 'Сохранить изменения')}

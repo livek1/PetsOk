@@ -59,6 +59,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
     const [savedOtpCode, setSavedOtpCode] = useState("");
     const [operationType, setOperationType] = useState<'register' | 'login' | 'reset'>(initialMode);
 
+    // Стейт для таймера обратного отсчета
+    const [timer, setTimer] = useState(0);
+
     // React Hook Form
     const { control: contactControl, handleSubmit: handleSubmitContact, formState: { errors: contactErrors }, reset: resetContactForm, trigger: triggerContact, setValue: setContactValue } = useForm<ContactFormValues>({ mode: "onTouched", defaultValues: { contact: '' } });
     const { control: otpControl, handleSubmit: handleSubmitOtp, formState: { errors: otpErrors }, reset: resetOtpForm, trigger: triggerOtp } = useForm<OtpFormValues>({ mode: "onTouched", defaultValues: { code: '' } });
@@ -71,6 +74,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         setContactType('email');
         setSavedContactValue("");
         setSavedOtpCode("");
+        setTimer(0); // Сбрасываем таймер
         setOperationType(initialMode);
         dispatch(resetAuthFlow()); // Сброс статусов в Redux
         resetContactForm({ contact: '' });
@@ -93,6 +97,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         }
     }, [authStatus, isAuthenticated, onClose, navigate]);
 
+    // Логика работы таймера
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (timer > 0) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [timer]);
+
     // Логика переходов между шагами на основе статуса Redux
     useEffect(() => {
         if (authStatus === 'contact_exists' && currentStep === 'contactEntry') {
@@ -112,6 +127,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         if (authStatus === 'otp_sent' && (currentStep === 'contactEntry' || (currentStep === 'passwordEntry' && operationType === 'reset'))) {
             setCurrentStep("otpEntry");
             dispatch(clearAuthErrors());
+            setTimer(60); // Запускаем таймер при переходе на шаг OTP
         }
     }, [authStatus, currentStep, operationType, dispatch]);
 
@@ -352,11 +368,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 onClick={async () => {
                     if (savedContactValue && contactType && (operationType === 'register' || operationType === 'reset')) {
                         dispatch(sendOtp({ contactValue: savedContactValue, contactType, operation: operationType }));
+                        setTimer(60); // Перезапускаем таймер при повторной отправке
                     }
                 }}
-                disabled={isLoading && authStatus === 'otp_sending'}
+                disabled={(isLoading && authStatus === 'otp_sending') || timer > 0}
+                style={timer > 0 ? { opacity: 0.5, cursor: 'default' } : {}}
             >
-                {(isLoading && authStatus === 'otp_sending') ? t('otp.resending') : t('otp.resend')}
+                {(isLoading && authStatus === 'otp_sending')
+                    ? t('otp.resending')
+                    : timer > 0
+                        ? `${t('otp.resend')} (${timer}s)`
+                        : t('otp.resend')
+                }
             </button>
         </form>
     );

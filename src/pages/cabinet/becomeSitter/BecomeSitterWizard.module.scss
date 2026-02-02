@@ -1,4 +1,5 @@
 @use '../../../style/variables' as *;
+@use 'sass:color';
 
 .wizardContainer {
     width: 100%;
@@ -13,83 +14,208 @@
     align-items: center;
     height: 50vh;
     color: $text-color-secondary;
+    font-family: $font-family-base;
 }
 
-// Общие стили карточки шага
-.stepCard {
-    background: $white;
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid $border-color-light;
+// --- СТИЛИ ДЛЯ ПРОМО ЭКРАНА ПРИЛОЖЕНИЯ ---
 
-    @media (max-width: $breakpoint-md) {
-        padding: 20px;
+.appPromoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+    background-color: #F8F9FA; // Светлый фон на всю страницу
+}
+
+.appPromoCard {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); // Более мягкая и глубокая тень
+    max-width: 520px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #EBF0F5;
+
+    @media (max-width: $breakpoint-sm) {
+        padding: 24px 20px;
     }
 }
 
-.header {
-    text-align: center;
-    margin-bottom: 30px;
+.appPromoHeader {
+    margin-bottom: 32px;
 
-    h1 {
+    h2 {
         font-family: $font-family-headings;
-        font-size: 24px;
+        font-size: 1.75rem;
         font-weight: 800;
-        margin-bottom: 8px;
-        color: $text-color-base;
+        margin-bottom: 16px;
+        color: #1A202C;
+        letter-spacing: -0.02em;
     }
 
     p {
-        color: $text-color-secondary;
+        color: #718096;
+        line-height: 1.6;
+        font-size: 1rem;
+        margin: 0 auto;
+        max-width: 90%;
     }
 }
 
-.formGroup {
-    margin-bottom: 20px;
+.promoContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+}
 
-    label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 14px;
-        color: $text-color-base;
+.qrSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    @media (max-width: $breakpoint-sm) {
+        display: none; // Скрываем QR на мобильных
     }
 }
 
-.input,
-.select {
+.qrWrapper {
+    padding: 16px;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.qrLabel {
+    font-size: 0.85rem;
+    color: #A0AEC0;
+    font-weight: 500;
+}
+
+// Кнопки магазинов
+.storeButtons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
     width: 100%;
-    padding: 12px;
-    border: 1px solid $border-color-medium;
-    border-radius: 8px;
-    font-size: 16px;
-
-    &:focus {
-        border-color: $primary-color;
-        outline: none;
-    }
 }
 
-.btnPrimary {
-    width: 100%;
-    background-color: $primary-color;
-    color: $white;
-    padding: 14px;
+.storeBtn {
+    display: flex;
+    align-items: center;
+    background: #1A202C; // Почти черный
+    color: #fff;
+    padding: 10px 18px;
     border-radius: 12px;
-    font-weight: 600;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background 0.2s;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    min-width: 160px;
+    flex: 1 1 auto; // Позволяет кнопкам растягиваться
+    max-width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     &:hover {
-        background-color: $primary-color-darker;
+        transform: translateY(-2px);
+        background: #2D3748;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
     }
 
-    &:disabled {
-        background-color: $neutral-300;
-        cursor: not-allowed;
+    .btnIcon {
+        flex-shrink: 0;
+        margin-right: 12px;
+        display: flex;
+        align-items: center;
+
+        svg {
+            width: 40px;
+            height: 40px;
+            fill: currentColor;
+        }
     }
+
+    .btnText {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: 1.1;
+
+        .small {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+
+        .large {
+            font-size: 1.1rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+    }
+}
+
+.divider {
+    position: relative;
+    text-align: center;
+    margin: 24px 0;
+    width: 100%;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #E2E8F0;
+    }
+
+    span {
+        background: #FFFFFF;
+        padding: 0 16px;
+        color: #A0AEC0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        position: relative;
+    }
+}
+
+.secondaryAction {
+    width: 100%;
+}
+
+.secondaryBtn {
+    background: transparent;
+    border: 2px solid #E2E8F0;
+    color: #4A5568;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    margin-bottom: 12px;
+
+    &:hover {
+        border-color: $primary-color;
+        color: $primary-color;
+        background-color: rgba($primary-color, 0.04);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.secondaryHint {
+    font-size: 0.85rem;
+    color: #A0AEC0;
+    margin: 0;
 }

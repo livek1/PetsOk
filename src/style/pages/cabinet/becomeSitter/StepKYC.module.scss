@@ -1,6 +1,13 @@
 @use 'sass:color';
 @use '../../../../style/variables' as *;
 
+// Палитра из мобильного приложения
+$mobile-primary: #3598FE;
+$mobile-trust-bg: #EBF4FF;
+$mobile-trust-text: #2C5282;
+$mobile-trust-border: #BEE3F8;
+$mobile-text-grey: #718096;
+
 .stepCard {
     background: $white;
     border-radius: 16px;
@@ -31,8 +38,80 @@
         color: $text-color-secondary;
         font-size: 15px;
         line-height: 1.5;
+        max-width: 90%;
+        margin: 0 auto;
     }
 }
+
+// --- TRUST BLOCK (Blue Theme) ---
+.trustCard {
+    background-color: $mobile-trust-bg;
+    border: 1px solid $mobile-trust-border;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+.trustHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    color: $mobile-primary;
+
+    svg {
+        margin-right: 8px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.trustTitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: $mobile-trust-text;
+}
+
+.trustList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.trustItem {
+    display: flex;
+    align-items: flex-start;
+}
+
+.trustIcon {
+    color: $mobile-text-grey;
+    margin-right: 12px;
+    margin-top: 2px;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.trustText {
+    font-size: 13px;
+    color: $text-color-base;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.trustFooter {
+    border-top: 1px solid color.adjust($mobile-trust-border, $lightness: -5%);
+    padding-top: 12px;
+    margin-top: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: $mobile-trust-text;
+}
+
+// --- END TRUST BLOCK ---
 
 .errorMessage {
     color: $error-500;
@@ -74,12 +153,13 @@
     font-size: 16px;
     background-color: #F7FAFC;
     transition: all 0.2s;
+    font-family: inherit;
 
     &:focus {
-        border-color: $primary-color;
+        border-color: $mobile-primary;
         background-color: $white;
         outline: none;
-        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        box-shadow: 0 0 0 3px rgba($mobile-primary, 0.1);
     }
 }
 
@@ -93,6 +173,7 @@
     font-size: 12px;
     margin-top: 5px;
     margin-left: 4px;
+    display: block;
 }
 
 .divider {
@@ -124,9 +205,14 @@
     gap: 12px;
 }
 
-.uploadIcon {
-    color: $primary-color;
+.uploadIconMain {
+    color: $mobile-primary;
     padding-top: 2px;
+
+    svg {
+        width: 24px;
+        height: 24px;
+    }
 }
 
 .uploadInfo {
@@ -150,18 +236,18 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px;
-    background-color: #EBF4FF;
+    padding: 14px;
+    background-color: $mobile-trust-bg;
     border-radius: 10px;
     cursor: pointer;
     transition: background 0.2s;
-    color: $primary-color;
+    color: $mobile-primary;
     font-weight: 600;
     font-size: 14px;
     width: 100%;
 
     &:hover {
-        background-color: color.adjust(#EBF4FF, $lightness: -5%);
+        background-color: color.adjust($mobile-trust-bg, $lightness: -5%);
     }
 
     input[type="file"] {
@@ -229,9 +315,9 @@
 
 .btnPrimary {
     width: 100%;
-    background-color: $primary-color;
+    background-color: $mobile-primary;
     color: $white;
-    padding: 16px;
+    padding: 18px;
     border-radius: 12px;
     font-weight: 700;
     font-size: 16px;
@@ -239,10 +325,10 @@
     cursor: pointer;
     margin-top: 10px;
     transition: background 0.2s, transform 0.1s;
-    box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+    box-shadow: 0 4px 10px rgba($mobile-primary, 0.3);
 
     &:hover {
-        background-color: $primary-color-darker;
+        background-color: color.adjust($mobile-primary, $lightness: -10%);
         transform: translateY(-1px);
     }
 
@@ -255,44 +341,5 @@
         cursor: not-allowed;
         box-shadow: none;
         transform: none;
-    }
-}
-
-.safetyBadge {
-    display: flex;
-    align-items: center;
-    background-color: #E8F5E9; // Зеленоватый фон
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    border: 1px solid #C8E6C9;
-    gap: 12px;
-
-    .icon {
-        color: #2E7D32; // Темно-зеленый
-        flex-shrink: 0;
-
-        svg {
-            width: 24px;
-            height: 24px;
-        }
-    }
-
-    .content {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .mainText {
-        font-size: 14px;
-        font-weight: 700;
-        color: #2E7D32;
-        margin-bottom: 2px;
-    }
-
-    .subText {
-        font-size: 12px;
-        color: #2E7D32;
-        opacity: 0.9;
     }
 }

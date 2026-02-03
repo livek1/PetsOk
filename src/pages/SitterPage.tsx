@@ -601,7 +601,7 @@ const SitterPage: React.FC = () => {
                             <div className={style.mapSection}>
                                 <h2>{t('sitterPage.location', 'Местоположение')}</h2>
                                 <div className={style.mapContainer}>
-                                    <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU' }}>
+                                    <YMaps query={{ lang: 'ru_RU' }}>
                                         <Map
                                             defaultState={{
                                                 center: [Number(sitter.latitude || 0), Number(sitter.longitude || 0)],

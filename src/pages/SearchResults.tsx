@@ -397,7 +397,7 @@ const SearchResults: React.FC = () => {
                 </div>
 
                 <div className={`${style.mapColumn} ${viewMode === 'list' ? style.hiddenOnMobile : ''}`}>
-                    <YMaps query={{ lang: 'ru_RU' }}>
+                    <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU', load: 'package.full' }}>
                         <Map
                             state={{ ...mapState, controls: [] }}
                             defaultState={{

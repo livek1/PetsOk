@@ -132,7 +132,7 @@ export const config = {
     referralParamName: 'ref',
     apiBaseUrl: 'https://petsok.ru/api/v1',
     googleClientIdWeb: "568554314984-7c6ar6adjkq4qoj50djjeqp4ih7qi00n.apps.googleusercontent.com",
-    yandexMapsApiKey: '89582aa9-5fab-4339-ae5b-88d55b68d550',
+    yandexMapsApiKey: 'ea1b62e7-3cca-4582-8b0a-9be294dbff10',
     appleServiceId: "ru.petsok.signin",
     appleRedirectUri: "https://petsok.ru/api/v1/auth/apple/callback",
     // Дефолтные ссылки, если конфиг еще не загрузился

@@ -1,16 +1,21 @@
+// --- File: src/style/components/WhyPetsOkFeatures.scss ---
 @use '../variables' as *;
 
 .why-petsok-section {
-    // Стандартные отступы: 80px
-    padding-top: 80px;
-    padding-bottom: 80px;
+    // Стандартный отступ сверху
+    padding-top: 100px;
+
+    // ВАЖНОЕ ИЗМЕНЕНИЕ: Убираем нижний отступ, чтобы передать управление пространством следующему блоку
+    padding-bottom: 0;
+
     background-color: $white;
 
     @media (max-width: $breakpoint-md) {
-        padding-top: 50px;
-        padding-bottom: 50px;
+        padding-top: 60px;
+        padding-bottom: 0;
     }
 
+    // ... (весь остальной код файла остается без изменений)
     // Вложенный wrapper для центровки
     .wrapper {
         width: 100%;
@@ -23,7 +28,7 @@
 
     &__main-title-wrapper {
         text-align: center;
-        margin-bottom: 60px; // Отступ до колонок
+        margin-bottom: 60px;
 
         h2 {
             font-family: $font-family-headings;
@@ -60,7 +65,6 @@
 
     &__column {
         flex: 1;
-        // Светлый фон внутри колонок, чтобы отделить их от белого фона секции
         background-color: $background-color-section-light;
         padding: 40px;
         border-radius: $border-radius-xl;

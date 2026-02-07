@@ -6,6 +6,8 @@ import Hero from "../components/home/Hero";
 import HowItWorksSimple from "../components/home/HowItWorksSimple";
 import MobileAppPromoSection from "../components/home/MobileAppSection";
 import WhyPetsOkFeatures from "../components/home/WhyPetsOkFeatures";
+// Импортируем новый блок
+import TestimonialsSection from "../components/home/TestimonialsSection";
 import { config } from '../config/appConfig';
 
 interface PageContextType {
@@ -46,12 +48,7 @@ const Home = ({ isPreloading }: { isPreloading: boolean }) => {
       <Helmet>
         <title>{t('seo.home.title')}</title>
         <meta name="description" content={t('seo.home.description')} />
-
-        {/* ОСТАВЛЯЕМ ТОЛЬКО ПРЕДЗАГРУЗКУ КАРТИНКИ */}
         <link rel="preload" as="image" href={heroBackgroundImageUrl} fetchPriority="high" />
-
-        {/* Строку с предзагрузкой шрифта мы УДАЛИЛИ, так как перенесли её в index.html */}
-
         <script type="application/ld+json">
           {JSON.stringify(organizationSchema)}
         </script>
@@ -64,7 +61,11 @@ const Home = ({ isPreloading }: { isPreloading: boolean }) => {
       />
 
       <WhyPetsOkFeatures onCreateOrderClick={handleCreateOrderClick} />
+      <TestimonialsSection />
+
       <HowItWorksSimple />
+
+
       <MobileAppPromoSection />
     </>
   );

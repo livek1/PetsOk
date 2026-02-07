@@ -1,3 +1,4 @@
+// --- File: src/pages/SearchResults.tsx ---
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useSearchParams, useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +14,9 @@ import { SERVICE_SLUGS, getCityNameFromSlug, getSeoMeta } from '../config/seoCon
 import NotFound from './NotFound';
 import { config } from '../config/appConfig';
 
+// Импорт модалки сбора лидов
+import LeadCaptureModal from '../components/modals/LeadCaptureModal';
+
 // Иконки UI
 const MapIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>;
 const ListIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>;
@@ -24,73 +28,39 @@ const DogDetectiveIcon = () => (
         <circle cx="100" cy="100" r="96" fill="#FFF8E1" />
 
         <g transform="translate(25, 35) scale(0.75)">
-
             {/* --- ТЕЛО --- */}
             <path d="M60 130 Q50 180, 30 200 H170 Q150 180, 140 130" fill="#FFA726" />
-
-            {/* --- УШИ (Реалистичные, висячие, за головой) --- */}
-            {/* Левое ухо */}
+            {/* --- УШИ --- */}
             <path d="M52 65 C 15 80, 25 145, 55 145 C 70 145, 65 110, 60 100" fill="#EF6C00" stroke="#E65100" strokeWidth="2" />
-            {/* Правое ухо */}
             <path d="M148 65 C 185 80, 175 145, 145 145 C 130 145, 135 110, 140 100" fill="#EF6C00" stroke="#E65100" strokeWidth="2" />
-
             {/* --- ГОЛОВА --- */}
             <rect x="50" y="55" width="100" height="90" rx="45" fill="#FFA726" />
-
-            {/* Пятнышко вокруг левого глаза */}
             <circle cx="75" cy="85" r="18" fill="#FFCC80" opacity="0.6" />
-
             {/* --- МОРДОЧКА --- */}
             <ellipse cx="100" cy="115" rx="35" ry="24" fill="#FFE0B2" />
-
-            {/* Нос */}
             <path d="M90 107 Q100 103, 110 107 Q105 120, 95 120 Q85 115, 90 107" fill="#3E2723" />
-
-            {/* Рот (немного грустный/вопросительный, так как ничего не найдено) */}
             <path d="M100 120 L100 128" stroke="#3E2723" strokeWidth="2" />
             <path d="M92 128 Q100 132, 108 128" stroke="#3E2723" strokeWidth="2" fill="none" strokeLinecap="round" />
-
-            {/* --- ГЛАЗА (Симметричные) --- */}
-            {/* Левый глаз */}
+            {/* --- ГЛАЗА --- */}
             <circle cx="75" cy="85" r="6" fill="#3E2723" />
-            <circle cx="77" cy="83" r="2" fill="white" /> {/* Блик */}
-            {/* Бровь левая */}
+            <circle cx="77" cy="83" r="2" fill="white" />
             <path d="M68 75 Q75 70, 82 75" stroke="#3E2723" strokeWidth="2" fill="none" strokeLinecap="round" />
-
-            {/* Правый глаз */}
             <circle cx="125" cy="85" r="6" fill="#3E2723" />
-            <circle cx="127" cy="83" r="2" fill="white" /> {/* Блик */}
-            {/* Бровь правая */}
+            <circle cx="127" cy="83" r="2" fill="white" />
             <path d="M118 75 Q125 70, 132 75" stroke="#3E2723" strokeWidth="2" fill="none" strokeLinecap="round" />
-
-
             {/* --- ШЛЯПА ДЕТЕКТИВА --- */}
-            {/* Задний козырек */}
             <path d="M45 60 Q100 50, 155 60" fill="#8D6E63" />
-
-            {/* Уши шапки (сверху, завязаны) */}
             <path d="M90 20 Q80 30, 92 35 H108 Q120 30, 110 20" fill="#8D6E63" stroke="#5D4037" strokeWidth="2" />
             <path d="M100 35 L100 28" stroke="#5D4037" strokeWidth="2" />
-
-            {/* Купол */}
             <path d="M55 60 C55 15, 145 15, 145 60" fill="#8D6E63" stroke="#5D4037" strokeWidth="1" />
-
-            {/* Лента */}
             <path d="M55 60 Q100 50, 145 60 L145 45 Q100 35, 55 45 Z" fill="#4E342E" />
-
-            {/* Текст PetsOk */}
-            <text x="100" y="55" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="bold" fill="white" textAnchor="middle">
-                PetsOk
-            </text>
-
-            {/* Передний козырек */}
+            <text x="100" y="55" fontFamily="Arial, sans-serif" fontSize="13" fontWeight="bold" fill="white" textAnchor="middle">PetsOk</text>
             <path d="M55 60 Q100 80, 145 60 Q100 70, 55 60" fill="#A1887F" stroke="#5D4037" strokeWidth="1" />
         </g>
     </svg>
 );
 
 const CROWN_SVG_STRING = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5ZM19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z" fill="currentColor"/></svg>`;
-
 const DEBOUNCE_DELAY = 600;
 const RUSSIA_VIEW = { center: [55.75, 37.57], zoom: 10 };
 
@@ -105,16 +75,15 @@ const SearchResults: React.FC = () => {
     const navigate = useNavigate();
     const [searchParamsUrl, setSearchParamsUrl] = useSearchParams();
 
-    // Получаем контекст для вызова модалки
+    // Получаем контекст и стейт авторизации
     const { onAuthClick } = useOutletContext<PageContextType>();
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
+    // Стейт для модалки сбора лидов
+    const [showLeadModal, setShowLeadModal] = useState(false);
+
     const { citySlug, serviceSlug } = useParams<{ citySlug?: string; serviceSlug?: string }>();
-
-    const isSystemRoute = [
-        'error', '404', 'undefined', 'null', 'api', 'static', 'assets', 'json'
-    ].includes((citySlug || '').toLowerCase());
-
+    const isSystemRoute = ['error', '404', 'undefined', 'null', 'api', 'static', 'assets', 'json'].includes((citySlug || '').toLowerCase());
     const { searchResults, searchParams: reduxParams, isLoading, isFetchingMore, pagination } = useSelector((state: RootState) => state.search);
 
     const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
@@ -126,6 +95,54 @@ const SearchResults: React.FC = () => {
     const listContainerRef = useRef<HTMLDivElement>(null);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
     const isProgrammaticMove = useRef(false);
+
+    // --- ЛОГИКА LEAD CAPTURE (Модалка при уходе) ---
+    useEffect(() => {
+        // Не показываем, если авторизован
+        if (isAuthenticated) return;
+
+        // Не показываем, если уже закрывали (проверка localStorage)
+        if (localStorage.getItem('leadModalClosed') === 'true') return;
+
+        // Функция показа, проверяющая флаг еще раз перед открытием
+        const triggerModal = () => {
+            if (!isAuthenticated && localStorage.getItem('leadModalClosed') !== 'true') {
+                setShowLeadModal(true);
+            }
+        };
+
+        // 1. Таймер: показать через 20 секунд активности на странице
+        const timer = setTimeout(() => {
+            triggerModal();
+        }, 20000);
+
+        // 2. Exit Intent: показать при попытке увести мышь за пределы окна (наверх)
+        const handleMouseLeave = (e: MouseEvent) => {
+            if (e.clientY <= 0) {
+                triggerModal();
+            }
+        };
+
+        document.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            clearTimeout(timer);
+            document.removeEventListener('mouseleave', handleMouseLeave);
+        };
+    }, [isAuthenticated]);
+
+    const handleCloseLeadModal = () => {
+        setShowLeadModal(false);
+        // Запоминаем, что юзер закрыл модалку (чтобы не надоедать)
+        localStorage.setItem('leadModalClosed', 'true');
+    };
+
+    const handleLeadSuccess = (phone: string) => {
+        handleCloseLeadModal();
+        // Перебрасываем на регистрацию, так как пользователь "теплый"
+        onAuthClick('register', 'client');
+    };
+    // -----------------------------------------------
 
     const seoMeta = useMemo(() => {
         if (citySlug && !isSystemRoute) {
@@ -146,14 +163,11 @@ const SearchResults: React.FC = () => {
         const lonStr = searchParamsUrl.get('lon');
         let service = searchParamsUrl.get('service_key') || reduxParams.service_key || 'boarding';
 
-        const initialParams: any = {
-            searchReason: 'initial'
-        };
+        const initialParams: any = { searchReason: 'initial' };
 
         if (citySlug) {
             initialParams.address = getCityNameFromSlug(citySlug);
             initialParams.searchReason = 'city';
-
             if (serviceSlug && SERVICE_SLUGS[serviceSlug]) {
                 service = SERVICE_SLUGS[serviceSlug];
             }
@@ -170,7 +184,6 @@ const SearchResults: React.FC = () => {
             initialParams.latitude = lat;
             initialParams.longitude = lon;
             initialParams.searchReason = 'coordinates';
-            delete initialParams.address;
             setMapState({ center: [lat, lon], zoom });
         } else if (reduxParams.latitude && !citySlug) {
             setMapState({ center: [reduxParams.latitude, reduxParams.longitude!], zoom: 12 });
@@ -182,7 +195,23 @@ const SearchResults: React.FC = () => {
         dispatch(performSearch({ params: initialParams, page: 1, isNewSearch: true }));
     }, [citySlug, serviceSlug, isSystemRoute]);
 
-    // Обработчик кнопки создания заказа (конверсия из пустого поиска)
+    // --- ДОБАВИТЬ ЭТОТ БЛОК ---
+    const currentCity = useMemo(() => {
+        // 1. Если город в пути (например /moscow)
+        if (citySlug) {
+            return getCityNameFromSlug(citySlug);
+        }
+        // 2. Если город в параметрах (?address=Москва)
+        const addressParam = searchParamsUrl.get('address');
+        if (addressParam) return addressParam;
+
+        // 3. Если город остался в Redux стейте
+        if (reduxParams.address) return reduxParams.address;
+
+        return undefined;
+    }, [citySlug, searchParamsUrl, reduxParams.address]);
+    // ---------------------------
+
     const handleCreateOrderClick = () => {
         if (isAuthenticated) {
             navigate('/cabinet/orders/create');
@@ -376,7 +405,7 @@ const SearchResults: React.FC = () => {
                         {isLoading && searchResults.length === 0 && <div className={style.loaderContainer}>Загрузка...</div>}
                         {isFetchingMore && <div className={style.miniLoader}>Подгрузка...</div>}
 
-                        {/* --- НОВЫЙ БЛОК "НИЧЕГО НЕ НАЙДЕНО" С ИКОНКОЙ СОБАКИ-ДЕТЕКТИВА --- */}
+                        {/* --- БЛОК "НИЧЕГО НЕ НАЙДЕНО" С ИКОНКОЙ СОБАКИ-ДЕТЕКТИВА --- */}
                         {!isLoading && searchResults.length === 0 && (
                             <div className={style.noResultsCard}>
                                 <div className={style.noResultsIcon}>
@@ -490,6 +519,14 @@ const SearchResults: React.FC = () => {
             <button className={style.floatingMapToggle} onClick={() => setViewMode(prev => prev === 'list' ? 'map' : 'list')}>
                 {viewMode === 'list' ? <>Карта <MapIcon /></> : <>Список <ListIcon /></>}
             </button>
+
+            {/* Модалка сбора лидов (Lead Magnet) */}
+            <LeadCaptureModal
+                isOpen={showLeadModal}
+                onClose={handleCloseLeadModal}
+                onSuccess={handleLeadSuccess}
+                city={currentCity}
+            />
         </div>
     );
 };

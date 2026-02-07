@@ -1,10 +1,8 @@
+// --- File: src/components/layout/Footer.tsx ---
 import React from "react";
 import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import style from "../../style/layouts/Footer.module.scss";
-
-// Импортируем список городов из конфига
-import { CITY_SLUGS } from "../../config/seoConfig";
 
 // Иконки соцсетей
 const IconTelegram = () => (
@@ -21,11 +19,23 @@ const IconInstagram = () => (
   </svg>
 );
 
+// Актуальный список городов
+const POPULAR_CITIES = [
+  "Москва",
+  "Санкт-Петербург",
+  "Новосибирск",
+  "Екатеринбург",
+  "Казань",
+  "Омск",
+  "Нижний Новгород",
+  "Челябинск",
+  "Красноярск",
+  "Самара",
+  "Уфа"
+];
+
 const Footer: React.FC = () => {
   const { t } = useTranslation();
-
-  // Берем топ-12 городов для отображения
-  const popularCities = Object.entries(CITY_SLUGS).slice(0, 12);
 
   return (
     <footer className={style.footerContainer}>
@@ -40,13 +50,14 @@ const Footer: React.FC = () => {
           </p>
         </div>
 
-        {/* --- 2. ЦЕНТРАЛЬНАЯ КОЛОНКА (Города - SEO) --- */}
+        {/* --- 2. ЦЕНТРАЛЬНАЯ КОЛОНКА (Города) --- */}
         <div className={style.centerColumn}>
           <h4 className={style.columnTitle}>Популярные города</h4>
           <ul className={style.popularCitiesList}>
-            {popularCities.map(([slug, name]) => (
-              <li key={slug}>
-                <Link to={`/${slug}`}>{name}</Link>
+            {POPULAR_CITIES.map((city) => (
+              <li key={city}>
+                {/* Ссылка вида /search?address=Москва */}
+                <Link to={`/search?address=${city}`}>{city}</Link>
               </li>
             ))}
           </ul>

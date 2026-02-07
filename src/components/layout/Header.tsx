@@ -11,8 +11,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
 import { logoutUser } from '../../store/slices/authSlice';
 
-// Импорт компонента снега (убедитесь, что путь верный)
-import Snowfall from "../effects/Snowfall";
 
 // Иконки
 const IconGlobe: FC<{ className?: string }> = ({ className }) => (<svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M2 12H22" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /><path d="M12 2C14.5013 4.46682 15.9105 8.16734 16 12C15.9105 15.8327 14.5013 19.5332 12 22C9.49872 19.5332 8.08951 15.8327 8 12C8.08951 8.16734 9.49872 4.46682 12 2V2Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>);
@@ -39,21 +37,7 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
   const [useLightHeaderStyle, setUseLightHeaderStyle] = useState<boolean>(false);
   const [userPopUpPos, setUserPopUpPos] = useState<DropdownPosition | null>(null);
 
-  // --- ЛОГИКА СНЕГА ---
-  const [isSnowEnabled, setIsSnowEnabled] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true;
-    const saved = localStorage.getItem('isSnowEnabled');
-    return saved !== 'false'; // По умолчанию включен
-  });
 
-  const toggleSnow = () => {
-    setIsSnowEnabled(prev => {
-      const newVal = !prev;
-      localStorage.setItem('isSnowEnabled', String(newVal));
-      return newVal;
-    });
-  };
-  // --------------------
 
   const headerRef = useRef<HTMLElement>(null);
   const userMenuButtonRef = useRef<HTMLButtonElement>(null);
@@ -156,8 +140,6 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
 
   return (
     <>
-      {/* Рендерим снег глобально, если включен */}
-      {isSnowEnabled && <Snowfall count={60} />}
 
       <header ref={headerRef} className={`${style.headerContainer} ${useLightHeaderStyle ? style.lightBackground : ''}`}>
         <div className={`${style.headerWrapper} ${style.container}`}>
@@ -175,15 +157,7 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
           )}
 
           <div className={style.headerActionsDesktop}>
-            {/* Кнопка снега на десктопе */}
-            <button
-              onClick={toggleSnow}
-              className={style.langButton}
-              title={isSnowEnabled ? "Выключить снег" : "Включить снег"}
-              aria-label="Toggle snowfall"
-            >
-              <IconSnow className={isSnowEnabled ? style.activeSnowIcon : ''} />
-            </button>
+
 
             <button onClick={() => setLangModalOpen(true)} aria-label={t('header.changeLanguageAriaLabel', 'Сменить язык')} className={style.langButton}>
               <IconGlobe /> <span>{i18n.language.toUpperCase()}</span>
@@ -219,11 +193,7 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
             </nav>
           )}
           <div className={style.mobileUserSection}>
-            {/* Кнопка снега на мобилке */}
-            <button onClick={toggleSnow} className={style.mobileLangButton}>
-              <IconSnow className={isSnowEnabled ? style.activeSnowIcon : ''} />
-              <span>{isSnowEnabled ? "Снег идет" : "Включить снег"}</span>
-            </button>
+
 
             <button onClick={() => { setLangModalOpen(true); closeMobileMenuFully(); }} className={style.mobileLangButton}>
               <IconGlobe /> <span>{t('header.language', 'Язык')}: {i18n.language.toUpperCase()}</span>

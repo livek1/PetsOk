@@ -751,5 +751,24 @@ export const getHelpContent = async (query?: string, category?: string) => {
     return response.data;
 };
 
+/**
+ * Отправка лида (Lead Magnet)
+ * POST /api/v1/leads
+ */
+export const createLead = async (payload: {
+    phone: string;
+    source: string;
+    city?: string;
+    utm_source?: string;
+    utm_medium?: string;
+    utm_campaign?: string;
+    utm_term?: string;
+    utm_content?: string;
+    ref_code?: string;
+}) => {
+    // Используем apiClient, он сам подставит BaseURL
+    const response = await apiClient.post('/leads', payload);
+    return response.data;
+};
 
 export default apiClient;

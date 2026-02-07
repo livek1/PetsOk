@@ -3,26 +3,24 @@
 
 .hero {
   position: relative;
-  min-height: 95vh; // Чуть увеличим высоту первого экрана
+  min-height: 95vh;
   height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; // Прижимаем контент ближе к низу, но...
+  justify-content: flex-end;
   align-items: center;
 
-  // --- UX FIX: ОТСТУПЫ ---
-  // Верхний отступ, чтобы текст не наезжал на хедер
+  // Отступы для десктопа
   padding-top: 180px;
-  // Нижний отступ ОЧЕНЬ большой, чтобы плашка поиска имела воздух снизу 
-  // и не касалась заголовка следующей секции
   padding-bottom: 180px;
 
-  background-color: $neutral-900; // Фолбек цвет пока грузится картинка
+  background-color: $neutral-900;
 
   @media (max-width: $breakpoint-md) {
     min-height: auto;
-    padding-top: 120px;
-    padding-bottom: 100px;
+    // Уменьшенные отступы для мобильных, чтобы контент был выше
+    padding-top: 110px;
+    padding-bottom: 80px;
     justify-content: center;
   }
 }
@@ -44,12 +42,12 @@
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-position: center bottom; // Фокусируемся на нижней части фото
+  background-position: center bottom;
   background-repeat: no-repeat;
   z-index: 1;
   will-change: transform;
 
-  // Затемнение фото средствами CSS, чтобы текст читался лучше
+  // Улучшенный градиент для читаемости текста на любом фото
   &::after {
     content: '';
     position: absolute;
@@ -57,12 +55,18 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.35); // 35% затемнения
+    background: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.4) 0%,
+        /* Сверху темнее для меню */
+        rgba(0, 0, 0, 0.2) 40%,
+        /* Середина светлее */
+        rgba(0, 0, 0, 0.7) 100%
+        /* Снизу темно для текста */
+      );
   }
 }
 
 .hero__overlay {
-  // Этот слой можно убрать, если используем ::after выше, или оставить для градиента
   display: none;
 }
 
@@ -76,18 +80,18 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 40px; // Расстояние между Заголовком и Поиском
+  gap: 30px; // Чуть меньше отступ
 
   h1 {
     font-family: $font-family-headings;
-    font-weight: 800; // ExtraBold
-    font-size: 4rem; // Крупный, уверенный заголовок
+    font-weight: 800;
+    font-size: 4rem;
     line-height: 1.1;
     color: $white;
-    // Мягкая тень для читаемости
-    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    // Тень для максимального контраста
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     max-width: 950px;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
     margin: 0;
 
     @media (max-width: $breakpoint-lg) {
@@ -95,7 +99,8 @@
     }
 
     @media (max-width: $breakpoint-md) {
-      font-size: 2.2rem;
+      font-size: 2rem; // Крупно, но влазит в экран
+      padding: 0 10px;
     }
   }
 
@@ -106,11 +111,13 @@
     max-width: 700px;
     font-weight: 500;
     margin: 0;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    // Тень для описания
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
 
     @media (max-width: $breakpoint-md) {
-      font-size: 1.1rem;
+      font-size: 1rem;
       max-width: 100%;
+      padding: 0 10px;
     }
   }
 }
@@ -121,32 +128,30 @@
   justify-content: center;
   position: relative;
   z-index: 100;
-  // Сдвигаем поиск немного вниз, чтобы он визуально "заходил" на границу секций, если нужно,
-  // но лучше держать его внутри паддинга для чистоты.
   margin-top: 20px;
 }
 
-// --- НОВЫЕ СТИЛИ ДЛЯ АЛЬТЕРНАТИВНОГО CTA ---
+// --- СТИЛИ ДЛЯ КНОПКИ "СОЗДАТЬ ЗАЯВКУ" ---
 .hero__alternative-cta {
   margin-top: 24px;
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
   position: relative;
-  z-index: 90; // Чуть ниже поиска, чтобы выпадающий список перекрывал
+  z-index: 90;
 
   .divider-with-text {
     display: flex;
     align-items: center;
     width: 100%;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     gap: 15px;
 
     &::before,
@@ -160,64 +165,88 @@
 
   .btn-create-request {
     width: 100%;
-    background: rgba(255, 255, 255, 0.15); // Полупрозрачный фон
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    // Glassmorphism эффект
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 16px;
-    padding: 14px 24px;
+    border-radius: 20px;
+    padding: 16px 20px;
+
     display: flex;
     align-items: center;
     gap: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     text-align: left;
     color: #fff;
-    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 
     &:hover {
       background: rgba(255, 255, 255, 0.25);
       transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      border-color: rgba(255, 255, 255, 0.7);
     }
 
-    .icon {
-      font-size: 24px;
+    &:active {
+      transform: translateY(-1px);
+    }
+
+    .icon-wrapper {
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
     }
 
     .text-col {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
 
       .btn-title {
+        font-family: $font-family-headings;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 17px;
+        color: #fff;
         line-height: 1.2;
       }
 
       .btn-sub {
         font-size: 13px;
-        opacity: 0.9;
+        color: rgba(255, 255, 255, 0.9);
         font-weight: 400;
-        margin-top: 2px;
+        line-height: 1.35;
       }
     }
 
-    .arrow {
-      font-size: 20px;
-      transition: transform 0.2s;
-      opacity: 0.8;
+    .arrow-wrapper {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: $white;
+      border-radius: 50%;
+      color: $primary-color;
+      font-weight: 800;
+      font-size: 16px;
+      transition: transform 0.3s;
+      flex-shrink: 0;
     }
 
-    &:hover .arrow {
+    &:hover .arrow-wrapper {
       transform: translateX(4px);
-      opacity: 1;
     }
   }
 }

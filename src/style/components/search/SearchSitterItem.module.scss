@@ -1,11 +1,9 @@
 @use 'sass:color';
 @use '../../../style/variables' as *;
 
-// Контейнер формы
 .searchContainer {
     width: 100%;
     position: relative;
-    // Этот индекс должен быть выше, чем у следующего блока на сайте
     z-index: 1000;
 }
 
@@ -22,14 +20,12 @@
     transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 
-    // --- ИЗМЕНЕНИЕ ЗДЕСЬ: Цвет активной рамки стал primary-color ---
     &.activeBar {
-        border-color: $primary-color; // Было $neutral-900
+        border-color: $primary-color;
         box-shadow:
             0 8px 30px rgba(0, 0, 0, 0.12),
-            0 0 0 2px rgba($primary-color, 0.1); // Тень тоже подцветили (опционально)
+            0 0 0 2px rgba($primary-color, 0.1);
         background-color: $white;
-        // При активности поднимаем еще выше
         z-index: 1001;
     }
 
@@ -38,9 +34,19 @@
         background-color: #f7f7f7;
     }
 
-    @media (max-width: $breakpoint-md) {
-        height: 60px;
-        border-radius: 16px;
+    // --- МОБИЛЬНАЯ ВЕРСИЯ ---
+    @media (max-width: 768px) {
+        height: 52px; // Компактная высота
+        border-radius: 12px; // Скругление под стиль iOS виджетов
+        background-color: #F3F4F6; // Серый фон для контраста
+        border: 1px solid transparent;
+        padding: 4px 4px 4px 12px; // Внутренние отступы
+        box-shadow: none;
+
+        &:hover:not(.activeBar) {
+            background-color: #F3F4F6;
+            border-color: transparent;
+        }
     }
 }
 
@@ -53,16 +59,10 @@
     height: 100%;
     cursor: text;
     position: relative;
-}
 
-.floatingLabel {
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: $text-color-base;
-    margin-bottom: 2px;
-    pointer-events: none;
+    @media (max-width: 768px) {
+        padding-left: 0;
+    }
 }
 
 .inputTransparent {
@@ -83,24 +83,6 @@
     &::placeholder {
         color: $neutral-400;
         font-weight: 400;
-    }
-}
-
-// Кнопка геопозиции удалена из компонента, но стиль оставим, если вдруг понадобится вернуть
-.geoButton {
-    height: 100%;
-    padding: 0 15px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: $neutral-400;
-    display: flex;
-    align-items: center;
-    transition: color 0.2s;
-    margin-right: 5px;
-
-    &:hover {
-        color: $primary-color;
     }
 }
 
@@ -135,15 +117,17 @@
         box-shadow: 0 2px 10px rgba($primary-color, 0.3);
     }
 
-    @media (max-width: $breakpoint-md) {
-        width: 48px;
-        height: 48px;
+    @media (max-width: 768px) {
+        width: 44px; // Квадратная кнопка
+        height: 44px;
         padding: 0;
         justify-content: center;
-        border-radius: 12px;
+        border-radius: 10px;
+        margin-left: 6px;
+        box-shadow: none;
 
         .searchBtnText {
-            display: none;
+            display: none; // Только иконка
         }
     }
 }
@@ -151,23 +135,24 @@
 // --- ВЫПАДАЮЩИЙ СПИСОК ---
 .dropdownMenu {
     position: absolute;
-    // Опускаем список, чтобы он начинался от края формы
     top: calc(100% + 12px);
     left: 0;
     width: 100%;
     background: $white;
     border-radius: 24px;
     padding: 16px 0;
-
-    // Мощная тень, чтобы отделить от следующего блока
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(0, 0, 0, 0.05);
-
-    // Самый высокий индекс, чтобы перекрыть все
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
     z-index: 9999;
     overflow: hidden;
     cursor: default;
+
+    @media (max-width: 768px) {
+        top: calc(100% + 4px);
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        border: 1px solid #E5E7EB;
+        padding: 8px 0;
+    }
 }
 
 .dropdownItem {
@@ -182,6 +167,11 @@
         background-color: $neutral-50;
     }
 
+    @media (max-width: 768px) {
+        padding: 12px 16px;
+        gap: 12px;
+    }
+
     .iconCircle {
         width: 40px;
         height: 40px;
@@ -192,6 +182,18 @@
         justify-content: center;
         color: $text-color-base;
         flex-shrink: 0;
+
+        @media (max-width: 768px) {
+            width: 32px;
+            height: 32px;
+        }
+
+        svg {
+            @media (max-width: 768px) {
+                width: 16px;
+                height: 16px;
+            }
+        }
     }
 
     .itemText {
@@ -202,6 +204,10 @@
             font-size: 16px;
             color: $text-color-base;
             font-weight: 500;
+
+            @media (max-width: 768px) {
+                font-size: 15px;
+            }
         }
     }
 }

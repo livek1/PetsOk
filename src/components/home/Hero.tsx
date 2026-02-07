@@ -61,7 +61,7 @@ const Hero: React.FC<HeroProps> = ({ isPreloading, backgroundImage, onCreateOrde
           <SearchSitter />
         </div>
 
-        {/* --- НОВЫЙ БЛОК: АЛЬТЕРНАТИВНЫЙ ВЫБОР --- */}
+        {/* --- ВАРИАНТ 1: Акцент на экономии времени --- */}
         <motion.div
           className="hero__alternative-cta"
           initial={{ opacity: 0 }}
@@ -69,16 +69,26 @@ const Hero: React.FC<HeroProps> = ({ isPreloading, backgroundImage, onCreateOrde
           transition={{ delay: 0.6, duration: 0.5 }}
         >
           <div className="divider-with-text">
-            <span>{t('hero.orDivider', 'ИЛИ')}</span>
+            <span>ИЛИ</span>
           </div>
 
           <button onClick={onCreateOrderClick} className="btn-create-request">
-            <span className="icon">⚡️</span>
-            <div className="text-col">
-              <span className="btn-title">{t('hero.createRequestTitle', 'Создать заявку')}</span>
-              <span className="btn-sub">{t('hero.createRequestSub', 'Опишите задачу — ситтеры откликнутся сами')}</span>
+            {/* Иконка "Волшебство" или "Колокольчик" (чтобы подчеркнуть уведомления от ситтеров) */}
+            <div className="icon-wrapper">
+              <span className="icon">🔔</span>
             </div>
-            <span className="arrow">→</span>
+
+            <div className="text-col">
+              {/* Заголовок бьет в боль (лень искать) */}
+              <span className="btn-title">Нет времени выбирать?</span>
+
+              {/* Подзаголовок объясняет механику: Заказ -> Отклики */}
+              <span className="btn-sub">Создайте заказ — и ситтеры сами откликнутся</span>
+            </div>
+
+            <div className="arrow-wrapper">
+              <span className="arrow">→</span>
+            </div>
           </button>
         </motion.div>
 

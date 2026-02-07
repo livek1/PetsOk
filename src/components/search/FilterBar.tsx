@@ -42,6 +42,7 @@ const FilterBar: React.FC = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
     const { searchParams } = useSelector((state: RootState) => state.search);
+    const [urlParams] = useSearchParams(); // Достаем URL параметры
     const [, setUrlParams] = useSearchParams();
 
     // Локальное состояние для UI
@@ -57,9 +58,18 @@ const FilterBar: React.FC = () => {
 
     // Синхронизация при изменении URL или Redux (например, при переходе с Главной)
     useEffect(() => {
-        if (searchParams.address) setAddressInput(searchParams.address);
+        // Приоритет Redux, но если там пусто, а в URL есть — берем из URL
+        if (searchParams.address) {
+            setAddressInput(searchParams.address);
+        } else {
+            const urlAddress = urlParams.get('address');
+            if (urlAddress && urlAddress !== addressInput) {
+                setAddressInput(urlAddress);
+            }
+        }
+
         if (searchParams.service_key) setSelectedService(searchParams.service_key);
-    }, [searchParams.address, searchParams.service_key]);
+    }, [searchParams.address, searchParams.service_key, urlParams]);
 
     // Фокус на инпуте при открытии секции
     useEffect(() => {

@@ -63,7 +63,7 @@ const Home = ({ isPreloading }: { isPreloading: boolean }) => {
         onCreateOrderClick={handleCreateOrderClick}
       />
 
-      <WhyPetsOkFeatures />
+      <WhyPetsOkFeatures onCreateOrderClick={handleCreateOrderClick} />
       <HowItWorksSimple />
       <MobileAppPromoSection />
     </>

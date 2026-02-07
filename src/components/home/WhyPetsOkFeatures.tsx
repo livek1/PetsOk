@@ -23,7 +23,11 @@ const SERVICE_TEXT_MAP: Record<string, { title: string; desc: string }> = {
     'house_sitting': { title: "ourServices.houseSitting.title", desc: "ourServices.houseSitting.desc" },
 };
 
-const WhyPetsOkFeatures: React.FC = () => {
+interface WhyPetsOkFeaturesProps {
+    onCreateOrderClick: () => void;
+}
+
+const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClick }) => {
     const { t } = useTranslation();
     const { activeServices, isConfigLoaded } = useSelector((state: RootState) => state.config);
 
@@ -116,15 +120,15 @@ const WhyPetsOkFeatures: React.FC = () => {
                                 </motion.li>
                             ))}
                         </ul>
-                        <motion.a
-                            href="/search"
+                        <motion.button
+                            onClick={onCreateOrderClick}
                             className="cta-button-main"
                             variants={itemVariants}
                             whileHover={{ scale: 1.03, boxShadow: "0 8px 25px rgba(53, 152, 254, 0.4)" }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            {t("header.link2", "Найти ситтера")}
-                        </motion.a>
+                            {t("orders.createOrder", "Создать заказ")}
+                        </motion.button>
                     </motion.div>
                 </div>
             </div>

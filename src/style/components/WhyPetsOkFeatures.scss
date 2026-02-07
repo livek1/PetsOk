@@ -133,6 +133,10 @@
             max-width: 320px;
             margin: 10px auto 0 auto;
 
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+
             &:hover {
                 background-color: $primary-color-darker;
                 transform: translateY(-2px);

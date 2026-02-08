@@ -531,6 +531,22 @@ export const getSitterProfile = async (id: string): Promise<SitterProfileRespons
     const response = await apiClient.get<SitterProfileResponse>(`/sitters/${id}`);
     return response.data;
 };
+/**
+ * Получает отзывы о конкретном работнике.
+ * GET /v1/workers/{workerId}/reviews
+ */
+export const getWorkerReviews = async (workerId: string | number, page = 1, limit = 15) => {
+    // Используем apiClient, он сам подставит BaseURL и токены если есть
+    const response = await apiClient.get(`/workers/${workerId}/reviews`, {
+        params: {
+            page,
+            limit,
+            include: 'author.avatar' // Подгружаем автора и аватарку
+        }
+    });
+    // Возвращаем response.data, который содержит { data: [...], meta: ... }
+    return response.data;
+};
 
 // ... Worker application methods ...
 export const getWorkerStatus = async () => (await apiClient.get('/worker/application/status')).data;
@@ -768,6 +784,41 @@ export const createLead = async (payload: {
 }) => {
     // Используем apiClient, он сам подставит BaseURL
     const response = await apiClient.post('/leads', payload);
+    return response.data;
+};
+
+export interface SitterReferenceInfo {
+    sitter_name: string;
+    avatar_url: string | null;
+    current_references_count: number;
+    max_references_limit: number;
+    can_leave_reference: boolean;
+}
+
+export interface CreateReferencePayload {
+    token: string;
+    author_name: string;
+    author_email?: string;
+    author_phone?: string;
+    relationship_type?: string;
+    rating: number;
+    content: string;
+}
+
+/**
+ * Получение инфо о ситтере по секретному токену (для страницы отзыва)
+ */
+export const getSitterReferenceInfo = async (token: string) => {
+    const response = await apiClient.get<SitterReferenceInfo>(`/references/${token}/info`);
+    return response.data;
+};
+
+/**
+ * Отправка рекомендации
+ */
+export const submitSitterReference = async (payload: CreateReferencePayload) => {
+    const { token, ...data } = payload;
+    const response = await apiClient.post(`/references/${token}`, data);
     return response.data;
 };
 

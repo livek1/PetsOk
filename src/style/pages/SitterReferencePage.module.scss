@@ -1,0 +1,292 @@
+// --- File: src/style/pages/SitterReferencePage.module.scss ---
+@use '../variables' as *;
+@use 'sass:color';
+
+.pageWrapper {
+    min-height: 100vh;
+    background-color: $neutral-50; // Светлый фон
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    align-items: flex-start;
+
+    @media (min-width: $breakpoint-md) {
+        padding-top: 80px;
+        align-items: center; // По центру на десктопе
+    }
+}
+
+.container {
+    width: 100%;
+    max-width: 550px;
+    background-color: $white;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-sm) {
+        padding: 24px 20px;
+        border-radius: 20px;
+    }
+}
+
+// --- Header ---
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatarWrapper {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid $white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.placeholderAvatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: $primary-color-lightest-bg;
+    color: $primary-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    border: 4px solid $white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-family: $font-family-headings;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: $text-color-base;
+    margin-bottom: 12px;
+    line-height: 1.2;
+
+    @media (max-width: $breakpoint-sm) {
+        font-size: 1.5rem;
+    }
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: $text-color-secondary;
+    line-height: 1.5;
+    max-width: 90%;
+}
+
+// --- Form ---
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: $text-color-base;
+}
+
+.input,
+.textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid $border-color-medium;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: #F9FAFB;
+    transition: all 0.2s;
+    color: $text-color-base;
+
+    &:focus {
+        background-color: $white;
+        border-color: $primary-color;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+
+    &::placeholder {
+        color: $neutral-400;
+    }
+}
+
+.textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.helperText {
+    font-size: 0.8rem;
+    color: $text-color-muted;
+    margin-top: -4px;
+}
+
+// --- Star Rating ---
+.ratingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: #FFF9E6; // Светло-желтый фон
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid #FEF3C7;
+}
+
+.starsRow {
+    display: flex;
+    gap: 8px;
+}
+
+.starBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #D1D5DB; // Серый по умолчанию
+    transition: transform 0.2s, color 0.2s;
+    padding: 0;
+
+    &.active {
+        color: #FFC107; // Золотой
+    }
+
+    &:hover {
+        transform: scale(1.2);
+    }
+
+    svg {
+        width: 32px;
+        height: 32px;
+        fill: currentColor;
+    }
+}
+
+.ratingLabel {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #B45309;
+}
+
+// --- Button ---
+.submitBtn {
+    background-color: $primary-color;
+    color: $white;
+    border: none;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+    margin-top: 10px;
+
+    &:hover:not(:disabled) {
+        background-color: $primary-color-darker;
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        background-color: $neutral-300;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+}
+
+// --- States ---
+.loadingState {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    color: $primary-color;
+    font-weight: 600;
+}
+
+.successState,
+.limitState {
+    text-align: center;
+    padding: 40px 0;
+
+    .iconCircle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 40px;
+    }
+
+    h2 {
+        font-family: $font-family-headings;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 16px;
+        color: $text-color-base;
+    }
+
+    p {
+        font-size: 1.1rem;
+        color: $text-color-secondary;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    .homeLink {
+        display: inline-block;
+        color: $primary-color;
+        font-weight: 700;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.successState .iconCircle {
+    background-color: #F0FFF4;
+    color: $success-500;
+}
+
+.limitState .iconCircle {
+    background-color: #FFF9E6;
+    color: #F59E0B;
+}
+
+.errorText {
+    color: $error-500;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}

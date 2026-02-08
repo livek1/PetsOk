@@ -21,6 +21,7 @@ import CookieConsentBanner from './components/layout/CookieConsentBanner';
 
 // --- КРИТИЧЕСКИЕ СТРАНИЦЫ (Оставляем статичный импорт для мгновенной загрузки) ---
 import Home from './pages/Home';
+import SitterReferencePage from './pages/SitterReferencePage';
 
 // --- ЛЕНИВЫЕ ИМПОРТЫ (Lazy Loading) ---
 // Публичные страницы
@@ -205,7 +206,7 @@ const App: FC = () => {
               <Route path="/privacy-policy" element={<LegalPage contentKey="privacy" />} />
               <Route path="/privacy" element={<LegalPage contentKey="privacy" />} />
               <Route path="/cookie-policy" element={<LegalPage contentKey="cookie" />} />
-
+              <Route path="/give-reference/:token" element={<SitterReferencePage />} />
               <Route path="*" element={<NotFound />} />
             </Route>
 

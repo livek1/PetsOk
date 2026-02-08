@@ -19,7 +19,8 @@ import {
     getSitterProfile,
     SitterProfileResponse,
     getMyOrders,
-    createOrderRequest
+    createOrderRequest,
+    getWorkerReviews
 } from '../services/api';
 
 import style from '../style/pages/SitterPage.module.scss';
@@ -225,6 +226,8 @@ const SitterPage: React.FC = () => {
     const [sitter, setSitter] = useState<SitterProfileResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const [reviews, setReviews] = useState<any[]>([]);
+
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -242,8 +245,21 @@ const SitterPage: React.FC = () => {
         const fetchSitter = async () => {
             if (!id) return;
             try {
+                // Загружаем профиль
                 const data = await getSitterProfile(id);
                 setSitter(data);
+
+                // 3. ЗАГРУЖАЕМ ОТЗЫВЫ (если они есть)
+                if (data.reviews_count > 0) {
+                    try {
+                        // Запрашиваем первую страницу, например 5 штук
+                        const reviewsData = await getWorkerReviews(id, 1, 5);
+                        setReviews(reviewsData?.data || []);
+                    } catch (e) {
+                        console.error("Failed to load reviews", e);
+                    }
+                }
+
             } catch (error) {
                 console.error("Failed to load sitter", error);
             } finally {
@@ -252,6 +268,8 @@ const SitterPage: React.FC = () => {
         };
         fetchSitter();
     }, [id]);
+
+
 
     const activeServices = useMemo(() =>
         sitter?.worker_services?.data?.filter((s: any) => s.is_active) || [],
@@ -629,7 +647,52 @@ const SitterPage: React.FC = () => {
                         {sitter.reviews_count > 0 && (
                             <div className={style.reviewsSection}>
                                 <h2>{t('sitterPage.reviews', 'Отзывы')} ({sitter.reviews_count})</h2>
-                                <p style={{ color: '#718096' }}>Посмотреть все отзывы можно в мобильном приложении.</p>
+
+                                <div className={style.reviewsList}>
+                                    {reviews.map((review) => (
+                                        <div key={review.id} className={style.reviewItem}>
+                                            <div className={style.reviewHeader}>
+                                                <div className={style.reviewAvatar}>
+                                                    <img
+                                                        src={review.author?.data?.avatar?.data?.preview_url || review.author?.data?.avatar?.data?.url || '/placeholder-user.jpg'}
+                                                        alt={review.author?.data?.name}
+                                                    />
+                                                </div>
+                                                <div className={style.reviewMeta}>
+                                                    <div className={style.reviewTopLine}>
+                                                        <span className={style.reviewAuthor}>{review.author?.data?.name || 'Пользователь'}</span>
+                                                        <span className={style.reviewDate}>
+                                                            {formatDateSince(review.created_at)}
+                                                        </span>
+                                                    </div>
+                                                    <div className={style.reviewStars}>
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <svg
+                                                                key={i}
+                                                                width="14"
+                                                                height="14"
+                                                                viewBox="0 0 24 24"
+                                                                fill={i < review.rating ? "#FFC107" : "#E2E8F0"}
+                                                            >
+                                                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                                                            </svg>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className={style.reviewBody}>
+                                                {review.review}
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    {/* Если отзывов больше 5, можно показать кнопку "Показать еще" или ссылку на приложение, как раньше, но более аккуратно */}
+                                    {sitter.reviews_count > reviews.length && (
+                                        <div className={style.moreReviewsNote}>
+                                            Показаны последние отзывы. Все отзывы доступны в мобильном приложении.
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

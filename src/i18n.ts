@@ -1937,7 +1937,34 @@ i18n.use(initReactI18next).init({
             pet: "хозяйка щенка Баффи"
           }
         },
-
+        // --- SITTER REFERENCE PAGE ---
+        referencePage: {
+          title: "Оставьте рекомендацию",
+          subtitle: "Ваш отзыв поможет {{name}} получить первые заказы и доверие клиентов на PetsOk.",
+          limitReachedTitle: "Сбор отзывов завершен",
+          limitReachedText: "Этот исполнитель уже собрал достаточное количество рекомендаций для старта. Спасибо за ваше желание помочь!",
+          successTitle: "Спасибо за отзыв!",
+          successText: "Ваша рекомендация отправлена на модерацию. После проверки она появится в профиле ситтера.",
+          form: {
+            nameLabel: "Ваше имя",
+            namePlaceholder: "Иван Петров",
+            contactLabel: "Email или телефон",
+            contactPlaceholder: "Для подтверждения реальности отзыва",
+            contactHint: "Мы не публикуем эти данные. Они нужны только модераторам.",
+            relationLabel: "Кем вы приходитесь?",
+            relationPlaceholder: "Например: Друг, Сосед, Бывший клиент",
+            ratingLabel: "Ваша оценка",
+            contentLabel: "Ваш отзыв",
+            contentPlaceholder: "Расскажите, почему вы доверяете питомца этому человеку...",
+            submitButton: "Отправить рекомендацию",
+            submitting: "Отправка..."
+          },
+          errors: {
+            notFound: "Ссылка устарела или не существует.",
+            ratingRequired: "Пожалуйста, поставьте оценку.",
+            contactRequired: "Укажите контакт для связи."
+          }
+        },
         // --- BOOKING ---
         bookingScreen: {
           "addPetButton": "Добавить питомца",

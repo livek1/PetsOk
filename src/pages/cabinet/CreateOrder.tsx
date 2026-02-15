@@ -205,7 +205,7 @@ const CreateOrder: React.FC = () => {
         const fetchPets = async () => {
             try {
                 const res = await getMyPets();
-                let petsData = [];
+                let petsData: any[] = []
                 if (Array.isArray(res)) petsData = res;
                 else if (res && Array.isArray(res.data)) petsData = res.data;
                 setPets(petsData);

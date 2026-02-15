@@ -40,7 +40,7 @@ export interface PetFile {
 }
 
 export interface Pet {
-    id: number;
+    id: string | number;
     name: string;
     type_id?: number;
     type?: { data: { id: number; name: string } };
@@ -893,7 +893,7 @@ export const attachPetsToOrder = async (uuid: string, petIds: number[]) => {
  */
 export const publishOrder = async (uuid: string, payload: {
     promo_code?: string;
-    pets?: number[]; // Передаем питомцев здесь для надежности
+    pets?: (string | number)[]; // Передаем питомцев здесь для надежности
 }) => {
     const response = await apiClient.post(`/orders/${uuid}/publish`, payload);
     return response.data;

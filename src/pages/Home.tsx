@@ -6,12 +6,11 @@ import Hero from "../components/home/Hero";
 import HowItWorksSimple from "../components/home/HowItWorksSimple";
 import MobileAppPromoSection from "../components/home/MobileAppSection";
 import WhyPetsOkFeatures from "../components/home/WhyPetsOkFeatures";
-// Импортируем новый блок
 import TestimonialsSection from "../components/home/TestimonialsSection";
 import { config } from '../config/appConfig';
 
 interface PageContextType {
-  onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter') => void;
+  onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter', returnUrl?: string) => void;
 }
 
 const Home = ({ isPreloading }: { isPreloading: boolean }) => {
@@ -39,7 +38,8 @@ const Home = ({ isPreloading }: { isPreloading: boolean }) => {
     if (token) {
       navigate('/cabinet/orders/create');
     } else {
-      onAuthClick('register', 'client');
+      // --- ИЗМЕНЕНИЕ: Передаем returnUrl ---
+      onAuthClick('register', 'client', '/cabinet/orders/create');
     }
   };
 

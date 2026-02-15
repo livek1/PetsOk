@@ -7,14 +7,14 @@ import { RootState } from "../../store";
 import { enabledServicesForSearch } from "../../config/appConfig";
 import "../../style/components/WhyPetsOkFeatures.scss";
 
-// --- Иконки для Гарантий (оставляем локально, так как они не зависят от конфига услуг) ---
-const VerifiedIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 12 15 22 5"></polyline></svg>;
-const PhotoUpdatesIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>;
-const Support247Icon = () => <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
-const SecurePaymentsIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>;
+// SVG для стрелки в CTA карточке
+const ArrowRightIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+);
 
-// Маппинг ID услуг из конфига на ключи переводов для ЭТОЙ секции
-// (так как описания здесь длиннее и маркетинговее, чем в поиске)
+// Fallback иконки (если картинки не прогрузятся)
+const ShieldIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
+
 const SERVICE_TEXT_MAP: Record<string, { title: string; desc: string }> = {
     'boarding': { title: "ourServices.boarding.title", desc: "ourServices.boarding.desc" },
     'walking': { title: "ourServices.walking.title", desc: "ourServices.walking.desc" },
@@ -31,11 +31,9 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
     const { t } = useTranslation();
     const { activeServices, isConfigLoaded } = useSelector((state: RootState) => state.config);
 
-    // Динамически формируем список услуг
     const servicesList = useMemo(() => {
         return enabledServicesForSearch
             .filter(service => {
-                // Если конфиг еще грузится, показываем все по умолчанию, иначе фильтруем по activeServices
                 if (!isConfigLoaded) return true;
                 return activeServices.includes(service.id);
             })
@@ -43,94 +41,168 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
                 const texts = SERVICE_TEXT_MAP[service.id];
                 return {
                     id: service.id,
-                    // Берем компонент иконки прямо из конфига
-                    icon: <service.IconComponent width={28} height={28} />,
-                    // Если есть спец. текст для этой секции - берем его, иначе фолбек на текст из поиска
+                    icon: <service.IconComponent width={32} height={32} />,
                     titleKey: texts?.title || service.nameKey,
                     descriptionKey: texts?.desc || service.descriptionKey
                 };
             });
     }, [activeServices, isConfigLoaded]);
 
+    // Обновленный список гарантий
     const guaranteesList = [
-        { icon: <VerifiedIcon />, titleKey: "ourGuarantees.verifiedSitters.title", descriptionKey: "ourGuarantees.verifiedSitters.desc" },
-        { icon: <PhotoUpdatesIcon />, titleKey: "ourGuarantees.photoUpdates.title", descriptionKey: "ourGuarantees.photoUpdates.desc" },
-        { icon: <Support247Icon />, titleKey: "ourGuarantees.support.title", descriptionKey: "ourGuarantees.support.desc" },
-        { icon: <SecurePaymentsIcon />, titleKey: "ourGuarantees.securePayments.title", descriptionKey: "ourGuarantees.securePayments.desc" },
+        {
+            id: 'verified',
+            // Укажите правильные пути к вашим PNG файлам
+            imgSrc: '/images/icons/shield.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "ourGuarantees.verifiedSitters.title",
+            descriptionKey: "ourGuarantees.verifiedSitters.desc",
+            color: '#3B82F6',
+            bgColor: '#EFF6FF' // Голубой фон
+        },
+        {
+            id: 'contract',
+            imgSrc: '/images/icons/contract.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "ourGuarantees.contract.title",
+            descriptionKey: "ourGuarantees.contract.desc",
+            color: '#8B5CF6',
+            bgColor: '#F5F3FF' // Фиолетовый фон
+        },
+        {
+            id: 'meet',
+            imgSrc: '/images/icons/handshake.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "ourGuarantees.meetAndGreet.title",
+            descriptionKey: "ourGuarantees.meetAndGreet.desc",
+            color: '#10B981',
+            bgColor: '#ECFDF5' // Зеленый фон
+        },
+        {
+            id: 'support',
+            imgSrc: '/images/icons/support.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "ourGuarantees.support.title",
+            descriptionKey: "ourGuarantees.support.desc",
+            color: '#F59E0B',
+            bgColor: '#FFFBEB' // Оранжевый фон
+        },
+        {
+            id: 'vet',
+            imgSrc: '/images/icons/vet.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "ourGuarantees.vetHelp.title",
+            descriptionKey: "ourGuarantees.vetHelp.desc",
+            color: '#EF4444',
+            bgColor: '#FEF2F2' // Розовый фон
+        }
     ];
 
-    const sectionVariants = {
+    const containerVariants = {
         hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.1 } },
-    };
-    const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
     };
 
-    // Если нет активных услуг (например, ошибка загрузки), не рендерим левую колонку пустым списком
-    const showServices = servicesList.length > 0;
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+    };
 
     return (
         <motion.section
             className="why-petsok-section"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
-            variants={sectionVariants}
+            viewport={{ once: true, amount: 0.1 }}
+            variants={containerVariants}
         >
             <div className="wrapper">
-                <div className="why-petsok-section__main-title-wrapper">
-                    <motion.h2 variants={itemVariants}>{t("whyPetsOkNew.sectionTitle")}</motion.h2>
+
+                {/* ЗАГОЛОВОК */}
+                <div className="why-petsok-section__header">
+                    <motion.h2 variants={itemVariants}>
+                        {t("whyPetsOkNew.sectionTitle", "PetsOk — это больше, чем просто передержка")}
+                    </motion.h2>
                     <motion.p className="subtitle" variants={itemVariants}>
                         {t("whyPetsOkNew.sectionSubtitle")}
                     </motion.p>
                 </div>
 
-                <div className="why-petsok-section__content">
-                    {/* Левая колонка - Динамические Услуги */}
-                    {showServices && (
-                        <motion.div className="why-petsok-section__column services-column" variants={itemVariants}>
-                            <h3>{t("whyPetsOkNew.servicesTitle")}</h3>
-                            <ul className="info-list">
-                                {servicesList.map((service, index) => (
-                                    <motion.li key={service.id} custom={index} variants={itemVariants}>
-                                        <div className="info-icon">{service.icon}</div>
-                                        <div className="info-text">
-                                            <h4>{t(service.titleKey)}</h4>
-                                            <p>{t(service.descriptionKey)}</p>
-                                        </div>
-                                    </motion.li>
-                                ))}
-                            </ul>
-                        </motion.div>
-                    )}
-
-                    {/* Правая колонка - Статичные Гарантии */}
-                    <motion.div className="why-petsok-section__column guarantees-column" variants={itemVariants}>
-                        <h3>{t("whyPetsOkNew.guaranteesTitle")}</h3>
-                        <ul className="info-list">
-                            {guaranteesList.map((guarantee, index) => (
-                                <motion.li key={guarantee.titleKey} custom={index} variants={itemVariants}>
-                                    <div className="info-icon">{guarantee.icon}</div>
-                                    <div className="info-text">
-                                        <h4>{t(guarantee.titleKey)}</h4>
-                                        <p>{t(guarantee.descriptionKey)}</p>
-                                    </div>
-                                </motion.li>
-                            ))}
-                        </ul>
-                        <motion.button
-                            onClick={onCreateOrderClick}
-                            className="cta-button-main"
-                            variants={itemVariants}
-                            whileHover={{ scale: 1.03, boxShadow: "0 8px 25px rgba(53, 152, 254, 0.4)" }}
-                            whileTap={{ scale: 0.98 }}
-                        >
-                            {t("orders.createOrder", "Создать заказ")}
-                        </motion.button>
+                {/* 1. СЕТКА УСЛУГ (Горизонтальная) */}
+                {servicesList.length > 0 && (
+                    <motion.div
+                        className="why-petsok-section__services-grid"
+                        variants={containerVariants}
+                    >
+                        {servicesList.map((service) => (
+                            <motion.div key={service.id} className="service-mini-card" variants={itemVariants}>
+                                <div className="icon-circle">
+                                    {service.icon}
+                                </div>
+                                <h4>{t(service.titleKey)}</h4>
+                                <p>{t(service.descriptionKey)}</p>
+                            </motion.div>
+                        ))}
                     </motion.div>
+                )}
+
+                {/* ЗАГОЛОВОК ДЛЯ ГАРАНТИЙ */}
+                <div style={{ textAlign: 'center', marginBottom: 40, marginTop: 40 }}>
+                    <h3 style={{ fontSize: 32, fontWeight: 800, color: '#1A202C', letterSpacing: '-0.02em' }}>
+                        {t("whyPetsOkNew.guaranteesTitle", "Наши обязательства перед вами")}
+                    </h3>
                 </div>
+
+                {/* 2. СЕТКА ГАРАНТИЙ (Крупные карточки) */}
+                <motion.div
+                    className="why-petsok-section__guarantees-grid"
+                    variants={containerVariants}
+                >
+                    {guaranteesList.map((item) => (
+                        <motion.div
+                            key={item.id}
+                            className="guarantee-card"
+                            variants={itemVariants}
+                            // @ts-ignore
+                            style={{
+                                '--accent-color': item.color,
+                                '--bg-color': item.bgColor
+                            } as React.CSSProperties}
+                        >
+                            {/* Верхняя часть: Визуал (60%) */}
+                            <div className="guarantee-card__image-area">
+                                <img
+                                    src={item.imgSrc}
+                                    alt={t(item.titleKey)}
+                                    loading="lazy"
+                                />
+                            </div>
+
+                            {/* Нижняя часть: Текст (40%) */}
+                            <div className="guarantee-card__content-area">
+                                <h3>{t(item.titleKey)}</h3>
+                                <p>{t(item.descriptionKey)}</p>
+                            </div>
+                        </motion.div>
+                    ))}
+
+                    {/* 6-я КАРТОЧКА - CTA (Целиком кликабельная, без кнопки) */}
+                    <motion.div
+                        className="cta-card-full"
+                        variants={itemVariants}
+                        onClick={onCreateOrderClick}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        <h3>Готовы начать?</h3>
+                        <p>Создайте заказ за пару минут, и ситтеры сами откликнутся.</p>
+
+                        <div className="cta-arrow">
+                            <ArrowRightIcon />
+                        </div>
+                    </motion.div>
+                </motion.div>
+
             </div>
         </motion.section>
     );

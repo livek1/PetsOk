@@ -822,4 +822,85 @@ export const submitSitterReference = async (payload: CreateReferencePayload) => 
     return response.data;
 };
 
+/**
+ * Шаг 1: Создание черновика заказа (Service + Schedule)
+ * POST /v1/orders/draft
+ */
+export const createDraftOrder = async (payload: {
+    service_type: string;
+    schedule_type: string;
+    start_date: string;
+    end_date?: string | null;
+    start_time?: string | null;
+    end_time?: string | null;
+    recurring_days?: number[] | null;
+    duration?: string | null; // '15m', '30m' и т.д.
+    visits_per_day?: number | null;
+}) => {
+    const response = await apiClient.post('/orders/draft', payload);
+    return response.data; // Ожидаем объект Order с uuid
+};
+
+/**
+ * Шаг 2: Добавление контактов к заказу (создает Лид)
+ * PUT /v1/orders/{uuid}/contact
+ */
+export const updateOrderContact = async (uuid: string, payload: {
+    phone: string;
+    name: string;
+    address_q: string; // Строка адреса для геокодинга
+    address_details?: string;
+}) => {
+    const response = await apiClient.put(`/orders/${uuid}/contact`, payload);
+    return response.data;
+};
+
+/**
+ * Шаг 3: Привязка питомцев к заказу
+ * Используем или специальный роут, или общий update, если бэкенд поддерживает
+ * Предполагаем наличие роута или используем generic update
+ */
+export const attachPetsToOrder = async (uuid: string, petIds: number[]) => {
+    // Вариант А: Если есть спец роут
+    // const response = await apiClient.post(`/orders/${uuid}/pets`, { pets: petIds });
+
+    // Вариант Б (более вероятный для Apiato): Обновление через PUT /orders/{id}
+    // Нам нужно передать ID (не UUID) или UUID, если бэкенд поддерживает поиск по UUID в update
+    // Если у нас только UUID, используем кастомный роут, который вы, вероятно, создадите на бэке.
+    // Для текущего примера предположим, что мы можем обновить заказ по UUID или ID.
+    // Если на бэке нет роута PUT /orders/{uuid}/pets, используем updateOrder (но нужен ID).
+    // В createDraftOrder мы получаем объект заказа, там есть ID (real_id) и UUID.
+
+    // Давайте используем такой метод (требует реализации на бэке или использования ID):
+    // В данном случае, проще всего сделать запрос на обновление списка питомцев.
+    // Предположим, что мы передаем это в publish или есть отдельный роут. 
+    // Договоримся, что шлем на /orders/{uuid}/pets (нужно добавить роут на бэке) или используем publish.
+
+    // Временное решение: мы передадим pets в payload для publishOrder, если бэкенд это поддерживает.
+    // Но лучше сделать отдельный шаг.
+    // Допустим, мы используем updateOrderTask на бэке, который умеет принимать pets.
+
+    // Если строго следовать предыдущему обсуждению бэкенда, там мы не делали отдельного роута для петов.
+    // Поэтому мы добавим pets в updateOrderContact (если расширим его) ИЛИ передадим в Publish.
+    // Самый надежный вариант сейчас - передать их в Publish.
+
+    return true; // Заглушка, если передаем в publish
+};
+
+/**
+ * Шаг 4: Публикация заказа
+ * POST /v1/orders/{uuid}/publish
+ */
+export const publishOrder = async (uuid: string, payload: {
+    promo_code?: string;
+    pets?: number[]; // Передаем питомцев здесь для надежности
+}) => {
+    const response = await apiClient.post(`/orders/${uuid}/publish`, payload);
+    return response.data;
+};
+// Добавьте эту функцию, если её нет
+export const getOrderById = async (uuid: string) => {
+    const response = await apiClient.get(`/orders/id/${uuid}`);
+    return response.data;
+};
 export default apiClient;

@@ -1,5 +1,5 @@
 // --- File: src/components/modals/AuthModal.tsx ---
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ import {
     login as loginAction,
     clearAuthErrors,
     resetAuthFlow,
+    setAuthRedirectPath,
     AuthState
 } from "../../store/slices/authSlice";
 import { AppDispatch, RootState } from "../../store";
@@ -50,7 +51,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
     const navigate = useNavigate();
 
     // Получаем состояние из Redux
-    const { isLoading, status: authStatus, error: globalAuthError, contactCheckError, otpError, isAuthenticated } = useSelector((state: RootState) => state.auth as AuthState);
+    const { isLoading, status: authStatus, error: globalAuthError, contactCheckError, otpError, isAuthenticated, redirectPath } = useSelector((state: RootState) => state.auth as AuthState);
 
     // Локальные стейты
     const [currentStep, setCurrentStep] = useState<AuthStep>("contactEntry");
@@ -59,11 +60,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
     const [savedOtpCode, setSavedOtpCode] = useState("");
     const [operationType, setOperationType] = useState<'register' | 'login' | 'reset'>(initialMode);
 
-    // Локальный стейт для сброса пароля, чтобы не зависеть от Redux thunk, которого может не быть
+    // Локальный стейт для сброса пароля
     const [isResettingPassword, setIsResettingPassword] = useState(false);
 
     // Стейт для таймера обратного отсчета
     const [timer, setTimer] = useState(0);
+
+    // --- FIX: Используем ref для предотвращения двойного срабатывания редиректа ---
+    const hasRedirectedRef = useRef(false);
 
     // React Hook Form
     const { control: contactControl, handleSubmit: handleSubmitContact, formState: { errors: contactErrors }, reset: resetContactForm, trigger: triggerContact, setValue: setContactValue } = useForm<ContactFormValues>({ mode: "onTouched", defaultValues: { contact: '' } });
@@ -77,10 +81,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         setContactType('email');
         setSavedContactValue("");
         setSavedOtpCode("");
-        setTimer(0); // Сбрасываем таймер
+        setTimer(0);
         setOperationType(initialMode);
         setIsResettingPassword(false);
-        dispatch(resetAuthFlow()); // Сброс статусов в Redux
+        hasRedirectedRef.current = false; // Сбрасываем флаг редиректа
+        dispatch(resetAuthFlow());
         resetContactForm({ contact: '' });
         resetOtpForm({ code: '' });
         resetDetailsForm({ fullName: '', password: '', password_confirmation: '', termsAccepted: false });
@@ -93,13 +98,27 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         }
     }, [isOpen, resetAllStates]);
 
-    // Успешная авторизация
+    // --- Успешная авторизация и РЕДИРЕКТ ---
     useEffect(() => {
-        if (authStatus === 'succeeded' && isAuthenticated) {
+        // Проверяем, что авторизация успешна И мы еще не делали редирект в этом сеансе модалки
+        if (authStatus === 'succeeded' && isAuthenticated && !hasRedirectedRef.current) {
+
+            // Ставим флаг, что редирект выполнен
+            hasRedirectedRef.current = true;
+
             onClose();
-            navigate('/cabinet');
+
+            if (redirectPath) {
+                // Если есть сохраненный путь, идем туда (например /cabinet/orders/create)
+                navigate(redirectPath);
+                // Очищаем путь в сторе (это может вызвать ререндер, но hasRedirectedRef не даст сработать снова)
+                dispatch(setAuthRedirectPath(null));
+            } else {
+                // Иначе стандартный путь
+                navigate('/cabinet');
+            }
         }
-    }, [authStatus, isAuthenticated, onClose, navigate]);
+    }, [authStatus, isAuthenticated, onClose, navigate, redirectPath, dispatch]);
 
     // Логика работы таймера
     useEffect(() => {
@@ -151,10 +170,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         triggerContact('contact');
         dispatch(clearAuthErrors());
 
-        if (!appConfig.enablePhoneAuth) return; // Если телефон выключен, всегда email
+        if (!appConfig.enablePhoneAuth) return;
 
         const trimmedValue = value.trim();
-        // Простая эвристика: если есть @ или буквы -> email, иначе phone
         if (trimmedValue.includes('@') || (/[a-zA-Z]/.test(trimmedValue) && !/^\+?[0-9]/.test(trimmedValue))) {
             if (contactType !== 'email') setContactType('email');
         } else {
@@ -226,7 +244,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
             }
 
             if (!savedOtpCode) {
-                // Если код каким-то образом потерялся, возвращаем на шаг ввода кода
                 console.error("OTP code missing for reset.");
                 setCurrentStep("otpEntry");
                 return;
@@ -243,33 +260,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 if (contactType === 'email') resetPayload.email = savedContactValue;
                 if (contactType === 'phone') resetPayload.phone = savedContactValue;
 
-                // Прямой вызов API для сброса пароля
                 const result = await resetUserPassword(resetPayload);
 
                 if (result && result.success !== false) {
-                    // Успешный сброс
                     alert(t('resetPassword.success', 'Пароль успешно изменен. Теперь вы можете войти с новым паролем.'));
-
-                    // Переключаем режим на логин
                     setOperationType('login');
-                    // Сбрасываем форму, но можно оставить контакт
                     resetLoginForm({ password: '', password_confirmation: '' });
-                    // Возвращаемся на шаг ввода контакта или сразу показываем поле пароля для логина
-                    // Лучше показать сразу ввод пароля, так как контакт уже введен
                     setCurrentStep("contactEntry");
-                    // Или можно сразу вызвать checkContactExists чтобы перейти на шаг пароля, но это сложнее синхронизировать
-                    // Простой вариант: вернуть на начало
                     setSavedOtpCode("");
                 } else {
-                    // Ошибка от сервера в формате { success: false, message: ... }
                     (setLoginError as any)("root.serverError", { type: "manual", message: result.message || t('resetPassword.genericError') });
                 }
             } catch (error: any) {
                 console.error("Reset password error:", error);
-                // Обработка ошибок валидации от API (422)
                 if (error.response && error.response.data && error.response.data.errors) {
                     const apiErrors = error.response.data.errors;
-                    // Проходимся по ошибкам и устанавливаем их в форму
                     Object.keys(apiErrors).forEach((key) => {
                         if (key === 'password') {
                             (setLoginError as any)("password", { type: "manual", message: apiErrors[key][0] });
@@ -297,7 +302,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         dispatch(loginAction(loginPayload));
     };
 
-    // Ошибки
     const currentError = useMemo(() => {
         if (authStatus === 'failed') {
             if (currentStep === 'contactEntry' && contactCheckError) return contactCheckError;
@@ -319,7 +323,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
 
             <div className={style.inputGroup}>
                 <label htmlFor="contact" className={style.inputLabel}>
-                    {/* Если телефон выключен в конфиге, показываем только "Ваш Email" */}
                     {!appConfig.enablePhoneAuth
                         ? t('authModal.labelEmailOnly', 'Ваш Email')
                         : (contactType === 'email' ? t('authModal.labelEmail') : t('authModal.labelPhone'))
@@ -351,7 +354,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                                 {...field}
                                 id="contact"
                                 type={contactType === 'email' ? 'email' : 'tel'}
-                                // Если телефон выключен, просим только Email
                                 placeholder={!appConfig.enablePhoneAuth ? t('authModal.emailPlaceholder', 'Введите ваш email') : t('authModal.contactPlaceholderAirbnb')}
                                 className={style.contactInputFieldElement}
                                 onChange={(e) => handleContactInputChange(e.target.value)}
@@ -386,7 +388,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 <strong>{savedContactValue}</strong>
             </p>
 
-            {/* --- ВАЖНО: Хинт про папку Спам, если это Email --- */}
             {contactType === 'email' && (
                 <p style={{ textAlign: 'center', fontSize: '13px', color: '#718096', marginTop: '-15px', marginBottom: '20px', lineHeight: '1.4' }}>
                     {t('authModal.checkSpamHint', 'Если письмо не пришло во входящие, проверьте папку «Спам».')}
@@ -435,7 +436,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                 onClick={async () => {
                     if (savedContactValue && contactType && (operationType === 'register' || operationType === 'reset')) {
                         dispatch(sendOtp({ contactValue: savedContactValue, contactType, operation: operationType }));
-                        setTimer(60); // Перезапускаем таймер при повторной отправке
+                        setTimer(60);
                     }
                 }}
                 disabled={(isLoading && authStatus === 'otp_sending') || timer > 0}
@@ -451,7 +452,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         </form>
     );
 
-    // 3. Финальная регистрация (Имя, Пароль)
+    // 3. Финальная регистрация
     const renderFinalRegister = () => (
         <form onSubmit={handleSubmitDetails(onDetailsSubmit)}>
             <button type="button" onClick={() => setCurrentStep('otpEntry')} className={style.backButton}>
@@ -623,7 +624,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         </form>
     );
 
-    // Рендер контента в зависимости от шага
     let currentStepContent;
     switch (currentStep) {
         case "contactEntry": currentStepContent = renderContactEntry(); break;
@@ -637,10 +637,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
         <div className={`${style.authModal} ${isOpen ? style.open : ""}`} role="dialog" aria-modal="true" aria-labelledby="auth-modal-title-id">
             <div className={style.authModalOverlay} onClick={onClose} tabIndex={-1}></div>
             <div className={style.authModalWrapper}>
-                {/* Кнопка Закрыть / Назад */}
                 {currentStep !== 'contactEntry' ? (
                     <button type="button" onClick={() => {
-                        // Логика кнопки "Назад"
                         if (currentStep === 'otpEntry') {
                             setCurrentStep('contactEntry');
                             dispatch(resetAuthFlow());

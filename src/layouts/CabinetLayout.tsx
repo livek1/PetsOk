@@ -19,9 +19,12 @@ const pageTitles: Record<string, string> = {
     '/cabinet': 'Обзор',
     '/cabinet/profile': 'Мой профиль',
     '/cabinet/pets': 'Мои питомцы',
-    '/cabinet/orders': 'Заказы',
+    '/cabinet/orders': 'Мои заказы',
+    '/cabinet/orders/create': 'Бронирование', // Изменили с дефолтного на Бронирование
     '/cabinet/chat': 'Сообщения',
     '/cabinet/sitter-dashboard': 'Панель управления',
+    '/cabinet/wallet': 'Финансы',
+    '/cabinet/sitter-settings': 'Настройки исполнителя'
 };
 
 const CabinetLayout: React.FC<CabinetLayoutProps> = () => {
@@ -29,11 +32,15 @@ const CabinetLayout: React.FC<CabinetLayoutProps> = () => {
     const location = useLocation();
 
     const currentPath = location.pathname;
-    // Определяем заголовок: если есть точное совпадение, берем его, иначе проверяем начало пути (для чатов с ID)
+    // Определяем заголовок: если есть точное совпадение, берем его, иначе проверяем начало пути
     let title = pageTitles[currentPath];
+
     if (!title) {
+        // Проверяем вложенные пути
         if (currentPath.startsWith('/cabinet/chat')) title = 'Сообщения';
         else if (currentPath.startsWith('/cabinet/pets')) title = 'Мои питомцы';
+        else if (currentPath.startsWith('/cabinet/orders/create')) title = 'Бронирование'; // Для вложенных путей с query params
+        else if (currentPath.startsWith('/cabinet/orders')) title = 'Заказ';
         else title = 'Личный кабинет';
     }
 
@@ -54,8 +61,8 @@ const CabinetLayout: React.FC<CabinetLayoutProps> = () => {
 
                 <div className={style.contentWrapper}>
                     {/* 
-                       ИСПРАВЛЕНО: Оставляем ТОЛЬКО Outlet. 
-                       Убрали {children}, чтобы контент не дублировался.
+                       Оставляем ТОЛЬКО Outlet. 
+                       Контент рендерится через него.
                     */}
                     <Outlet context={{ openMobileMenu }} />
                 </div>

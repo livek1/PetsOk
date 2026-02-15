@@ -1,66 +1,910 @@
-@use '../../variables' as *;
+@use '../../../style/variables' as *;
 @use 'sass:color';
 
 .container {
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding-bottom: 80px;
-}
+    padding: 20px 20px 60px;
+    font-family: $font-family-base;
+    color: $neutral-900;
 
-.pageTitle {
-    font-family: $font-family-headings;
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 24px;
-    color: $text-color-base;
-
-    @media (max-width: $breakpoint-md) {
-        font-size: 1.5rem;
+    @media (max-width: 768px) {
+        padding: 16px 16px 80px;
     }
 }
 
+.pageSubtitle {
+    font-size: 15px;
+    color: $neutral-600;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+// --- STEPPER ---
+.stepperWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.stepper {
+    display: flex;
+    gap: 40px;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        right: 10px;
+        height: 2px;
+        background: $neutral-200;
+        z-index: 0;
+    }
+
+    @media (max-width: 600px) {
+        gap: 15px;
+
+        &::before {
+            display: none;
+        }
+    }
+}
+
+.stepItem {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.6;
+    transition: $transition-base;
+
+    &.active,
+    &.completed {
+        opacity: 1;
+    }
+}
+
+.stepCircle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: $white;
+    border: 2px solid $neutral-300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    color: $neutral-500;
+    transition: $transition-base;
+
+    .active & {
+        border-color: $primary-color;
+        color: $primary-color;
+        background: $primary-50;
+        box-shadow: 0 0 0 3px color.scale($primary-color, $alpha: -90%);
+    }
+
+    .completed & {
+        background: $primary-color;
+        border-color: $primary-color;
+        color: $white;
+    }
+}
+
+.stepLabel {
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+// --- LAYOUT ---
 .contentGrid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 320px;
     gap: 24px;
+    align-items: start;
 
     @media (max-width: 900px) {
         grid-template-columns: 1fr;
     }
 }
 
-.mainColumn,
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+.mainColumn {
+    min-width: 0;
 }
 
-.card,
-.summaryCard,
-.infoCard {
+.card {
     background: $white;
-    border-radius: 20px;
+    border-radius: 16px;
+    border: 1px solid $neutral-200;
     padding: 24px;
-    border: 1px solid $border-color-light;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    box-shadow: $shadow-md;
 
-    &.errorBorder {
-        border-color: $error-500;
+    @media (max-width: 600px) {
+        padding: 16px;
     }
 }
 
-// --- Info Widget Styles ---
-.infoCard {
-    background: #F8FAFC;
+.cardTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: $neutral-900;
+}
+
+.sectionDesc {
+    color: $neutral-600;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+// --- ERROR BANNER ---
+.errorBanner {
+    background-color: #FFF5F5;
+    border: 1px solid #FED7D7;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideIn 0.3s ease;
+    color: #C53030;
+}
+
+.errorIconWrapper svg {
+    width: 20px;
+    height: 20px;
+}
+
+.errorTextContent {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// --- SERVICES GRID (UPDATED LAYOUT) ---
+.servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.serviceItem {
+    position: relative;
+    border: 1px solid $neutral-300;
+    border-radius: 14px;
+    padding: 16px;
+    cursor: pointer;
+    transition: $transition-base;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: $white;
+
+    &:hover {
+        border-color: $neutral-400;
+        transform: translateY(-2px);
+        box-shadow: $shadow-sm;
+    }
+
+    &.selected {
+        border-color: $primary-color;
+        background: $primary-50;
+        border-width: 2px;
+        padding: 15px; // Компенсация бордера
+    }
+}
+
+// Верхняя часть карточки: Иконка + Заголовок
+.serviceHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.serviceIcon {
+    color: $neutral-500;
+    flex-shrink: 0;
+
+    .selected & {
+        color: $primary-color;
+    }
+
+    svg {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+.serviceName {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    color: $neutral-900;
+    line-height: 1.2;
+}
+
+.serviceDescription {
+    font-size: 12px;
+    color: $neutral-600;
+    line-height: 1.4;
+    // Ограничиваем, чтобы карточки были ровными
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.checkMark {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: $primary-color;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+// --- SCHEDULE & TABS ---
+.scheduleSection {
+    margin-top: 24px;
+    border-top: 1px solid $neutral-200;
+    padding-top: 24px;
+}
+
+.tabsWrapper {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tabs {
+    display: inline-flex;
+    background: $neutral-100;
+    padding: 4px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.tab {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: $neutral-600;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &.active {
+        background: $white;
+        color: $primary-color;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+}
+
+.helperText {
+    font-size: 12px;
+    color: $neutral-500;
+    margin-top: 8px;
+    text-align: center;
+    max-width: 450px;
+    line-height: 1.4;
+}
+
+// --- DYNAMIC EXPLANATION BLOCK ---
+.scheduleExplanation {
+    background-color: #EBF8FF; // Light blue
+    border: 1px solid #BEE3F8;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    color: #2B6CB0;
+    font-size: 13px;
+    line-height: 1.5;
+
+    svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    strong {
+        font-weight: 700;
+    }
+}
+
+// --- FORMS & INPUTS ---
+.rowInputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+.dateInputs {
+    @extend .rowInputs;
+    margin-bottom: 20px;
+}
+
+.formGroup {
+    margin-bottom: 16px;
+    position: relative; // Добавлено для позиционирования контекстных элементов
+
+    label {
+        display: block;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: $neutral-700;
+
+        span {
+            color: $error-500;
+        }
+    }
+}
+
+.input {
+    width: 100%;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid $neutral-300;
+    padding: 0 14px;
+    font-size: 14px;
+    transition: $transition-base;
+    background: $white;
+    color: $neutral-900;
+    font-family: inherit;
+
+    &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px color.scale($primary-color, $alpha: -90%);
+    }
+
+    &::placeholder {
+        color: $neutral-400;
+    }
+
+    &:disabled {
+        background: $neutral-100;
+        color: $neutral-500;
+        cursor: not-allowed;
+    }
+}
+
+// --- PHONE INPUT ---
+.phoneContainer {
+    width: 100% !important;
+}
+
+.phoneInput {
+    width: 100% !important;
+    height: 42px !important;
+    border-radius: 10px !important;
+    border: 1px solid $neutral-300 !important;
+    background: $white !important;
+    font-size: 14px !important;
+    font-family: $font-family-base !important;
+    padding-left: 48px !important;
+    transition: $transition-base !important;
+
+    &:focus {
+        border-color: $primary-color !important;
+        box-shadow: 0 0 0 3px color.scale($primary-color, $alpha: -90%) !important;
+    }
+}
+
+.phoneButton {
+    background: transparent !important;
+    border: none !important;
+    border-right: 1px solid transparent !important;
+    border-radius: 10px 0 0 10px !important;
+    padding-left: 8px !important;
+
+    &:hover,
+    &.open {
+        background: $neutral-100 !important;
+    }
+}
+
+.phoneDropdown {
+    border-radius: 10px !important;
+    box-shadow: $shadow-md !important;
+    border: 1px solid $neutral-200 !important;
+    margin-top: 4px !important;
+}
+
+.inputWithIcon {
+    position: relative;
+    width: 100%;
+}
+
+.selectWrapper {
+    position: relative;
+}
+
+.chevronIcon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: $neutral-500;
+
+    svg {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+// --- CHIPS (Weekdays, Durations) ---
+.chipsRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid $neutral-300;
+    background: $white;
+    font-size: 12px;
+    font-weight: 600;
+    color: $neutral-700;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+        border-color: $neutral-400;
+        background: $neutral-100;
+    }
+
+    &.selected {
+        background: $primary-color;
+        color: $white;
+        border-color: $primary-color;
+        box-shadow: 0 2px 8px color.scale($primary-color, $alpha: -70%);
+    }
+}
+
+// --- VISIT COUNTER ---
+.visitCountRow {
+    display: flex;
+    gap: 12px;
+}
+
+.visitCountBtn {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid $neutral-300;
+    background: $white;
+    font-size: 14px;
+    font-weight: 700;
+    color: $neutral-700;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+        border-color: $primary-color;
+    }
+
+    &.active {
+        border-color: $primary-color;
+        background: $primary-color;
+        color: $white;
+    }
+}
+
+.timeSlotsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+// --- SUGGESTIONS ---
+.suggestionsList {
+    position: absolute;
+    top: 100%; // Сразу под инпутом
+    left: 0;
+    right: 0;
+    background: $white;
     border: 1px solid $neutral-200;
+    border-radius: 10px;
+    box-shadow: $shadow-lg;
+    z-index: 100; // Повышенный z-index
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+    padding: 6px 0;
+    margin: 4px 0 0 0;
+
+    li {
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 13px;
+        color: $neutral-800;
+        transition: background 0.2s;
+
+        &:hover {
+            background: $neutral-50;
+            color: $primary-color;
+        }
+    }
+}
+
+// --- PETS ---
+.loader {
+    text-align: center;
+    padding: 30px;
+    color: $neutral-500;
+    font-size: 13px;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 30px 0;
+
+    p {
+        margin-bottom: 16px;
+        color: $neutral-600;
+        font-size: 14px;
+    }
+}
+
+.addPetBigBtn {
+    background: $white;
+    border: 1.5px dashed $neutral-300;
+    border-radius: 14px;
+    padding: 12px 24px;
+    color: $primary-color;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+        border-color: $primary-color;
+        background: $primary-50;
+    }
+}
+
+.petsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.petCard {
+    position: relative;
+    border: 1px solid $neutral-200;
+    border-radius: 14px;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: $transition-base;
+    background: $white;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-sm;
+        border-color: $neutral-300;
+    }
+
+    &.selected {
+        border-color: $primary-color;
+        background: $primary-50;
+        border-width: 1.5px;
+        padding: 15.5px 11.5px;
+    }
+}
+
+.checkboxCircle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid $neutral-300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: $white;
+    background: $white;
+
+    .selected & {
+        background: $primary-color;
+        border-color: $primary-color;
+    }
+}
+
+.petAvatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: $neutral-100;
+    overflow: hidden;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $neutral-400;
+    border: 1px solid $neutral-200;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.petName {
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    color: $neutral-900;
+    margin-bottom: 2px;
+}
+
+.petBreed {
+    font-size: 11px;
+    color: $neutral-500;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.addNewPetCard {
+    border-style: dashed;
+    justify-content: center;
+
+    .petAvatar {
+        background: transparent;
+        border: 1.5px dashed $neutral-300;
+        color: $neutral-400;
+        font-size: 24px;
+        font-weight: 300;
+    }
+
+    &:hover {
+        border-color: $primary-color;
+
+        .petAvatar {
+            border-color: $primary-color;
+            color: $primary-color;
+        }
+
+        .petName {
+            color: $primary-color;
+        }
+    }
+}
+
+// --- PROMO CODE ---
+.promoRow {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.btnSecondary {
+    padding: 0 16px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid $neutral-300;
+    background: $white;
+    color: $neutral-700;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: $transition-base;
+    white-space: nowrap;
+
+    &:hover {
+        background: $neutral-100;
+        border-color: $neutral-400;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.btnDanger {
+    padding: 0 16px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid #FEB2B2;
+    background: #FFF5F5;
+    color: #C53030;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: $transition-base;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background: #FED7D7;
+    }
+}
+
+.successText {
+    color: #38A169; // Green-600
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 600;
+}
+
+.errorText {
+    color: #E53E3E; // Red-600
+    font-size: 13px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+
+// --- ACTIONS ---
+.actionsBar,
+.finalAction {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nextBtn,
+.btnPrimary {
+    background: $gradient-primary;
+    color: $white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px color.scale($primary-color, $alpha: -70%);
+    transition: $transition-base;
+
+    &:hover {
+        background: $gradient-primary-hover;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px color.scale($primary-color, $alpha: -60%);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        background: $neutral-400;
+    }
+}
+
+.disclaimerSmall {
+    font-size: 11px;
+    color: $neutral-500;
+    text-align: center;
+    margin-top: 12px;
+    line-height: 1.4;
+    padding: 0 10px;
+}
+
+.backBtn {
+    background: transparent;
+    border: none;
+    color: $neutral-500;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 10px 0;
+    font-size: 14px;
+
+    &:hover {
+        color: $neutral-800;
+    }
+}
+
+// --- SIDEBAR ---
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 90px;
+    align-self: start;
+}
+
+.summaryCard {
+    background: $white;
+    border-radius: 16px;
+    border: 1px solid $neutral-200;
+    padding: 20px;
+    box-shadow: $shadow-sm;
+}
+
+.summaryTitle {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: $neutral-900;
+}
+
+.summaryDivider {
+    height: 1px;
+    background: $neutral-200;
+    margin-bottom: 12px;
+}
+
+.summaryItem {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.lbl {
+    color: $neutral-600;
+}
+
+.val {
+    font-weight: 600;
+    text-align: right;
+    max-width: 60%;
+    color: $neutral-900;
+}
+
+.infoCard {
+    background: #EBF8FF;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #BEE3F8;
+    color: #2B6CB0;
 }
 
 .infoTitle {
-    font-size: 1rem;
+    font-size: 15px;
     font-weight: 700;
-    margin-bottom: 16px;
-    color: $text-color-base;
+    margin-bottom: 12px;
+    color: #2C5282;
 }
 
 .stepsList {
@@ -70,8 +914,9 @@
 
     li {
         display: flex;
-        gap: 12px;
-        margin-bottom: 16px;
+        gap: 10px;
+        margin-bottom: 12px;
+        font-size: 13px;
 
         &:last-child {
             margin-bottom: 0;
@@ -80,798 +925,16 @@
 }
 
 .stepNum {
-    background: $white;
-    color: $primary-color;
-    border: 1px solid $primary-color;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    width: 22px;
+    height: 22px;
+    background: #3182CE;
+    color: $white;
+    border-radius: 50%;
+    font-size: 12px;
     font-weight: 700;
     flex-shrink: 0;
-    margin-top: 2px;
-}
-
-.stepsList strong {
-    display: block;
-    font-size: 0.9rem;
-    color: $text-color-base;
-    margin-bottom: 2px;
-}
-
-.stepsList p {
-    font-size: 0.8rem;
-    color: $text-color-secondary;
-    line-height: 1.3;
-    margin: 0;
-}
-
-.cardTitle,
-.summaryTitle {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 16px;
-    color: $text-color-base;
-}
-
-.summaryTitle {
-    border-bottom: 1px solid $border-color-light;
-    padding-bottom: 12px;
-}
-
-.cardHeaderRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-
-    h3 {
-        margin: 0;
-    }
-}
-
-// --- Services Grid ---
-.servicesGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 16px;
-}
-
-.serviceItem {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-
-    border: 2px solid $neutral-100;
-    background: $neutral-50;
-    border-radius: 16px;
-    padding: 30px 12px 20px 12px;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-    height: 100%;
-
-    &:hover {
-        border-color: $primary-color-lighter;
-        background: $white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-
-        .moreInfoBtn {
-            opacity: 1;
-        }
-    }
-
-    &.selected {
-        border-color: $primary-color;
-        background: #F0F7FF;
-
-        .serviceName {
-            color: $primary-color;
-        }
-
-        .serviceIcon {
-            color: $primary-color;
-            background: $white;
-        }
-    }
-}
-
-// --- Location Badges ---
-.locationBadge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 0.65rem;
-    padding: 4px 8px;
-    border-radius: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 2;
-}
-
-.locSitter {
-    background: #EBF8FF;
-    color: $primary-color;
-}
-
-.locClient {
-    background: #F0FFF4;
-    color: #38A169;
-}
-
-.locStreet {
-    background: #FAF5FF;
-    color: #805AD5;
-}
-
-// --- More Info Button ---
-.moreInfoBtn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid $border-color-medium;
-    background: $white;
-    color: $text-color-secondary;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.6;
-    transition: all 0.2s;
-    z-index: 2;
-
-    &:hover {
-        opacity: 1;
-        background: $neutral-50;
-        color: $primary-color;
-        border-color: $primary-color;
-    }
-
-    svg {
-        width: 14px;
-        height: 14px;
-    }
-}
-
-.serviceIcon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: $white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 12px;
-    color: $text-color-secondary;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    transition: color 0.2s;
-}
-
-.serviceName {
-    font-family: $font-family-headings;
-    font-weight: 700;
-    font-size: 0.95rem;
-    color: $text-color-base;
-    margin-bottom: 6px;
-    line-height: 1.2;
-}
-
-.serviceDesc {
-    font-size: 0.75rem;
-    color: $text-color-secondary;
-    line-height: 1.4;
-    margin: 0;
-    opacity: 0.8;
-}
-
-// Tabs
-.tabs {
-    display: flex;
-    background: $neutral-100;
-    padding: 4px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
-.tab {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 10px;
-    border-radius: 8px;
-    font-weight: 600;
-    color: $text-color-secondary;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &.active {
-        background: $white;
-        color: $primary-color;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-}
-
-// Form Inputs
-.dateInputs {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 20px;
-
-    .formGroup {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-
-        label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: $text-color-secondary;
-        }
-    }
-}
-
-.input {
-    padding: 12px;
-    border: 1px solid $border-color-medium;
-    border-radius: 10px;
-    font-size: 1rem;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.2s;
-
-    &:focus {
-        border-color: $primary-color;
-    }
-}
-
-.weekdaysBlock {
-    margin-bottom: 20px;
-}
-
-.weekdaysRow {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.weekdayBtn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid $border-color-medium;
-    background: $white;
-    color: $text-color-base;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-
-    &:hover {
-        border-color: $primary-color-lighter;
-    }
-
-    &.selected {
-        background: $primary-color;
-        color: $white;
-        border-color: $primary-color;
-    }
-}
-
-.subLabel {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    margin-top: 16px;
-    color: $text-color-base;
-}
-
-.chipsRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 16px;
-}
-
-.chip {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid $border-color-medium;
-    background: $white;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-
-    &:hover {
-        background: $neutral-50;
-    }
-
-    &.selected {
-        border-color: $primary-color;
-        background: rgba($primary-color, 0.1);
-        color: $primary-color;
-        font-weight: 600;
-    }
-}
-
-.timeSelectRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 0.95rem;
-
-    span {
-        font-weight: 500;
-        color: $text-color-secondary;
-    }
-}
-
-.selectWrapper {
-    position: relative;
-    width: 140px;
-}
-
-.select {
-    width: 100%;
-    padding: 10px;
-    padding-right: 30px;
-    border-radius: 10px;
-    border: 1px solid $border-color-medium;
-    font-size: 1rem;
-    outline: none;
-    appearance: none;
-    background: $white;
-    cursor: pointer;
-
-    &:focus {
-        border-color: $primary-color;
-    }
-}
-
-.chevronIcon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: $text-color-muted;
-}
-
-// Pets Grid
-.petsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 16px;
-}
-
-// --- Empty Pet State ---
-.addPetPlaceholder {
-    border: 2px dashed $border-color-medium;
-    border-radius: 16px;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: $neutral-50;
-
-    &:hover {
-        border-color: $primary-color;
-        background: rgba($primary-color, 0.05);
-
-        .addPetIcon {
-            background: $primary-color;
-            color: $white;
-            transform: scale(1.1);
-            border-color: $primary-color;
-        }
-    }
-
-    span {
-        font-weight: 600;
-        margin-bottom: 6px;
-        color: $text-color-base;
-    }
-
-    small {
-        color: $text-color-secondary;
-        max-width: 80%;
-        line-height: 1.4;
-    }
-}
-
-.addPetIcon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: $white;
-    border: 1px solid $border-color-medium;
-    color: $primary-color;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 12px;
-    transition: all 0.2s;
-}
-
-.petCard {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 12px;
-    transition: background 0.2s;
-
-    &:hover {
-        background: $neutral-50;
-    }
-
-    .petAvatar {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        position: relative;
-        margin-bottom: 8px;
-
-        img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid transparent;
-        }
-
-        .placeholder {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: $neutral-100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: $neutral-400;
-            border: 2px solid transparent;
-        }
-
-        .checkBadge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: $primary-color;
-            color: $white;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid $white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-    }
-
-    &.selected {
-
-        .petAvatar img,
-        .petAvatar .placeholder {
-            border-color: $primary-color;
-        }
-
-        .petName {
-            color: $primary-color;
-            font-weight: 700;
-        }
-    }
-
-    .petName {
-        font-size: 0.9rem;
-        color: $text-color-base;
-        text-align: center;
-        font-weight: 500;
-    }
-}
-
-.linkBtn {
-    background: none;
-    border: none;
-    color: $primary-color;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-
-    &:hover {
-        text-decoration: underline;
-    }
-}
-
-.emptyText {
-    color: $text-color-muted;
-    text-align: center;
-    margin: 20px 0;
-}
-
-.loader {
-    text-align: center;
-    color: $text-color-muted;
-    margin: 20px 0;
-}
-
-// Promo
-.promoRow {
-    display: flex;
-    gap: 10px;
-}
-
-.btnSecondary {
-    padding: 12px 20px;
-    border-radius: 10px;
-    border: 1px solid $border-color-medium;
-    background: $white;
-    cursor: pointer;
-    font-weight: 600;
-
-    &:hover:not(:disabled) {
-        background: $neutral-50;
-    }
-
-    &:disabled {
-        color: $text-color-muted;
-    }
-}
-
-.btnDanger {
-    @extend .btnSecondary;
-    color: $error-500;
-    border-color: $error-500;
-
-    &:hover {
-        background: rgba($error-500, 0.05);
-    }
-}
-
-.successText {
-    color: $success-500;
-    font-size: 0.9rem;
-    margin-top: 8px;
-    font-weight: 500;
-}
-
-.errorText {
-    color: $error-500;
-    font-size: 0.85rem;
-    margin-top: 8px;
-}
-
-// Summary Sidebar
-.summaryRow {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    font-size: 0.95rem;
-
-    span:last-child {
-        font-weight: 600;
-        color: $text-color-base;
-        text-align: right;
-        max-width: 60%;
-        word-break: break-word; // NEW: чтобы имена или длинные даты переносились
-    }
-
-    span:first-child {
-        color: $text-color-secondary;
-    }
-}
-
-.divider {
-    height: 1px;
-    background: $border-color-light;
-    margin: 20px 0;
-}
-
-.btnPrimary {
-    width: 100%;
-    padding: 16px;
-    background: $primary-color;
-    color: $white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    box-shadow: 0 4px 12px rgba($primary-color, 0.3);
-
-    &:hover:not(:disabled) {
-        background: color.adjust($primary-color, $lightness: -5%);
-        transform: translateY(-2px);
-    }
-
-    &:active {
-        transform: translateY(0);
-    }
-
-    &:disabled {
-        background: $neutral-300;
-        cursor: not-allowed;
-        box-shadow: none;
-    }
-}
-
-.disclaimerText {
-    font-size: 0.75rem;
-    color: $text-color-muted;
-    text-align: center;
-    margin-top: 12px;
-}
-
-// --- MODAL STYLES ---
-.modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    animation: fadeIn 0.2s ease-out;
-}
-
-.modalContent {
-    background-color: $white;
-    width: 100%;
-    max-width: 480px;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    animation: slideUp 0.3s ease-out;
-}
-
-.modalIcon {
-    width: 64px;
-    height: 64px;
-    background-color: #FFF5F5;
-    color: $error-500;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-
-    svg {
-        width: 32px;
-        height: 32px;
-    }
-}
-
-.modalTitle {
-    font-family: $font-family-headings;
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: $text-color-base;
-    margin-bottom: 12px;
-}
-
-.modalText {
-    font-size: 1rem;
-    color: $text-color-secondary;
-    line-height: 1.5;
-    margin-bottom: 30px;
-}
-
-// --- Service Details List inside Modal ---
-.serviceDetailsList {
-    text-align: left;
-    width: 100%;
-    margin-bottom: 24px;
-    background: $neutral-50;
-    padding: 20px;
-    border-radius: 12px;
-
-    h4 {
-        font-size: 0.95rem;
-        margin: 0 0 12px 0;
-        color: $text-color-base;
-        font-weight: 700;
-    }
-
-    ul {
-        margin: 0;
-        padding-left: 0;
-        list-style: none;
-
-        li {
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            color: $text-color-secondary;
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
-    }
-}
-
-.modalActions {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.modalBtn {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-}
-
-.modalBtnPrimary {
-    background-color: $primary-color;
-    color: $white;
-
-    &:hover {
-        background-color: $primary-color-darker;
-    }
-}
-
-.modalBtnSecondary {
-    background-color: transparent;
-    color: $text-color-secondary;
-    border: 1px solid $border-color-medium;
-
-    &:hover {
-        background-color: $neutral-50;
-        color: $text-color-base;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    margin-top: 1px;
 }

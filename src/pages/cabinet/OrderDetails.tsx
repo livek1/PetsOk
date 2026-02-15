@@ -16,12 +16,14 @@ const StarIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="#FF
 const HourglassIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 2v20h16V2H4zm8 9l-4 4h8l-4-4zm0-9l4 4H8l4-4z" /></svg>;
 const CheckIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>;
 const PlayIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>;
-const PawIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /></svg>;
+const PawIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /><circle cx="12" cy="12" r="3" /><path d="M12 15a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3z" /></svg>;
 const CloseIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
 const AlertIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>;
 const CardIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>;
 const LocationIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
 const PhoneIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
+// --- НОВАЯ ИКОНКА ДЛЯ ЧЕРНОВИКА ---
+const EditIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
 
 const BILLING_PERIOD_STATUS = {
     PENDING_PAYMENT: 'pending_payment',
@@ -33,6 +35,7 @@ const BILLING_PERIOD_STATUS = {
 };
 
 const ORDER_STATUS = {
+    DRAFT: 'draft', // <--- ДОБАВЛЕНО
     PENDING_WORKER: 'pending_worker',
     PENDING_PLATFORM_PAYMENT: 'pending_platform_payment',
     PENDING_PLATFORM_FEE: 'pending_platform_fee',
@@ -54,7 +57,22 @@ const SERVICE_TYPE = {
     WALKING: 'walking',
 };
 
-const getStatusInfo = (status?: string) => { switch (status) { case ORDER_STATUS.PENDING_WORKER: return { textKey: 'orderStatus.new', color: '#DD6B20', Icon: HourglassIcon, bg: '#FFFAF0' }; case ORDER_STATUS.PENDING_PLATFORM_PAYMENT: case ORDER_STATUS.PENDING_PLATFORM_FEE: return { textKey: 'orderStatus.awaitingPayment', color: '#DD6B20', Icon: CardIcon, bg: '#FFFAF0' }; case ORDER_STATUS.CONFIRMED: return { textKey: 'orderStatus.confirmed', color: '#38A169', Icon: CheckIcon, bg: '#F0FFF4' }; case ORDER_STATUS.IN_PROGRESS: return { textKey: 'orderStatus.inProgress', color: '#3182CE', Icon: PlayIcon, bg: '#EBF8FF' }; case ORDER_STATUS.COMPLETED: return { textKey: 'orderStatus.completed', color: '#38A169', Icon: PawIcon, bg: '#F0FFF4' }; case ORDER_STATUS.CANCELED_CLIENT: return { textKey: 'orderStatus.canceled_client', color: '#E53E3E', Icon: CloseIcon, bg: '#FFF5F5' }; case ORDER_STATUS.CANCELED_WORKER: return { textKey: 'orderStatus.canceled_worker', color: '#E53E3E', Icon: CloseIcon, bg: '#FFF5F5' }; case ORDER_STATUS.CANCELED_ADMIN: return { textKey: 'orderStatus.canceled_admin', color: '#E53E3E', Icon: CloseIcon, bg: '#FFF5F5' }; case ORDER_STATUS.DISPUTED: return { textKey: 'orderStatus.disputed', color: '#E53E3E', Icon: AlertIcon, bg: '#FFF5F5' }; case ORDER_STATUS.RECURRING_PAYMENT_FAILED: return { textKey: 'orderStatus.paymentFailed', color: '#E53E3E', Icon: AlertIcon, bg: '#FFF5F5' }; default: return { textKey: 'orderStatus.unknown', color: '#718096', Icon: HourglassIcon, bg: '#F7FAFC' }; } };
+const getStatusInfo = (status?: string) => {
+    switch (status) {
+        case ORDER_STATUS.DRAFT: return { textKey: 'orderStatus.draft', color: '#718096', Icon: EditIcon, bg: '#EDF2F7' }; // <--- СТИЛЬ ДЛЯ ЧЕРНОВИКА
+        case ORDER_STATUS.PENDING_WORKER: return { textKey: 'orderStatus.new', color: '#DD6B20', Icon: HourglassIcon, bg: '#FFFAF0' };
+        case ORDER_STATUS.PENDING_PLATFORM_PAYMENT: case ORDER_STATUS.PENDING_PLATFORM_FEE: return { textKey: 'orderStatus.awaitingPayment', color: '#DD6B20', Icon: CardIcon, bg: '#FFFAF0' };
+        case ORDER_STATUS.CONFIRMED: return { textKey: 'orderStatus.confirmed', color: '#38A169', Icon: CheckIcon, bg: '#F0FFF4' };
+        case ORDER_STATUS.IN_PROGRESS: return { textKey: 'orderStatus.inProgress', color: '#3182CE', Icon: PlayIcon, bg: '#EBF8FF' };
+        case ORDER_STATUS.COMPLETED: return { textKey: 'orderStatus.completed', color: '#38A169', Icon: PawIcon, bg: '#F0FFF4' };
+        case ORDER_STATUS.CANCELED_CLIENT: return { textKey: 'orderStatus.canceled_client', color: '#E53E3E', Icon: CloseIcon, bg: '#FFF5F5' };
+        case ORDER_STATUS.CANCELED_WORKER: return { textKey: 'orderStatus.canceled_worker', color: '#E53E3E', Icon: CloseIcon, bg: '#FFF5F5' };
+        case ORDER_STATUS.CANCELED_ADMIN: return { textKey: 'orderStatus.canceled_admin', color: '#E53E3E', Icon: CloseIcon, bg: '#FFF5F5' };
+        case ORDER_STATUS.DISPUTED: return { textKey: 'orderStatus.disputed', color: '#E53E3E', Icon: AlertIcon, bg: '#FFF5F5' };
+        case ORDER_STATUS.RECURRING_PAYMENT_FAILED: return { textKey: 'orderStatus.paymentFailed', color: '#E53E3E', Icon: AlertIcon, bg: '#FFF5F5' };
+        default: return { textKey: 'orderStatus.unknown', color: '#718096', Icon: HourglassIcon, bg: '#F7FAFC' };
+    }
+};
 
 const OrderDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -107,6 +125,10 @@ const OrderDetails: React.FC = () => {
         }
     };
 
+    const handleContinue = () => {
+        navigate(`/cabinet/orders/create?uuid=${order.id}`);
+    };
+
     const totalToPayDirectly = useMemo(() => {
         if (!order?.billing_periods?.data) return 0;
         return order.billing_periods.data.reduce((acc: number, period: any) => {
@@ -122,15 +144,21 @@ const OrderDetails: React.FC = () => {
     const billingPeriods = order.billing_periods?.data || [];
     const statusInfo = getStatusInfo(order.status);
 
-    // Logic for "Pay Now" button
     const unpaidPeriod = billingPeriods.find((bp: any) => bp.status === BILLING_PERIOD_STATUS.PENDING_PAYMENT || bp.status === BILLING_PERIOD_STATUS.PAYMENT_FAILED);
     const amountToPay = unpaidPeriod ? unpaidPeriod.amount_due_from_client : 0;
     const needsPayment = parseFloat(amountToPay) > 0;
 
-    const showCancelOrder = [ORDER_STATUS.PENDING_WORKER, ORDER_STATUS.CONFIRMED, ORDER_STATUS.PENDING_PLATFORM_PAYMENT, ORDER_STATUS.PENDING_PLATFORM_FEE].includes(order.status);
+    // --- ЛОГИКА ОТОБРАЖЕНИЯ КНОПОК ---
+    const showCancelOrder = [
+        ORDER_STATUS.DRAFT, // Черновик тоже можно отменить/удалить
+        ORDER_STATUS.PENDING_WORKER,
+        ORDER_STATUS.CONFIRMED,
+        ORDER_STATUS.PENDING_PLATFORM_PAYMENT,
+        ORDER_STATUS.PENDING_PLATFORM_FEE
+    ].includes(order.status);
+
     const showWorkerAddress = worker && [SERVICE_TYPE.BOARDING, SERVICE_TYPE.DOGGY_DAY_CARE].includes(order.service_type) && [ORDER_STATUS.CONFIRMED, ORDER_STATUS.IN_PROGRESS, ORDER_STATUS.COMPLETED].includes(order.status);
 
-    // --- Обработчик для открытия профиля в новой вкладке ---
     const handleOpenProfile = () => {
         if (worker?.id) {
             window.open(`/sitter/${worker.id}`, '_blank');
@@ -143,7 +171,6 @@ const OrderDetails: React.FC = () => {
                 <button className={style.backBtn} onClick={() => navigate('/cabinet/orders')}>
                     <BackIcon /> <span>{t('common.back', 'Назад') as string}</span>
                 </button>
-                {/* Status Banner */}
                 <div className={style.statusBanner} style={{ backgroundColor: statusInfo.bg }}>
                     <div style={{ color: statusInfo.color, marginRight: 10, display: 'flex' }}><statusInfo.Icon /></div>
                     <span style={{ color: statusInfo.color, fontSize: '1.1rem', fontWeight: 700, textTransform: 'uppercase' }}>
@@ -154,7 +181,6 @@ const OrderDetails: React.FC = () => {
 
             <div className={style.contentGrid}>
                 <div className={style.mainColumn}>
-                    {/* Direct Payment Alert */}
                     {totalToPayDirectly > 0 && (
                         <div className={style.warningBox}>
                             <div className={style.warningIcon}><WalletIcon /></div>
@@ -166,68 +192,52 @@ const OrderDetails: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Worker Details */}
-                    <div className={style.card}>
-                        <h3 className={style.cardTitle}>Исполнитель</h3>
-                        {worker ? (
-                            <div className={style.workerContent}>
-                                <div className={style.workerRow}>
-                                    {/* Аватар - открывает новую вкладку */}
-                                    <img
-                                        src={worker.avatar?.data?.preview_url || '/placeholder-user.jpg'}
-                                        alt={worker.first_name}
-                                        className={style.avatar}
-                                        onClick={handleOpenProfile}
-                                        style={{ cursor: 'pointer' }}
-                                    />
-                                    <div className={style.workerInfo}>
-                                        {/* Имя - открывает новую вкладку */}
-                                        <h4
-                                            className={style.workerName}
+                    {/* Worker Details (Скрываем, если черновик и исполнителя нет) */}
+                    {order.status !== ORDER_STATUS.DRAFT && (
+                        <div className={style.card}>
+                            <h3 className={style.cardTitle}>Исполнитель</h3>
+                            {worker ? (
+                                <div className={style.workerContent}>
+                                    <div className={style.workerRow}>
+                                        <img
+                                            src={worker.avatar?.data?.preview_url || '/placeholder-user.jpg'}
+                                            alt={worker.first_name}
+                                            className={style.avatar}
                                             onClick={handleOpenProfile}
                                             style={{ cursor: 'pointer' }}
-                                        >
-                                            {worker.first_name} {worker.last_name}
-                                        </h4>
-                                        <div className={style.rating}>
-                                            <StarIcon />
-                                            <span>{worker.calculated_rating || '5.0'}</span>
-                                            <span className={style.reviewsCount}>({worker.reviews_count || 0})</span>
+                                        />
+                                        <div className={style.workerInfo}>
+                                            <h4 className={style.workerName} onClick={handleOpenProfile} style={{ cursor: 'pointer' }}>
+                                                {worker.first_name} {worker.last_name}
+                                            </h4>
+                                            <div className={style.rating}>
+                                                <StarIcon />
+                                                <span>{worker.calculated_rating || '5.0'}</span>
+                                                <span className={style.reviewsCount}>({worker.reviews_count || 0})</span>
+                                            </div>
+                                            <Link to={`/sitter/${worker.id}`} className={style.profileLinkText} target="_blank" rel="noopener noreferrer">
+                                                Открыть профиль
+                                            </Link>
                                         </div>
-                                        {/* Ссылка текстом - открывает новую вкладку */}
-                                        <Link
-                                            to={`/sitter/${worker.id}`}
-                                            className={style.profileLinkText}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Открыть профиль
-                                        </Link>
+                                        <div className={style.workerActions}>
+                                            <button className={style.iconActionBtn} onClick={handleChat}><ChatIcon /></button>
+                                            {worker.phone && <a href={`tel:${worker.phone}`} className={`${style.iconActionBtn} ${style.phoneBtn}`}><PhoneIcon /></a>}
+                                        </div>
                                     </div>
-                                    <div className={style.workerActions}>
-                                        <button className={style.iconActionBtn} onClick={handleChat}>
-                                            <ChatIcon />
-                                        </button>
-                                        {worker.phone && (
-                                            <a href={`tel:${worker.phone}`} className={`${style.iconActionBtn} ${style.phoneBtn}`}>
-                                                <PhoneIcon />
-                                            </a>
-                                        )}
-                                    </div>
+                                    {showWorkerAddress && worker.address && (
+                                        <div className={style.detailRow} style={{ marginTop: 15, borderTop: '1px solid #EDF2F7', paddingTop: 10 }}>
+                                            <div className={style.detailLabel}><LocationIcon /> Адрес:</div>
+                                            <div className={style.detailValue}>{worker.address}</div>
+                                        </div>
+                                    )}
                                 </div>
-                                {showWorkerAddress && worker.address && (
-                                    <div className={style.detailRow} style={{ marginTop: 15, borderTop: '1px solid #EDF2F7', paddingTop: 10 }}>
-                                        <div className={style.detailLabel}><LocationIcon /> Адрес:</div>
-                                        <div className={style.detailValue}>{worker.address}</div>
-                                    </div>
-                                )}
-                            </div>
-                        ) : (
-                            <div className={style.noWorkerState}>
-                                <p>Исполнитель еще не назначен</p>
-                            </div>
-                        )}
-                    </div>
+                            ) : (
+                                <div className={style.noWorkerState}>
+                                    <p>Исполнитель еще не назначен</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Order Details */}
                     <div className={style.card}>
@@ -252,7 +262,7 @@ const OrderDetails: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Tasks (Schedule) */}
+                    {/* Tasks */}
                     {order.tasks?.data?.length > 0 && (
                         <div className={style.card}>
                             <h3 className={style.cardTitle}>{t('orders.visitsSchedule', 'Расписание')}</h3>
@@ -273,89 +283,22 @@ const OrderDetails: React.FC = () => {
                         </div>
                     )}
 
-                    {/* Financial Details */}
-                    <div className={style.card}>
-                        <h3 className={style.cardTitle}>{t('orders.financialDetails', 'Финансы') as string}</h3>
-                        {billingPeriods.length === 0 && <p className={style.emptyText}>Информация о периодах оплаты отсутствует</p>}
-
-                        {billingPeriods.map((period: any) => {
-                            // Logic matched from RN ClientBillingPeriodItem
-                            const grossAmount = parseFloat(period.gross_amount || '0');
-                            const discountAmount = parseFloat(period.discount_amount || '0');
-                            const onlinePayment = parseFloat(period.amount_due_from_client || '0');
-                            const directPayment = parseFloat(period.amount_payable_directly_to_worker || period.amount_payable_directly || '0');
-                            const totalClientCost = grossAmount - discountAmount;
-
-                            let statusText = 'В обработке';
-                            let statusClass = style.statusWarning;
-
-                            if ([BILLING_PERIOD_STATUS.PAID, BILLING_PERIOD_STATUS.TASKS_COMPLETED, BILLING_PERIOD_STATUS.PAYOUT_COMPLETED, BILLING_PERIOD_STATUS.PAYOUT_PENDING].includes(period.status)) {
-                                statusText = 'Оплачено';
-                                statusClass = style.statusSuccess;
-                            } else if (period.status === BILLING_PERIOD_STATUS.PENDING_PAYMENT) {
-                                statusText = 'Ожидает оплаты';
-                                statusClass = style.statusWarning;
-                            } else if (period.status === BILLING_PERIOD_STATUS.PAYMENT_FAILED) {
-                                statusText = 'Ошибка оплаты';
-                                statusClass = style.statusError;
-                            }
-
-                            return (
-                                <div key={period.id} className={style.billingCard}>
-                                    <div className={style.billingHeader}>
-                                        <div>
-                                            <div className={style.billingDateLabel}>{t('common.period', 'Период')}</div>
-                                            <div className={style.billingDateValue}>{moment(period.period_start).format('D MMM')} - {moment(period.period_end).format('D MMM')}</div>
-                                        </div>
-                                        <div className={`${style.statusBadgeSmall} ${statusClass}`}>
-                                            {statusText}
-                                        </div>
-                                    </div>
-                                    <div className={style.divider} />
-                                    <div className={style.financeSection}>
-                                        <div className={style.financeRow}>
-                                            <span className={style.financeLabel}>{t('orders.grossAmount', 'Стоимость услуг')}</span>
-                                            <span className={style.financeValue}>{grossAmount.toFixed(2)} {order.currency}</span>
-                                        </div>
-                                        {discountAmount > 0 && (
-                                            <div className={style.financeRow}>
-                                                <span className={style.financeLabel}>{t('orders.discount', 'Скидка')}</span>
-                                                <span className={`${style.financeValue} ${style.successText}`}>- {discountAmount.toFixed(2)} {order.currency}</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className={style.dividerDashed} />
-                                    <div className={style.totalsSection}>
-                                        <div className={style.totalRow}>
-                                            <span className={style.totalLabel}>{t('orders.totalCost', 'Итого к оплате')}</span>
-                                            <span className={style.totalValue}>{totalClientCost.toFixed(2)} {order.currency}</span>
-                                        </div>
-                                        <div className={style.paymentMethodBox}>
-                                            {onlinePayment > 0 && (
-                                                <div className={style.methodRow}>
-                                                    <CardIcon /> <span className={style.methodText}>{t('orders.prepaymentApp', 'Предоплата в приложении')}: <strong>{onlinePayment.toFixed(2)} {order.currency}</strong></span>
-                                                </div>
-                                            )}
-                                            {directPayment > 0 && (
-                                                <div className={style.methodRow}>
-                                                    <WalletIcon /> <span className={style.methodText}>{t('orders.payDirectly', 'Оплата исполнителю')}: <strong>{directPayment.toFixed(2)} {order.currency}</strong></span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-
                     {/* Management Actions */}
                     <div className={style.card}>
+                        {/* КНОПКА ПРОДОЛЖИТЬ (ТОЛЬКО ДЛЯ ЧЕРНОВИКА) */}
+                        {order.status === ORDER_STATUS.DRAFT && (
+                            <button className={style.payBtn} style={{ marginBottom: 10, backgroundColor: '#3598FE' }} onClick={handleContinue}>
+                                <EditIcon /> {t('orders.continueDraftButton', 'Продолжить заполнение')}
+                            </button>
+                        )}
+
                         {showCancelOrder && (
                             <button className={style.cancelBtn} onClick={handleCancel}>
                                 <CloseIcon /> {t('orders.cancelOrderButton', 'Отменить заказ')}
                             </button>
                         )}
-                        {needsPayment && (
+
+                        {needsPayment && order.status !== ORDER_STATUS.DRAFT && (
                             <button className={style.payBtn} onClick={() => setPaymentModalOpen(true)} style={{ marginTop: 10 }}>
                                 <CardIcon /> {t('orders.payNowButton', 'Оплатить сейчас')}
                             </button>
@@ -369,8 +312,8 @@ const OrderDetails: React.FC = () => {
                     isOpen={isPaymentModalOpen}
                     onClose={() => setPaymentModalOpen(false)}
                     order={order}
-                    userBalance={0} // modal will fetch
-                    paymentMethods={[]} // modal will fetch
+                    userBalance={0}
+                    paymentMethods={[]}
                     loadingData={false}
                     onPaymentSuccess={() => {
                         setPaymentModalOpen(false);

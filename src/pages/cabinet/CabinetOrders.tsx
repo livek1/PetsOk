@@ -75,6 +75,8 @@ const CabinetOrders: React.FC = () => {
 
     // --- PAYMENT HANDLERS ---
     const handleInitiatePayment = async (order: any) => {
+        if (order.status === 'draft') return;
+
         setSelectedOrderForPayment(order);
         setPaymentModalOpen(true);
         setModalLoading(true);
@@ -105,6 +107,16 @@ const CabinetOrders: React.FC = () => {
         }
     };
 
+    // 1. Просто просмотр деталей (работает для всех статусов, включая draft)
+    const handleViewDetails = (orderId: string) => {
+        navigate(`/cabinet/orders/${orderId}`);
+    };
+
+    // 2. Продолжение заполнения (только для draft)
+    const handleContinueDraft = (order: any) => {
+        navigate(`/cabinet/orders/create?uuid=${order.id}`);
+    };
+
     const handleLoadMore = () => {
         if (!loadingMore && page < totalPages) {
             fetchOrders(page + 1, true);
@@ -119,8 +131,8 @@ const CabinetOrders: React.FC = () => {
 
     return (
         <div className={style.container}>
-            <div className={style.header}>
-                <h1>{t('orders.myOrders', 'Мои заказы')}</h1>
+            {/* Убрали H1, оставили только кнопку справа */}
+            <div className={style.header} style={{ justifyContent: 'flex-end' }}>
                 <button className={style.createBtn} onClick={handleAddOrder}>
                     <PlusIcon /> {t('orders.createOrder', 'Создать заказ')}
                 </button>
@@ -141,12 +153,11 @@ const CabinetOrders: React.FC = () => {
                         <OrderItemCard
                             key={order.id}
                             order={order}
-                            // --- ПЕРЕДАЕМ ОБРАБОТЧИК ОПЛАТЫ ---
                             onPay={() => handleInitiatePayment(order)}
-                            // Детали заказа открываются по клику
-                            onDetails={() => navigate(`/cabinet/orders/${order.id}`)}
+                            onDetails={() => handleViewDetails(order.id)}
+                            onContinueDraft={() => handleContinueDraft(order)}
                             // @ts-ignore
-                            onReview={() => { /* Логика отзывов не реализована в вебе в этом примере */ }}
+                            onReview={() => { /* Логика отзывов */ }}
                         />
                     ))}
 

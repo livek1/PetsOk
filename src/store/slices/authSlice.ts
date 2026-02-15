@@ -41,6 +41,7 @@ export interface AuthState {
     error: string | null;
     contactCheckError: string | null;
     otpError: string | null;
+    redirectPath: string | null; // <--- НОВОЕ ПОЛЕ
 }
 
 const initialState: AuthState = {
@@ -53,6 +54,7 @@ const initialState: AuthState = {
     error: null,
     contactCheckError: null,
     otpError: null,
+    redirectPath: null, // <--- ИНИЦИАЛИЗАЦИЯ
 };
 
 interface RegisterThunkArg {
@@ -220,6 +222,7 @@ const authSlice = createSlice({
             state.user = null; state.token = null; state.refreshToken = null; state.isAuthenticated = false;
             state.isLoading = false; state.status = 'idle'; state.error = null;
             state.contactCheckError = null; state.otpError = null;
+            state.redirectPath = null;
             localStorage.removeItem('authToken'); localStorage.removeItem('refreshToken');
         },
         clearAuthErrors: (state) => {
@@ -228,6 +231,10 @@ const authSlice = createSlice({
         resetAuthFlow: (state) => {
             state.status = 'idle'; state.contactCheckError = null; state.otpError = null;
             state.error = null; state.isLoading = false;
+        },
+        // --- НОВЫЙ REDUCER: Установка пути редиректа ---
+        setAuthRedirectPath: (state, action: PayloadAction<string | null>) => {
+            state.redirectPath = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -275,5 +282,5 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout, clearAuthErrors, resetAuthFlow } = authSlice.actions;
+export const { logout, clearAuthErrors, resetAuthFlow, setAuthRedirectPath } = authSlice.actions;
 export default authSlice.reducer;

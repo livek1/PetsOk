@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import { useTranslation } from "react-i18next";
 
 import { config as defaultConfig } from './config/appConfig';
-import { loadUser, logout, clearAuthErrors } from './store/slices/authSlice';
+import { loadUser, logout, clearAuthErrors, setAuthRedirectPath } from './store/slices/authSlice'; // Импортируем setAuthRedirectPath
 import { loadAppConfig } from './store/slices/configSlice';
 import { AppDispatch, RootState } from './store';
 import { supportedLngs } from './i18n';
@@ -105,8 +105,9 @@ export const getReferralCode = (): string | undefined => {
   return Cookies.get(defaultConfig.referralParamName);
 };
 
+// --- ИЗМЕНЕНИЕ: Обновили интерфейс ---
 interface PageLayoutProps {
-  onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter') => void;
+  onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter', returnUrl?: string) => void;
 }
 
 const PageLayout: FC<PageLayoutProps> = ({ onAuthClick }) => {
@@ -129,9 +130,16 @@ const App: FC = () => {
   const [registrationType, setRegistrationType] = useState<'client' | 'sitter'>('client');
   const modalRoot = document.getElementById('modal-root');
 
-  const handleOpenAuthModal = useCallback((mode: 'login' | 'register', type: 'client' | 'sitter' = 'client') => {
+  // --- ИЗМЕНЕНИЕ: Добавили аргумент returnUrl ---
+  const handleOpenAuthModal = useCallback((mode: 'login' | 'register', type: 'client' | 'sitter' = 'client', returnUrl?: string) => {
     setAuthModalMode(mode);
     setRegistrationType(type);
+
+    // Если передан returnUrl, сохраняем его в Redux
+    if (returnUrl) {
+      dispatch(setAuthRedirectPath(returnUrl));
+    }
+
     setAuthModalOpen(true);
     dispatch(clearAuthErrors());
   }, [dispatch]);

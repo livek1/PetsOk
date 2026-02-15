@@ -11,14 +11,15 @@ import WhyBecomeSitterSection from '../components/becomeASitter/WhyBecomeSitterS
 import HowItWorksSitterSteps from '../components/becomeASitter/HowItWorksSitterSteps';
 import FinalSitterCTA from '../components/becomeASitter/FinalSitterCTA';
 import OfferableServicesSection from '../components/becomeASitter/OfferableServicesSection';
-import SitterAppPreviewSection from '../components/becomeASitter/SitterAppPreviewSection'; // <--- ИМПОРТ
+import SitterAppPreviewSection from '../components/becomeASitter/SitterAppPreviewSection';
 
 interface BecomeASitterPageProps {
     isPreloading?: boolean;
 }
 
 interface PageContextType {
-    onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter') => void;
+    // Обновляем сигнатуру
+    onAuthClick: (mode: 'login' | 'register', type?: 'client' | 'sitter', returnUrl?: string) => void;
 }
 
 const BecomeASitterPage: React.FC<BecomeASitterPageProps> = ({ isPreloading = false }) => {
@@ -26,17 +27,15 @@ const BecomeASitterPage: React.FC<BecomeASitterPageProps> = ({ isPreloading = fa
     const navigate = useNavigate();
     const { onAuthClick } = useOutletContext<PageContextType>();
 
-    // Проверка авторизации из Redux
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
     const handleGetStarted = () => {
         if (isAuthenticated) {
-            // Если авторизован -> идем в кабинет заполнять заявку
             navigate('/cabinet/become-sitter');
         } else {
-            // Если нет -> открываем модалку регистрации (тип sitter)
+            // --- ИЗМЕНЕНИЕ: Передаем путь возврата ---
             if (onAuthClick) {
-                onAuthClick('register', 'sitter');
+                onAuthClick('register', 'sitter', '/cabinet/become-sitter');
             }
         }
     };
@@ -61,10 +60,7 @@ const BecomeASitterPage: React.FC<BecomeASitterPageProps> = ({ isPreloading = fa
             <BecomeSitterHero isPreloading={isPreloading} onGetStartedClick={handleGetStarted} />
             <WhyBecomeSitterSection />
             <HowItWorksSitterSteps />
-
-            {/* --- НОВАЯ СЕКЦИЯ С ПРЕВЬЮ ПРИЛОЖЕНИЯ --- */}
             <SitterAppPreviewSection />
-
             <OfferableServicesSection />
             <FinalSitterCTA onGetStartedClick={handleGetStarted} />
 

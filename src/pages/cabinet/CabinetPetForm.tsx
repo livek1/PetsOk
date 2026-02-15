@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import style from '../../style/pages/cabinet/CabinetPetForm.module.scss';
 import {
@@ -35,8 +35,9 @@ interface PetFormProps {
 const CabinetPetForm: React.FC<PetFormProps> = ({ mode }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const location = useLocation(); // Используем хук
     const { id } = useParams();
-
+    const returnToOrderUuid = location.state?.returnToOrderUuid;
     const [loading, setLoading] = useState(mode === 'edit');
     const [submitting, setSubmitting] = useState(false);
 
@@ -218,6 +219,14 @@ const CabinetPetForm: React.FC<PetFormProps> = ({ mode }) => {
         setBreeds([]);
     };
 
+    const handleBackClick = () => {
+        if (returnToOrderUuid) {
+            navigate(`/cabinet/orders/create?uuid=${returnToOrderUuid}`);
+        } else {
+            navigate('/cabinet/pets');
+        }
+    };
+
     const onSubmit = async (data: any) => {
         setSubmitting(true);
         try {
@@ -227,7 +236,15 @@ const CabinetPetForm: React.FC<PetFormProps> = ({ mode }) => {
             } else {
                 await updatePet(id!, payload, newFiles);
             }
-            navigate('/cabinet/pets');
+
+            // --- ЛОГИКА ВОЗВРАТА ---
+            if (returnToOrderUuid) {
+                // Если мы пришли из заказа, возвращаемся в него
+                navigate(`/cabinet/orders/create?uuid=${returnToOrderUuid}`);
+            } else {
+                navigate('/cabinet/pets');
+            }
+
         } catch (e: any) {
             console.error(e);
             alert('Ошибка сохранения. Проверьте обязательные поля.');
@@ -240,8 +257,8 @@ const CabinetPetForm: React.FC<PetFormProps> = ({ mode }) => {
 
     return (
         <div className={style.formContainer}>
-            <button className={style.backButton} onClick={() => navigate('/cabinet/pets')}>
-                <BackIcon /> {t('common.backToProfile', 'Вернуться к питомцам')}
+            <button className={style.backButton} onClick={handleBackClick}>
+                <BackIcon /> {returnToOrderUuid ? 'Вернуться к созданию заказа' : t('common.backToProfile', 'Вернуться к питомцам')}
             </button>
 
             <div className={style.headerBlock}>

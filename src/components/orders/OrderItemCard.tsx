@@ -24,9 +24,12 @@ const WalletIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="n
 const ListIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
 const StarIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
 const ChevronRight = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"></polyline></svg>;
+// Новая иконка для редактирования/продолжения
+const EditIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
 
 // --- CONSTANTS ---
 const ORDER_STATUS = {
+    DRAFT: 'draft', // <<< ДОБАВЛЕНО
     PENDING_WORKER: 'pending_worker',
     PENDING_PLATFORM_PAYMENT: 'pending_platform_payment',
     PENDING_PLATFORM_FEE: 'pending_platform_fee',
@@ -73,7 +76,23 @@ const formatDate = (dateStr: string | undefined | null): string => { moment.loca
 const formatFullDate = (dateStr: string | undefined | null): string => { moment.locale('ru'); return dateStr ? moment(dateStr).format('LL') : ''; }
 const formatPrice = (amount: string | number | null | undefined, currency: string | null | undefined): string | null => { if (amount === null || amount === undefined) return null; const num = parseFloat(String(amount)); if (isNaN(num)) return null; const symbol = currency === 'RUB' ? '₽' : (currency || ''); const formattedNum = num.toFixed(2).replace(/\.00$/, ''); return `${formattedNum} ${symbol} `.trim(); };
 
-const getStatusInfo = (status?: string) => { switch (status) { case ORDER_STATUS.PENDING_WORKER: return { textKey: 'orderStatus.new', className: style.statusWarning, Icon: HourglassIcon }; case ORDER_STATUS.CONFIRMED: return { textKey: 'orderStatus.confirmed', className: style.statusSuccess, Icon: CheckIcon }; case ORDER_STATUS.IN_PROGRESS: return { textKey: 'orderStatus.inProgress', className: style.statusInfo, Icon: PlayIcon }; case ORDER_STATUS.COMPLETED: return { textKey: 'orderStatus.completed', className: style.statusSuccess, Icon: PawIcon }; case ORDER_STATUS.CANCELED_CLIENT: return { textKey: 'orderStatus.canceled_client', className: style.statusError, Icon: CloseIcon }; case ORDER_STATUS.CANCELED_WORKER: return { textKey: 'orderStatus.canceled_worker', className: style.statusError, Icon: CloseIcon }; case ORDER_STATUS.CANCELED_ADMIN: return { textKey: 'orderStatus.canceled_admin', className: style.statusError, Icon: CloseIcon }; case ORDER_STATUS.DISPUTED: return { textKey: 'orderStatus.disputed', className: style.statusError, Icon: AlertIcon }; case ORDER_STATUS.PENDING_PLATFORM_PAYMENT: return { textKey: 'orderStatus.awaitingPayment', className: style.statusWarning, Icon: CardIcon }; case ORDER_STATUS.PENDING_PLATFORM_FEE: return { textKey: 'orderStatus.awaitingBookingFee', className: style.statusWarning, Icon: CardIcon }; case ORDER_STATUS.RECURRING_PAYMENT_FAILED: return { textKey: 'orderStatus.paymentFailed', className: style.statusError, Icon: AlertIcon }; default: return { textKey: 'orderStatus.unknown', className: style.statusDefault, Icon: HourglassIcon }; } };
+const getStatusInfo = (status?: string) => {
+    switch (status) {
+        case ORDER_STATUS.DRAFT: return { textKey: 'orderStatus.draft', className: style.statusDefault, Icon: EditIcon }; // Черновик
+        case ORDER_STATUS.PENDING_WORKER: return { textKey: 'orderStatus.new', className: style.statusWarning, Icon: HourglassIcon };
+        case ORDER_STATUS.CONFIRMED: return { textKey: 'orderStatus.confirmed', className: style.statusSuccess, Icon: CheckIcon };
+        case ORDER_STATUS.IN_PROGRESS: return { textKey: 'orderStatus.inProgress', className: style.statusInfo, Icon: PlayIcon };
+        case ORDER_STATUS.COMPLETED: return { textKey: 'orderStatus.completed', className: style.statusSuccess, Icon: PawIcon };
+        case ORDER_STATUS.CANCELED_CLIENT: return { textKey: 'orderStatus.canceled_client', className: style.statusError, Icon: CloseIcon };
+        case ORDER_STATUS.CANCELED_WORKER: return { textKey: 'orderStatus.canceled_worker', className: style.statusError, Icon: CloseIcon };
+        case ORDER_STATUS.CANCELED_ADMIN: return { textKey: 'orderStatus.canceled_admin', className: style.statusError, Icon: CloseIcon };
+        case ORDER_STATUS.DISPUTED: return { textKey: 'orderStatus.disputed', className: style.statusError, Icon: AlertIcon };
+        case ORDER_STATUS.PENDING_PLATFORM_PAYMENT: return { textKey: 'orderStatus.awaitingPayment', className: style.statusWarning, Icon: CardIcon };
+        case ORDER_STATUS.PENDING_PLATFORM_FEE: return { textKey: 'orderStatus.awaitingBookingFee', className: style.statusWarning, Icon: CardIcon };
+        case ORDER_STATUS.RECURRING_PAYMENT_FAILED: return { textKey: 'orderStatus.paymentFailed', className: style.statusError, Icon: AlertIcon };
+        default: return { textKey: 'orderStatus.unknown', className: style.statusDefault, Icon: HourglassIcon };
+    }
+};
 
 const getServiceTypeInfo = (serviceType?: string) => {
     switch (serviceType) {
@@ -90,10 +109,11 @@ interface OrderItemCardProps {
     order: any;
     onPay: (order: any) => void;
     onDetails: (orderId: string) => void;
+    onContinueDraft?: (order: any) => void; // Новый проп
     onReview: (order: any) => void;
 }
 
-const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDetails, onReview }) => {
+const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDetails, onContinueDraft, onReview }) => {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const [timeLeftString, setTimeLeftString] = useState<string | null>(null);
@@ -156,6 +176,7 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
     }, [isRecurring, item.start_date_local, item.end_date_local, i18n.language]);
 
     const paymentDisplayInfo = useMemo(() => {
+        // ... (логика paymentDisplayInfo без изменений, для драфтов она вернет дефолты или пустые строки, что ок)
         let { payment_flow_type } = item;
         if (!payment_flow_type) { payment_flow_type = item.status === ORDER_STATUS.PENDING_PLATFORM_FEE ? PAYMENT_FLOW.PLATFORM_FEE_ONLY : PAYMENT_FLOW.PLATFORM_PREPAY; }
         const { currency, start_date_local } = item;
@@ -195,6 +216,20 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
 
     // --- Smart Banners ---
     const renderSmartBanner = () => {
+        // Для черновиков свой баннер
+        if (item.status === ORDER_STATUS.DRAFT) {
+            return (
+                <div className={`${style.smartBanner} ${style.bannerGrey}`} onClick={() => onContinueDraft && onContinueDraft(item)}>
+                    <div className={`${style.bannerIcon} ${style.grey}`}><EditIcon /></div>
+                    <div className={style.bannerContent}>
+                        <span className={style.bannerTitle}>{t('orders.banner.draftTitle', 'Заказ не опубликован')}</span>
+                        <span className={style.bannerText}>{t('orders.banner.draftBody', 'Нажмите, чтобы продолжить оформление.')}</span>
+                    </div>
+                    <ChevronRight />
+                </div>
+            );
+        }
+
         if (item.status !== ORDER_STATUS.PENDING_WORKER) return null;
         const requests = item.requests?.data || [];
         const workerOffers = requests.filter((r: any) => r.request_type === REQUEST_TYPE.WORKER_OFFER && r.status === REQUEST_STATUS.PENDING);
@@ -213,6 +248,15 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
     };
 
     const renderActionButtons = () => {
+        // --- ДЛЯ ЧЕРНОВИКА: КНОПКА "ПРОДОЛЖИТЬ" ---
+        if (item.status === ORDER_STATUS.DRAFT) {
+            return (
+                <button className={`${style.actionButton} ${style.btnPrimary}`} onClick={() => onContinueDraft && onContinueDraft(item)}>
+                    <EditIcon /> {t('orders.continueDraftButton', 'Продолжить заполнение')}
+                </button>
+            );
+        }
+
         const paymentDue = (paymentDisplayInfo?.paymentButtonAmountForDisplay ?? 0) > 0.001;
         const offersAvailable = pendingOffersCount > 0;
 
@@ -263,6 +307,7 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
     return (
         <div className={style.orderCard} onClick={() => onDetails(item.id)}>
             <div className={style.cardHeader}>
+                {/* Для черновика текст берется из getStatusInfo ('Черновик') */}
                 <div className={`${style.statusBadge} ${statusInfo.className}`}>
                     {t(statusInfo.textKey)}
                 </div>
@@ -294,34 +339,41 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
                 <div className={style.orderInfoSection}>
                     <div className={`${style.infoBlock} ${style.withBorder}`} style={{ padding: '12px 16px' }}>
                         {renderSmartBanner()}
-                        {workerName && (
-                            <div className={style.orderInfoRow}>
-                                <PersonIcon className={style.infoIcon} />
-                                <span className={style.orderInfoText}>
-                                    {t('orders.assignedWorker')}:{' '}
-                                    <span
-                                        className={style.workerName}
-                                        style={workerData?.id ? { cursor: 'pointer', color: '#3598FE', textDecoration: 'underline' } : {}}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if (workerData?.id) window.open(`/sitter/${workerData.id}`, '_blank')
-                                        }}
-                                    >
-                                        {workerName}
-                                    </span>
-                                </span>
-                            </div>
-                        )}
-                        {!workerName && item.status !== ORDER_STATUS.PENDING_WORKER && (
-                            <div className={style.orderInfoRow}>
-                                <PersonIcon className={style.infoIcon} />
-                                <span className={style.orderInfoText}>
-                                    {t('orders.assignedWorker')}: <span className={style.workerName} style={{ color: '#718096' }}>{t('common.notAssigned', 'Не назначен')}</span>
-                                </span>
-                            </div>
+
+                        {/* Показываем воркера только если заказ НЕ черновик */}
+                        {item.status !== ORDER_STATUS.DRAFT && (
+                            <>
+                                {workerName ? (
+                                    <div className={style.orderInfoRow}>
+                                        <PersonIcon className={style.infoIcon} />
+                                        <span className={style.orderInfoText}>
+                                            {t('orders.assignedWorker')}:{' '}
+                                            <span
+                                                className={style.workerName}
+                                                style={workerData?.id ? { cursor: 'pointer', color: '#3598FE', textDecoration: 'underline' } : {}}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (workerData?.id) window.open(`/sitter/${workerData.id}`, '_blank')
+                                                }}
+                                            >
+                                                {workerName}
+                                            </span>
+                                        </span>
+                                    </div>
+                                ) : (
+                                    item.status !== ORDER_STATUS.PENDING_WORKER && (
+                                        <div className={style.orderInfoRow}>
+                                            <PersonIcon className={style.infoIcon} />
+                                            <span className={style.orderInfoText}>
+                                                {t('orders.assignedWorker')}: <span className={style.workerName} style={{ color: '#718096' }}>{t('common.notAssigned', 'Не назначен')}</span>
+                                            </span>
+                                        </div>
+                                    )
+                                )}
+                            </>
                         )}
                     </div>
-                    {paymentDisplayInfo && paymentDisplayInfo.infoLines.length > 0 && (
+                    {paymentDisplayInfo && paymentDisplayInfo.infoLines.length > 0 && item.status !== ORDER_STATUS.DRAFT && (
                         <div className={style.infoBlock} style={{ padding: '12px 16px' }}>
                             {paymentDisplayInfo.infoLines.map((info: any, index: number) => (
                                 <div key={index} className={`${style.orderInfoRow} ${info.important ? style.important : ''}`}>

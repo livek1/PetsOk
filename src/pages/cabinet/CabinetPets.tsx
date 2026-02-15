@@ -33,8 +33,8 @@ const CabinetPets: React.FC = () => {
 
     return (
         <div className={style.container}>
-            <div className={style.headerRow}>
-                <h1>{t('cabinet.pets', 'Мои питомцы')}</h1>
+            {/* Убрали H1, оставили только кнопку справа */}
+            <div className={style.headerRow} style={{ justifyContent: 'flex-end' }}>
                 <Link to="/cabinet/pets/add" className={style.addButton}>
                     <PlusIcon />
                     {t('petForm.addPetButton', 'Добавить питомца')}

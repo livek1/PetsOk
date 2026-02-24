@@ -74,10 +74,7 @@ const Footer: React.FC = () => {
             </a>
           </div>
 
-          {/* Дисклеймер (обязательно для РФ) */}
-          <p className={style.disclaimer}>
-            * Деятельность Meta Platforms Inc. (Facebook, Instagram) запрещена на территории РФ как экстремистская.
-          </p>
+
         </div>
 
       </div>

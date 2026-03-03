@@ -1,13 +1,15 @@
 // --- File: src/app/[city]/[service]/page.tsx ---
 import { Metadata } from 'next';
 import SeoSearchClient from './SeoSearchClient';
-import { Suspense } from 'react';
 import {
     FRONT_TO_BACK_CITY,
     FRONT_TO_BACK_SERVICE,
     BACK_TO_REDUX_SERVICE,
     getCityNameFromSlug
 } from '@/config/seoConfig';
+
+// 1. ЗАСТАВЛЯЕМ NEXT.JS РЕНДЕРИТЬ HTML НА СЕРВЕРЕ (ОТКЛЮЧАЕМ КЛИЕНТСКИЙ SUSPENSE)
+export const dynamic = 'force-dynamic';
 
 type Props = {
     params: Promise<{
@@ -132,18 +134,17 @@ export default async function CityServicePage({ params, searchParams }: Props) {
         })
     };
 
+    // Убрали Suspense, чтобы HTML собирался сразу для роботов
     return (
         <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-            <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0' }}>Загрузка...</div>}>
-                <SeoSearchClient
-                    cityName={cityName}
-                    reduxServiceKey={reduxServiceKey}
-                    seoData={seo}
-                    initialSitters={initialSitters}
-                    initialPagination={initialPagination}
-                />
-            </Suspense>
+            <SeoSearchClient
+                cityName={cityName}
+                reduxServiceKey={reduxServiceKey}
+                seoData={seo}
+                initialSitters={initialSitters}
+                initialPagination={initialPagination}
+            />
         </>
     );
 }

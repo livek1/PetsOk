@@ -259,7 +259,7 @@ const FilterBar: React.FC = () => {
         }
     };
 
-    const dropdownVariants = {
+    const dropdownVariants: import("framer-motion").Variants = {
         hidden: isMobile ? { y: '100%', opacity: 1 } : { opacity: 0, y: -10, scale: 0.98 },
         visible: isMobile
             ? { y: 0, opacity: 1, transition: { type: "spring", damping: 25, stiffness: 200 } }

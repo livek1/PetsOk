@@ -82,8 +82,26 @@ export default function SeoSearchClient({
 
     const [hoveredSitterId, setHoveredSitterId] = useState<number | null>(null);
 
-    const [mapState, setMapState] = useState<{ center: number[], zoom: number }>({ center: [55.75, 37.57], zoom: 10 });
+    // --- ИСПРАВЛЕНИЕ КАРТЫ: Умное определение стартовых координат ---
+    const defaultCenter = useMemo(() => {
+        const latStr = searchParamsHook.get('lat');
+        const lonStr = searchParamsHook.get('lon');
+        if (latStr && lonStr) return [parseFloat(latStr), parseFloat(lonStr)];
+
+        if (initialSitters && initialSitters.length > 0) {
+            const firstValid = initialSitters.find(s => s.latitude && s.longitude);
+            if (firstValid) return [parseFloat(firstValid.latitude), parseFloat(firstValid.longitude)];
+        }
+        return [55.75, 37.57]; // fallback Moscow
+    }, [searchParamsHook, initialSitters]);
+
+    const [mapState, setMapState] = useState<{ center: number[], zoom: number }>({
+        center: defaultCenter,
+        zoom: searchParamsHook.get('zoom') ? parseInt(searchParamsHook.get('zoom')!) : (initialSitters?.length ? 12 : 10)
+    });
+
     const [ymapsNamespace, setYmapsNamespace] = useState<any>(null);
+    const [isMapReady, setIsMapReady] = useState(false);
 
     const mapRef = useRef<any>(null);
     const listContainerRef = useRef<HTMLDivElement>(null);
@@ -148,11 +166,14 @@ export default function SeoSearchClient({
 
 
     // =========================================================================
-    // 2. АВТО-МАСШТАБИРОВАНИЕ КАРТЫ ПОД МАРКЕРЫ (Auto-Fit Bounds)
+    // 2. АВТО-МАСШТАБИРОВАНИЕ КАРТЫ ПОД МАРКЕРЫ ИЛИ ПУСТОЙ ГОРОД
     // =========================================================================
     useEffect(() => {
-        // Мы делаем авто-фит ТОЛЬКО если пользователь не двигает карту сам (поиск по городу)
-        if (reduxParams.searchReason !== 'map_bounds' && displaySitters.length > 0 && mapRef.current) {
+        // --- ИСПРАВЛЕНИЕ: Ждем пока isMapReady станет true ---
+        if (!isMapReady || !mapRef.current) return;
+
+        // Выполняем автоматическое центрирование ТОЛЬКО если пользователь не двигает карту руками
+        if (reduxParams.searchReason !== 'map_bounds') {
 
             let minLat = 90, maxLat = -90, minLon = 180, maxLon = -180;
             let validMarkersCount = 0;
@@ -182,15 +203,19 @@ export default function SeoSearchClient({
                         [[minLat, minLon], [maxLat, maxLon]],
                         { checkZoomRange: true, zoomMargin: 40 } // zoomMargin - отступы от краев карты
                     ).then(() => {
-                        // Карта закончила движение
                         setTimeout(() => { isProgrammaticMove.current = false; }, 800);
                     }).catch(() => {
                         setTimeout(() => { isProgrammaticMove.current = false; }, 800);
                     });
                 }
+            } else if (reduxParams.latitude && reduxParams.longitude) {
+                // Если ситтеров нет, но API вернуло нам координаты города (reduxParams.latitude/longitude)
+                isProgrammaticMove.current = true;
+                mapRef.current.setCenter([reduxParams.latitude, reduxParams.longitude], 11);
+                setTimeout(() => { isProgrammaticMove.current = false; }, 800);
             }
         }
-    }, [displaySitters, reduxParams.searchReason]);
+    }, [displaySitters, reduxParams.searchReason, reduxParams.latitude, reduxParams.longitude, isMapReady]);
 
 
     // =========================================================================
@@ -416,12 +441,15 @@ export default function SeoSearchClient({
                                 onWheel={() => { isUserDraggingMap.current = true; }}
                             >
                                 <Map
-                                    state={{ ...mapState, controls: [] }}
-                                    defaultState={{ center: mapState.center, zoom: mapState.zoom, behaviors: ['default', '!scrollZoom'] }}
+                                    // Убрали prop 'state', используем только defaultState и imperative команды через mapRef
+                                    defaultState={{ center: mapState.center, zoom: mapState.zoom, behaviors: ['default', '!scrollZoom'], controls: [] }}
                                     options={{ suppressMapOpenBlock: true, minZoom: 3, maxZoom: 18 }}
                                     instanceRef={(ref) => {
                                         mapRef.current = ref;
-                                        if (ref) ref.behaviors.disable('scrollZoom');
+                                        if (ref) {
+                                            ref.behaviors.disable('scrollZoom');
+                                            if (!isMapReady) setIsMapReady(true);
+                                        }
                                     }}
                                     className={style.yandexMapInstance}
                                     width="100%" height="100%"

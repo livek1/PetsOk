@@ -267,6 +267,10 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
                 <p className={style.mobileWelcomeUser}>
                   {t('header.welcomeUserShort', 'Привет, {{name}}!', { name: user.first_name || user.name || user.email })}
                 </p>
+                {/* ИСПРАВЛЕНИЕ: Добавили кнопку перехода в личный кабинет */}
+                <Link href="/cabinet" onClick={closeMobileMenuFully} className={style.authButton}>
+                  {t('cabinet.title', 'Личный кабинет')}
+                </Link>
                 <button onClick={handleMobileLogout} className={style.authButtonSecondary}>
                   {t('profile.logout.confirmButton', 'Выйти')}
                 </button>

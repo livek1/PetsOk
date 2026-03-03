@@ -1,12 +1,13 @@
 // --- File: src/components/cabinet/Sidebar.tsx ---
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'; // Добавлен useNavigate
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../store';
-import { logout, logoutUser } from '../../store/slices/authSlice';
-import style from '../../style/layouts/CabinetLayout.module.scss';
-import { User } from '../../services/api';
+import { RootState, AppDispatch } from '@/store';
+import { logoutUser } from '@/store/slices/authSlice';
+import style from '@/style/layouts/CabinetLayout.module.scss';
+import { User } from '@/services/api';
 
 // Иконки
 const Icons = {
@@ -40,12 +41,12 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate(); // Используем хук навигации
+    const router = useRouter();
+    const pathname = usePathname();
     const user = useSelector((state: RootState) => state.auth.user) as User | null;
 
     const isSitter = user?.isSitter;
 
-    // Меню для Клиента
     const clientLinks = [
         { to: '/cabinet/profile', label: t('cabinet.profile', 'Мой профиль'), icon: Icons.User },
         { to: '/cabinet/pets', label: t('cabinet.pets', 'Мои питомцы'), icon: Icons.Pets },
@@ -54,17 +55,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { to: '/cabinet/chat', label: t('cabinet.chat', 'Сообщения'), icon: Icons.Chat },
     ];
 
-    // Меню для Ситтера
     const sitterLinks = [
         { to: '/cabinet/sitter-dashboard', label: t('cabinet.sitterDashboard', 'Панель ситтера'), icon: Icons.Home },
-        { to: '/cabinet/sitter-settings', label: t('sitterSettings.title', 'Настройки исполнителя'), icon: Icons.Settings },
     ];
 
     const handleLogout = () => {
-        // --- ИСПРАВЛЕНИЕ: Асинхронный выход ---
         dispatch(logoutUser()).then(() => {
             onClose();
-            navigate('/');
+            router.push('/');
         });
     };
 
@@ -72,59 +70,58 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <>
             <aside className={`${style.sidebar} ${isOpen ? style.open : ''}`}>
                 <div className={style.sidebarHeader}>
-                    <NavLink to="/" className={style.logo}>PetsOk</NavLink>
+                    {/* Добавили onClick={onClose} */}
+                    <Link href="/" className={style.logo} onClick={onClose}>
+                        PetsOk
+                    </Link>
                 </div>
 
                 <nav className={style.navLinks}>
-                    {/* Секция Ситтера (если есть роль) */}
                     {isSitter && (
                         <>
                             <div style={{ padding: '0 16px', marginBottom: '8px', fontSize: '12px', color: '#999', fontWeight: 600, textTransform: 'uppercase' }}>
                                 {t('cabinet.modeSitter', 'Исполнитель')}
                             </div>
                             {sitterLinks.map(link => (
-                                <NavLink key={link.to} to={link.to} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`} onClick={onClose}>
+                                <Link key={link.to} href={link.to} className={`${style.navItem} ${pathname === link.to ? style.active : ''}`} onClick={onClose}>
                                     <link.icon />
                                     {link.label}
-                                </NavLink>
+                                </Link>
                             ))}
                             <div style={{ height: '1px', background: '#eee', margin: '20px 0' }}></div>
                         </>
                     )}
 
-                    {/* Секция Клиента */}
                     <div style={{ padding: '0 16px', marginBottom: '8px', fontSize: '12px', color: '#999', fontWeight: 600, textTransform: 'uppercase' }}>
                         {t('cabinet.modeClient', 'Клиент')}
                     </div>
 
-                    {/* === КНОПКА: СОЗДАТЬ ЗАКАЗ === */}
-                    <NavLink
-                        to="/cabinet/orders/create"
+                    <Link
+                        href="/cabinet/orders/create"
                         className={style.createOrderBtn}
                         onClick={onClose}
                     >
                         <Icons.Plus />
                         <span>{t('orders.createOrder', 'Создать заказ')}</span>
-                    </NavLink>
+                    </Link>
 
                     {clientLinks.map(link => (
-                        <NavLink key={link.to} to={link.to} className={({ isActive }) => `${style.navItem} ${isActive ? style.active : ''}`} onClick={onClose}>
+                        <Link key={link.to} href={link.to} className={`${style.navItem} ${pathname === link.to ? style.active : ''}`} onClick={onClose}>
                             <link.icon />
                             {link.label}
-                        </NavLink>
+                        </Link>
                     ))}
 
-                    {/* Кнопка "Стать ситтером" (внизу) для тех, кто еще не ситтер */}
                     {!isSitter && (
-                        <NavLink
-                            to="/cabinet/become-sitter"
+                        <Link
+                            href="/cabinet/become-sitter"
                             className={style.navItem}
                             style={{ marginTop: 'auto', color: '#3598FE', fontWeight: 600 }}
                             onClick={onClose}
                         >
                             <Icons.BecomeSitter />
                             {t('header.becomeSitter', 'Стать ситтером')}
-                        </NavLink>
+                        </Link>
                     )}
                 </nav>
 
@@ -146,7 +143,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 </div>
             </aside>
 
-            {/* Overlay для мобильных */}
             <div className={`${style.overlay} ${isOpen ? style.visible : ''}`} onClick={onClose}></div>
         </>
     );

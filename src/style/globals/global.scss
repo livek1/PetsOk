@@ -1,64 +1,6 @@
 /* --- File: src/style/globals/global.scss --- */
-@use "swiper/css";
 @use "./resets.scss";
 @use "../variables" as *;
-
-/* Шрифты */
-@font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: normal;
-  font-weight: 400;
-  src: url('/fonts/raleway-v37-cyrillic_latin-regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: italic;
-  font-weight: 400;
-  src: url('/fonts/raleway-v37-cyrillic_latin-italic.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: normal;
-  font-weight: 500;
-  src: url('/fonts/raleway-v37-cyrillic_latin-500.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: italic;
-  font-weight: 500;
-  src: url('/fonts/raleway-v37-cyrillic_latin-500italic.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: normal;
-  font-weight: 600;
-  src: url('/fonts/raleway-v37-cyrillic_latin-600.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: normal;
-  font-weight: 700;
-  src: url('/fonts/raleway-v37-cyrillic_latin-700.woff2') format('woff2');
-}
-
-@font-face {
-  font-display: swap;
-  font-family: 'Raleway';
-  font-style: normal;
-  font-weight: 800;
-  src: url('/fonts/raleway-v37-cyrillic_latin-800.woff2') format('woff2');
-}
 
 body {
   font-family: $font-family-base;
@@ -100,4 +42,65 @@ body {
 :focus-visible {
   outline: 2px solid $primary-color;
   outline-offset: 2px;
+}
+
+/* --- СТИЛИ ДЛЯ МАРКЕРОВ ЯНДЕКС КАРТ (Глобально) --- */
+.petsok-map-marker {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+  color: #1A202C;
+
+  font-family: var(--font-raleway), 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  transform: translate(-50%, -50%);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+
+  .marker-icon {
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+  }
+
+  &.is-hovered {
+    background-color: #3598FE !important;
+    color: #FFFFFF !important;
+    transform: translate(-50%, -50%) scale(1.15) !important;
+    box-shadow: 0 8px 20px rgba(53, 152, 254, 0.4) !important;
+    border-color: transparent !important;
+
+    .marker-icon svg path {
+      fill: #FFFFFF !important;
+    }
+  }
+
+  &.is-premium:not(.is-hovered) {
+    background-color: #FFFBEB;
+    color: #B45309;
+    border: 2px solid #FFD700;
+    padding: 4px 10px;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.25);
+
+    .marker-icon svg path {
+      fill: #F59E0B;
+    }
+  }
 }

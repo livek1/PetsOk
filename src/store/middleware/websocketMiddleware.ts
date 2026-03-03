@@ -12,7 +12,11 @@ declare global {
         Pusher: any;
     }
 }
-window.Pusher = Pusher;
+
+// Защита от SSR (Server-Side Rendering) в Next.js
+if (typeof window !== 'undefined') {
+    window.Pusher = Pusher;
+}
 
 export const WEBSOCKET_CONNECT = 'WEBSOCKET_CONNECT';
 export const WEBSOCKET_DISCONNECT = 'WEBSOCKET_DISCONNECT';
@@ -71,8 +75,6 @@ export const websocketMiddleware: Middleware<{}, RootState> = (store) => (next) 
                 .then(config => {
                     if (!config.app_key) throw new Error('Invalid WS config');
 
-                    // --- ВАЖНОЕ ИЗМЕНЕНИЕ: Нормализация хоста ---
-                    // Убираем https:// и слеши, если они пришли с бэкенда или из location
                     const rawHost = config.host || window.location.hostname;
                     const host = rawHost.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
@@ -80,29 +82,18 @@ export const websocketMiddleware: Middleware<{}, RootState> = (store) => (next) 
                         broadcaster: 'pusher',
                         key: config.app_key,
                         cluster: config.app_cluster || 'mt1',
-
-                        // Используем очищенный хост
                         wsHost: host,
-
-                        // --- ВАЖНОЕ ИЗМЕНЕНИЕ: Форсируем 443 порт ---
-                        // Игнорируем порт 6001 из конфига, идем через Nginx (SSL)
                         wsPort: 443,
                         wssPort: 443,
-
-                        // --- ВАЖНОЕ ИЗМЕНЕНИЕ: Добавляем путь /ws ---
-                        // Это критично, так как Nginx/Reverb ожидают этот префикс (как на мобилке)
                         wsPath: '/ws',
-
                         forceTLS: true,
-                        disableStats: true, // Отключаем статистику, чтобы избежать лишних ошибок
+                        disableStats: true,
                         encrypted: true,
-
                         authEndpoint: `${appConfig.apiBaseUrl.replace('/api/v1', '')}/broadcasting/auth`,
                         auth: { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } },
                         enabledTransports: ['ws', 'wss'],
                     });
 
-                    // Логируем смену состояний для отладки
                     echo.connector.pusher.connection.bind('state_change', (states: any) => {
                         console.log('[WS Web] Connection state:', states.current);
                     });
@@ -135,7 +126,6 @@ export const websocketMiddleware: Middleware<{}, RootState> = (store) => (next) 
                     });
 
                     echo.connector.pusher.connection.bind('error', (err: any) => {
-                        // Игнорируем ошибку 4004 (если канал еще не создан), остальные показываем
                         if (err?.error?.data?.code !== 4004) {
                             console.error('[WS Web] Error:', err);
                             dispatch(websocketStateChange({ connected: false, connecting: false, error: 'Connection error' }));

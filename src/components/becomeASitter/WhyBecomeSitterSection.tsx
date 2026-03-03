@@ -1,67 +1,41 @@
 // --- File: src/components/becomeASitter/WhyBecomeSitterSection.tsx ---
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import '../../style/components/becomeASitter/WhyBecomeSitterSection.scss';
+import '@/style/components/becomeASitter/WhyBecomeSitterSection.scss';
 
-// Иконки
-const IconZeroPercent = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#FFC107"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" /></svg>;
-const IconFreedom = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#3598FE"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" /></svg>;
-const IconSafety = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#38A169"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" /></svg>;
-const IconClients = () => <svg viewBox="0 0 24 24" width="48" height="48" fill="#E53E3E"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" /></svg>;
+const IconMoney = () => <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>;
+const IconFreedom = () => <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
+const IconClients = () => <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>;
 
 const WhyBecomeSitterSection: React.FC = () => {
-    const { t } = useTranslation();
-
-    const benefits = [
-        {
-            id: 'benefit1',
-            icon: <IconZeroPercent />,
-            titleKey: 'becomeSitter.benefit1Title',
-            descriptionKey: 'becomeSitter.benefit1Desc',
-            isHighlight: true // Флаг для выделения карточки
-        },
-        { id: 'benefit2', icon: <IconFreedom />, titleKey: 'becomeSitter.benefit2Title', descriptionKey: 'becomeSitter.benefit2Desc' },
-        { id: 'benefit3', icon: <IconSafety />, titleKey: 'becomeSitter.benefit3Title', descriptionKey: 'becomeSitter.benefit3Desc' },
-        { id: 'benefit4', icon: <IconClients />, titleKey: 'becomeSitter.benefit4Title', descriptionKey: 'becomeSitter.benefit4Desc' },
-    ];
-
-    const sectionVariants = {
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-    };
-
-    const itemVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
-    };
-
     return (
-        <motion.section
-            className="why-become-sitter"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={sectionVariants}
-        >
+        <motion.section className="why-become-sitter" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
             <div className="wrapper">
-                <motion.h2 className="why-become-sitter__title" variants={itemVariants}>
-                    {t('becomeSitter.benefitsTitle')}
+                <motion.h2 className="why-become-sitter__title" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}>
+                    Почему специалисты выбирают PetsOk?
                 </motion.h2>
 
-                <div className="why-become-sitter__benefits-grid">
-                    {benefits.map((benefit, index) => (
-                        <motion.div
-                            key={benefit.id}
-                            className={`benefit-card ${benefit.isHighlight ? 'benefit-card--highlight' : ''}`}
-                            custom={index}
-                            variants={itemVariants}
-                        >
-                            <div className="benefit-card__icon-wrapper">{benefit.icon}</div>
-                            <h3 className="benefit-card__title">{t(benefit.titleKey)}</h3>
-                            <p className="benefit-card__description">{t(benefit.descriptionKey)}</p>
-                        </motion.div>
-                    ))}
+                <div className="why-become-sitter__grid">
+                    {/* Карточка 1 */}
+                    <motion.div className="feature-card feature-card--highlight" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+                        <div className="feature-card__icon"><IconMoney /></div>
+                        <h3>100% дохода — ваши</h3>
+                        <p>Мы ценим ваш труд. Вы сами устанавливаете прайс на свои услуги и имеете возможность работать <strong>без комиссии сервиса</strong>. Вы получаете ровно ту сумму, которую указали.</p>
+                    </motion.div>
+
+                    {/* Карточка 2 */}
+                    <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+                        <div className="feature-card__icon text-blue"><IconFreedom /></div>
+                        <h3>Абсолютная свобода</h3>
+                        <p>Вы сами решаете, какие услуги оказывать, с какими животными работать и какую цену устанавливать. Полный контроль над вашим графиком и доходом.</p>
+                    </motion.div>
+
+                    {/* Карточка 3 (Изменена) */}
+                    <motion.div className="feature-card" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                        <div className="feature-card__icon text-orange"><IconClients /></div>
+                        <h3>Мы сами находим клиентов</h3>
+                        <p>Забудьте о самостоятельном поиске заказов и расходах на рекламу. Мы берем всё продвижение на себя и приводим владельцев питомцев прямо к вам в профиль.</p>
+                    </motion.div>
                 </div>
             </div>
         </motion.section>

@@ -1,121 +1,99 @@
 // --- File: src/components/becomeASitter/SitterAppPreviewSection.tsx ---
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
-import '../../style/components/becomeASitter/SitterAppPreviewSection.scss';
+import '@/style/components/becomeASitter/SitterAppPreviewSection.scss';
 
-// Иконки для списка преимуществ
-const CheckCircleIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="#4CAF50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>;
-const BellIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="#3598FE"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" /></svg>;
+const CheckCircleIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="#38A169"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>;
 
 const SitterAppPreviewSection: React.FC = () => {
-    const { t } = useTranslation();
-
     const features = [
-        { titleKey: "becomeSitter.appFeature1Title", descKey: "becomeSitter.appFeature1Desc" },
-        { titleKey: "becomeSitter.appFeature2Title", descKey: "becomeSitter.appFeature2Desc" },
-        { titleKey: "becomeSitter.appFeature3Title", descKey: "becomeSitter.appFeature3Desc" }
+        { title: "Задачи и отметки", desc: "Идеально для визитов: отмечайте кормление, уборку лотка и отправляйте фотоотчет в 1 клик." },
+        { title: "GPS-маршруты выгула", desc: "Автоматическая запись маршрута прогулки. Владелец будет спокоен, видя вашу активность." },
+        { title: "Календарь и финансы", desc: "Все заказы под контролем. Отслеживайте свой доход и управляйте расписанием прямо в телефоне." }
     ];
 
     return (
         <section className="sitter-app-preview wrapper">
             <div className="sitter-app-preview__content">
-                <motion.div
-                    className="sitter-app-preview__text"
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                >
-                    <h2>{t('becomeSitter.appPreviewTitle')}</h2>
-                    <p>{t('becomeSitter.appPreviewSubtitle')}</p>
-
+                <motion.div className="sitter-app-preview__text" initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+                    <h2>Ваш бизнес в одном приложении</h2>
+                    <p>Профессиональный инструмент для управления заказами. Особенно удобно для тех, кто берет выгулы и визиты на дом!</p>
                     <ul className="app-features-list">
                         {features.map((f, i) => (
                             <li key={i}>
                                 <div className="check-icon"><CheckCircleIcon /></div>
                                 <div>
-                                    <strong>{t(f.titleKey)}</strong>
-                                    <span>{t(f.descKey)}</span>
+                                    <strong>{f.title}</strong>
+                                    <span>{f.desc}</span>
                                 </div>
                             </li>
                         ))}
                     </ul>
                 </motion.div>
 
-                <motion.div
-                    className="sitter-app-preview__visual"
-                    initial={{ opacity: 0, x: 30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                    {/* Макет телефона: Имитация Dashboard из React Native */}
+                <div className="sitter-app-preview__visual">
+                    {/* УВЕДОМЛЕНИЕ 1: Новый заказ (Слева сверху) */}
+                    <motion.div className="floating-push push-1" initial={{ opacity: 0, x: -60, y: 20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}>
+                        <div className="push-icon">📍</div>
+                        <div className="push-text">
+                            <b>Новый заказ: Выгул</b>
+                            <span>Активный выгул • 60 мин • <strong className="text-blue">+800 ₽</strong></span>
+                        </div>
+                    </motion.div>
+
+                    {/* УВЕДОМЛЕНИЕ 2: Оплата (Справа снизу) */}
+                    <motion.div className="floating-push push-2" initial={{ opacity: 0, x: 60, y: 20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} transition={{ delay: 0.4, type: 'spring', stiffness: 100 }}>
+                        <div className="push-icon">💳</div>
+                        <div className="push-text">
+                            <b>Зачисление средств</b>
+                            <span className="text-green">+14 500 ₽ переведено на карту</span>
+                        </div>
+                    </motion.div>
+
+                    {/* УВЕДОМЛЕНИЕ 3: Сообщение (Справа сверху) */}
+                    <motion.div className="floating-push push-3" initial={{ opacity: 0, x: 60, y: -20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} transition={{ delay: 0.6, type: 'spring', stiffness: 100 }}>
+                        <div className="push-icon">💬</div>
+                        <div className="push-text">
+                            <b>Елена (Владелец Арчи)</b>
+                            <span>Спасибо огромное за фото! 🥰</span>
+                        </div>
+                    </motion.div>
+
+                    {/* УВЕДОМЛЕНИЕ 4: Напоминание (Слева снизу) */}
+                    <motion.div className="floating-push push-4" initial={{ opacity: 0, x: -60, y: -20 }} whileInView={{ opacity: 1, x: 0, y: 0 }} transition={{ delay: 0.8, type: 'spring', stiffness: 100 }}>
+                        <div className="push-icon">⏰</div>
+                        <div className="push-text">
+                            <b>Напоминание</b>
+                            <span>Выгул собаки Арчи через 30 минут</span>
+                        </div>
+                    </motion.div>
+
                     <div className="phone-mockup">
                         <div className="phone-screen">
-
-                            {/* Header */}
-                            <div className="app-top-bar">
-                                <div>Добрый вечер, <br /><b>Александр</b></div>
-                                <div className="avatar">А</div>
+                            <div className="app-header-area">
+                                <div className="greeting">Мои заказы</div>
+                                <div className="avatar">A</div>
                             </div>
 
-                            {/* Metrics Cards (Scrollable imitation) */}
-                            <div className="metrics-row">
-                                <div className="metric-card green">
-                                    <div className="icon">💰</div>
-                                    <div className="val">45 500 ₽</div>
-                                    <div className="lbl">За 30 дней</div>
-                                </div>
-                                <div className="metric-card blue">
-                                    <div className="icon">⏳</div>
-                                    <div className="val">3 200 ₽</div>
-                                    <div className="lbl">В ожидании</div>
-                                </div>
+                            <div className="balance-widget">
+                                <span className="balance-label">Доступно к выплате</span>
+                                <span className="balance-value">28 500 ₽</span>
                             </div>
 
-                            {/* Tabs */}
-                            <div className="tabs-row">
-                                <div className="tab active">
-                                    <BellIcon /> Активность (2)
+                            <div className="orders-header">Сегодня</div>
+
+                            <div className="app-card">
+                                <div className="app-card-top">
+                                    <span className="app-badge">Через 1 час</span>
+                                    <span className="app-time">14:00</span>
                                 </div>
-                                <div className="tab">Заказы</div>
+                                <h4>Выгул собаки • Корги Арчи</h4>
+                                <div className="app-price">800 ₽</div>
+                                <div className="app-button" style={{ backgroundColor: '#3598FE' }}>Начать выгул (GPS)</div>
                             </div>
-
-                            {/* Activity Feed */}
-                            <div className="feed-list">
-                                {/* Item 1: New Invite */}
-                                <div className="feed-item invite">
-                                    <div className="feed-header">
-                                        <div className="badge blue">Новое приглашение</div>
-                                        <div className="time">2 мин</div>
-                                    </div>
-                                    <div className="feed-body">
-                                        <h4>Передержка • Корги</h4>
-                                        <p>15 — 17 мая (2 ночи)</p>
-                                    </div>
-                                    <div className="feed-price">4 500 ₽</div>
-                                    <div className="btn-row">
-                                        <div className="btn-sml accept">Принять</div>
-                                    </div>
-                                </div>
-
-                                {/* Item 2: Payout */}
-                                <div className="feed-item payout">
-                                    <div className="feed-header">
-                                        <div className="badge green">Выплачено</div>
-                                        <div className="time">Вчера</div>
-                                    </div>
-                                    <div className="feed-body">
-                                        <h4>Выплата за неделю</h4>
-                                    </div>
-                                    <div className="feed-price success">+ 12 400 ₽</div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </div>
         </section>
     );

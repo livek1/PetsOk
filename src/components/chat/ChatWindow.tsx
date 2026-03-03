@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import style from '../../style/pages/cabinet/Chat.module.scss';
-import { getChatDialogueMessages, sendMessage, markMessagesAsRead } from '../../services/api';
-import { RootState, AppDispatch } from '../../store';
-import { SEND_TYPING } from '../../store/middleware/websocketMiddleware';
-import { updateDialogueFromWs, clearTypingForUserInGroup } from '../../store/slices/dialoguesSlice';
+import style from '@/style/pages/cabinet/Chat.module.scss';
+import { getChatDialogueMessages, sendMessage, markMessagesAsRead } from '@/services/api';
+import { RootState, AppDispatch } from '@/store';
+import { SEND_TYPING } from '@/store/middleware/websocketMiddleware';
+import { updateDialogueFromWs, clearTypingForUserInGroup } from '@/store/slices/dialoguesSlice';
 import moment from 'moment';
 import ChecklistModal from '../modals/ChecklistModal';
 

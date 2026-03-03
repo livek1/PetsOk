@@ -2,7 +2,7 @@
 import React, { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import style from '../../style/components/TestimonialsSection.module.scss';
+import style from '@/style/components/TestimonialsSection.module.scss';
 
 // SVG Icons
 const StarIcon = () => (

@@ -3,9 +3,9 @@ import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { enabledServicesForSearch } from "../../config/appConfig";
-import "../../style/components/WhyPetsOkFeatures.scss";
+import { RootState } from "@/store";
+import { enabledServicesForSearch } from "@/config/appConfig";
+import "@/style/components/WhyPetsOkFeatures.scss";
 
 // SVG для стрелки в CTA карточке
 const ArrowRightIcon = () => (
@@ -48,53 +48,52 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
             });
     }, [activeServices, isConfigLoaded]);
 
-    // Обновленный список гарантий
+    // ОБНОВЛЕННЫЕ ГАРАНТИИ (Идеи из маркетинга Dogsy)
     const guaranteesList = [
         {
             id: 'verified',
-            // Укажите правильные пути к вашим PNG файлам
             imgSrc: '/images/icons/shield.png',
             fallbackIcon: <ShieldIcon />,
-            titleKey: "ourGuarantees.verifiedSitters.title",
-            descriptionKey: "ourGuarantees.verifiedSitters.desc",
+            titleKey: "Строгий отбор ситтеров",
+            descriptionKey: "Одобряем только 15% кандидатов. Мы проверяем паспорт, соцсети и проводим тестирование на знание зоопсихологии.",
             color: '#3B82F6',
-            bgColor: '#EFF6FF' // Голубой фон
-        },
-        {
-            id: 'contract',
-            imgSrc: '/images/icons/contract.png',
-            fallbackIcon: <ShieldIcon />,
-            titleKey: "ourGuarantees.contract.title",
-            descriptionKey: "ourGuarantees.contract.desc",
-            color: '#8B5CF6',
-            bgColor: '#F5F3FF' // Фиолетовый фон
-        },
-        {
-            id: 'meet',
-            imgSrc: '/images/icons/handshake.png',
-            fallbackIcon: <ShieldIcon />,
-            titleKey: "ourGuarantees.meetAndGreet.title",
-            descriptionKey: "ourGuarantees.meetAndGreet.desc",
-            color: '#10B981',
-            bgColor: '#ECFDF5' // Зеленый фон
-        },
-        {
-            id: 'support',
-            imgSrc: '/images/icons/support.png',
-            fallbackIcon: <ShieldIcon />,
-            titleKey: "ourGuarantees.support.title",
-            descriptionKey: "ourGuarantees.support.desc",
-            color: '#F59E0B',
-            bgColor: '#FFFBEB' // Оранжевый фон
+            bgColor: '#EFF6FF'
         },
         {
             id: 'vet',
             imgSrc: '/images/icons/vet.png',
             fallbackIcon: <ShieldIcon />,
-            titleKey: "ourGuarantees.vetHelp.title",
-            descriptionKey: "ourGuarantees.vetHelp.desc",
+            titleKey: "БЕСПЛАТНЫЙ ветеринар онлайн",
+            descriptionKey: "В каждую передержку включена бесплатная онлайн-консультация. Если что-то пойдет не так, мы оперативно организуем помощь врача.",
             color: '#EF4444',
-            bgColor: '#FEF2F2' // Розовый фон
+            bgColor: '#FEF2F2'
+        },
+        {
+            id: 'meet',
+            imgSrc: '/images/icons/handshake.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "Бесплатная предварительная встреча",
+            descriptionKey: "Вы можете встретиться с ситтером до оплаты заказа. Познакомьте питомца и убедитесь, что вам комфортно.",
+            color: '#10B981',
+            bgColor: '#ECFDF5'
+        },
+        {
+            id: 'contract',
+            imgSrc: '/images/icons/contract.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "Официальный договор",
+            descriptionKey: "При бронировании автоматически заключается юридический договор, защищающий права владельца и питомца.",
+            color: '#8B5CF6',
+            bgColor: '#F5F3FF'
+        },
+        {
+            id: 'support',
+            imgSrc: '/images/icons/support.png',
+            fallbackIcon: <ShieldIcon />,
+            titleKey: "Менеджеры на связи 24/7",
+            descriptionKey: "Мы контролируем каждый заказ и всегда на связи, даже ночью. Поддержим в любой нестандартной ситуации.",
+            color: '#F59E0B',
+            bgColor: '#FFFBEB'
         }
     ];
 
@@ -124,7 +123,7 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
                         {t("whyPetsOkNew.sectionTitle", "PetsOk — это больше, чем просто передержка")}
                     </motion.h2>
                     <motion.p className="subtitle" variants={itemVariants}>
-                        {t("whyPetsOkNew.sectionSubtitle")}
+                        {t("whyPetsOkNew.sectionSubtitle", "Мы дарим душевное спокойствие благодаря любящему уходу за вашим питомцем и непревзойденной поддержке для вас.")}
                     </motion.p>
                 </div>
 
@@ -149,7 +148,7 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
                 {/* ЗАГОЛОВОК ДЛЯ ГАРАНТИЙ */}
                 <div style={{ textAlign: 'center', marginBottom: 40, marginTop: 40 }}>
                     <h3 style={{ fontSize: 32, fontWeight: 800, color: '#1A202C', letterSpacing: '-0.02em' }}>
-                        {t("whyPetsOkNew.guaranteesTitle", "Наши обязательства перед вами")}
+                        {t("whyPetsOkNew.guaranteesTitle", "Почему это абсолютно безопасно?")}
                     </h3>
                 </div>
 
@@ -180,8 +179,8 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
 
                             {/* Нижняя часть: Текст (40%) */}
                             <div className="guarantee-card__content-area">
-                                <h3>{t(item.titleKey)}</h3>
-                                <p>{t(item.descriptionKey)}</p>
+                                <h3>{t(item.titleKey, item.titleKey)}</h3>
+                                <p>{t(item.descriptionKey, item.descriptionKey)}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -194,8 +193,8 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                     >
-                        <h3>Готовы начать?</h3>
-                        <p>Создайте заказ за пару минут, и ситтеры сами откликнутся.</p>
+                        <h3>Хотите попробовать?</h3>
+                        <p>Организуйте бесплатную встречу-знакомство с ситтером. Это ни к чему вас не обязывает.</p>
 
                         <div className="cta-arrow">
                             <ArrowRightIcon />

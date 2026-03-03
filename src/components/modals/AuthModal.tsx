@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 // Импортируем thunks из authSlice
 import {
@@ -16,11 +16,11 @@ import {
     resetAuthFlow,
     setAuthRedirectPath,
     AuthState
-} from "../../store/slices/authSlice";
-import { AppDispatch, RootState } from "../../store";
-import style from "../../style/components/modal/AuthModal.module.scss";
-import { config as appConfig } from '../../config/appConfig';
-import { resetUserPassword, type RegistrationPayload, type LoginPayload, type ResetPasswordPayload } from '../../services/api';
+} from "@/store/slices/authSlice";
+import { AppDispatch, RootState } from "@/store";
+import style from "@/style/components/modal/AuthModal.module.scss";
+import { config as appConfig } from '@/config/appConfig';
+import { resetUserPassword, type RegistrationPayload, type LoginPayload, type ResetPasswordPayload } from '@/services/api';
 
 // Типы форм
 type ContactFormValues = { contact: string };
@@ -48,7 +48,7 @@ const MailIcon = () => (
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMode = 'register', registrationType = 'client' }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();
+    const router = useRouter();
 
     // Получаем состояние из Redux
     const { isLoading, status: authStatus, error: globalAuthError, contactCheckError, otpError, isAuthenticated, redirectPath } = useSelector((state: RootState) => state.auth as AuthState);
@@ -100,25 +100,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
 
     // --- Успешная авторизация и РЕДИРЕКТ ---
     useEffect(() => {
-        // Проверяем, что авторизация успешна И мы еще не делали редирект в этом сеансе модалки
-        if (authStatus === 'succeeded' && isAuthenticated && !hasRedirectedRef.current) {
+        // ДОБАВЛЕНО: проверяем isOpen! Редиректим только если модалка реально открыта
+        if (isOpen && authStatus === 'succeeded' && isAuthenticated && !hasRedirectedRef.current) {
 
             // Ставим флаг, что редирект выполнен
             hasRedirectedRef.current = true;
 
             onClose();
 
-            if (redirectPath) {
+            if (redirectPath === 'NO_REDIRECT') {
+                // Если мы хотим остаться на странице (например, открыть другую модалку)
+                dispatch(setAuthRedirectPath(null));
+            } else if (redirectPath) {
                 // Если есть сохраненный путь, идем туда (например /cabinet/orders/create)
-                navigate(redirectPath);
-                // Очищаем путь в сторе (это может вызвать ререндер, но hasRedirectedRef не даст сработать снова)
+                router.push(redirectPath);
+                // Очищаем путь в сторе
                 dispatch(setAuthRedirectPath(null));
             } else {
                 // Иначе стандартный путь
-                navigate('/cabinet');
+                router.push('/cabinet');
             }
         }
-    }, [authStatus, isAuthenticated, onClose, navigate, redirectPath, dispatch]);
+    }, [isOpen, authStatus, isAuthenticated, onClose, router, redirectPath, dispatch]);
 
     // Логика работы таймера
     useEffect(() => {
@@ -324,7 +327,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
             <div className={style.inputGroup}>
                 <label htmlFor="contact" className={style.inputLabel}>
                     {!appConfig.enablePhoneAuth
-                        ? t('authModal.labelEmailOnly', 'Ваш Email')
+                        ? t('authModal.labelEmailOnly', 'Ваша электронная почта (Email)')
                         : (contactType === 'email' ? t('authModal.labelEmail') : t('authModal.labelPhone'))
                     }
                 </label>
@@ -354,7 +357,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, initialMo
                                 {...field}
                                 id="contact"
                                 type={contactType === 'email' ? 'email' : 'tel'}
-                                placeholder={!appConfig.enablePhoneAuth ? t('authModal.emailPlaceholder', 'Введите ваш email') : t('authModal.contactPlaceholderAirbnb')}
+                                placeholder={!appConfig.enablePhoneAuth ? t('authModal.emailPlaceholder', 'Введите вашу электронную почту (Email)') : t('authModal.contactPlaceholderAirbnb')}
                                 className={style.contactInputFieldElement}
                                 onChange={(e) => handleContactInputChange(e.target.value)}
                             />

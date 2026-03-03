@@ -1,29 +1,33 @@
-// --- File: Language.tsx ---
-import React from "react";
-import ReactDOM from "react-dom"; // <--- ИМПОРТ ДЛЯ ПОРТАЛА
-import "../../style/components/modal/Language.scss";
+// --- File: src/components/modals/LanguageModal.tsx ---
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import "@/style/components/modal/Language.scss";
 import { useTranslation } from "react-i18next";
-import { supportedLngs } from "../../i18n";
+import { supportedLngs } from "@/i18n";
 
 interface LanguageProp {
   open: boolean;
   closeLangModal: () => void;
 }
 
-// Получаем корневой элемент для модальных окон
-const modalRoot = document.getElementById('modal-root');
-
 const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
   const { i18n, t } = useTranslation();
+  const [mounted, setMounted] = useState(false);
 
-  // ... (остальная логика changeLanguage, currentLangCode, recommendedLanguages, otherLanguages) ...
+  // Устанавливаем флаг монтирования только на клиенте
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const changeLanguage = (langCode: string) => {
     i18n.changeLanguage(langCode);
-    localStorage.setItem("language", langCode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("language", langCode);
+    }
     closeLangModal();
   };
 
-  const currentLangCode = i18n.language;
+  const currentLangCode = i18n.language || 'ru';
   const recommendedCodes = ['ru', 'en', 'kk'];
   const recommendedLanguages = supportedLngs.filter(lang =>
     lang && typeof lang.code === 'string' && recommendedCodes.includes(lang.code)
@@ -32,8 +36,7 @@ const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
     lang && typeof lang.code === 'string' && !recommendedCodes.includes(lang.code)
   );
 
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -44,12 +47,14 @@ const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
     };
   }, [open]);
 
-  // Если модальное окно не открыто ИЛИ нет корневого элемента для портала, не рендерим
-  if (!open || !modalRoot) {
+  // Не рендерим на сервере ИЛИ если модалка закрыта
+  if (!mounted || !open) {
     return null;
   }
 
-  // Рендерим модальное окно с помощью портала
+  const modalRoot = document.getElementById('modal-root');
+  if (!modalRoot) return null;
+
   return ReactDOM.createPortal(
     <div className={`language ${open ? "open" : ""}`} role="dialog" aria-modal="true" aria-labelledby="language-modal-title">
       <div className="language__overlay" onClick={closeLangModal} tabIndex={-1}></div>
@@ -82,7 +87,7 @@ const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
         <div className="language__body">
           {recommendedLanguages.length > 0 && (
             <div className="language__section">
-              <h2>{t("recomLang")}</h2>
+              <h2>{t("recomLang", "Рекомендуемые")}</h2>
               <ul className="language__list">
                 {recommendedLanguages.map((lang) => (
                   <li
@@ -91,7 +96,7 @@ const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
                     className={currentLangCode.startsWith(lang.code) ? "active" : ""}
                     role="button"
                     tabIndex={0}
-                    onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') changeLanguage(lang.code); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') changeLanguage(lang.code); }}
                     aria-pressed={currentLangCode.startsWith(lang.code)}
                   >
                     <span>{lang.name}</span>
@@ -113,7 +118,7 @@ const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
                     className={currentLangCode.startsWith(lang.code) ? "active" : ""}
                     role="button"
                     tabIndex={0}
-                    onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') changeLanguage(lang.code); }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') changeLanguage(lang.code); }}
                     aria-pressed={currentLangCode.startsWith(lang.code)}
                   >
                     <span>{lang.name}</span>
@@ -129,7 +134,7 @@ const Language: React.FC<LanguageProp> = ({ open, closeLangModal }) => {
         </div>
       </div>
     </div>,
-    modalRoot // <--- Указываем, куда рендерить портал
+    modalRoot
   );
 };
 

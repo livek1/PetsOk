@@ -1,7 +1,6 @@
 @use '../variables' as *;
 
 .mobile-app-promo-section {
-    // Верхний отступ 0, так как предыдущий блок белый
     padding-top: 0;
     padding-bottom: 80px;
     background-color: $white;
@@ -63,8 +62,6 @@
         }
     }
 
-    // ... остальной код (стили info-block, features-list и т.д.) оставляем без изменений, 
-    // так как меняли только отступы секции ...
     &__info-block {
         flex: 1 1 48%;
         display: flex;
@@ -130,7 +127,29 @@
             font-size: 17px;
             font-weight: $font-weight-medium;
             color: $text-color-base;
+            margin-bottom: 15px;
+        }
+
+        .app-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             margin-bottom: 25px;
+
+            @media (max-width: $breakpoint-lg) {
+                justify-content: center;
+            }
+
+            .stars {
+                display: flex;
+                gap: 2px;
+            }
+
+            span {
+                font-size: 13px;
+                color: $text-color-secondary;
+                font-weight: 600;
+            }
         }
 
         .download-buttons-wrapper {

@@ -1,10 +1,10 @@
 // --- File: src/components/chat/ChatSidebar.tsx ---
 import React, { useState, useMemo, useEffect } from 'react';
-import style from '../../style/pages/cabinet/Chat.module.scss';
+import style from '@/style/pages/cabinet/Chat.module.scss';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store';
-import { SUBSCRIBE_TO_GROUP_TYPING_CHANNEL, UNSUBSCRIBE_FROM_GROUP_TYPING_CHANNEL } from '../../store/middleware/websocketMiddleware';
+import { RootState } from '@/store';
+import { SUBSCRIBE_TO_GROUP_TYPING_CHANNEL, UNSUBSCRIBE_FROM_GROUP_TYPING_CHANNEL } from '@/store/middleware/websocketMiddleware';
 import moment from 'moment';
 
 interface ChatSidebarProps {

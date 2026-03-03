@@ -1,3 +1,4 @@
+// --- File: src/store/index.ts ---
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import {
     persistStore,
@@ -9,7 +10,7 @@ import {
     PURGE,
     REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 
 import authReducer from './slices/authSlice';
 import configReducer from './slices/configSlice';
@@ -18,6 +19,23 @@ import websocketReducer from './slices/websocketSlice';
 import searchReducer from './slices/searchSlice';
 import paymentReducer from './slices/paymentSlice';
 import { websocketMiddleware } from './middleware/websocketMiddleware';
+
+// Заглушка для серверного рендеринга (SSR), где window не существует
+const createNoopStorage = () => {
+    return {
+        getItem(_key: string) {
+            return Promise.resolve(null);
+        },
+        setItem(_key: string, value: any) {
+            return Promise.resolve(value);
+        },
+        removeItem(_key: string) {
+            return Promise.resolve();
+        },
+    };
+};
+
+const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
 
 const persistConfig = {
     key: 'root',
@@ -36,11 +54,8 @@ const rootReducer = combineReducers({
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// 1. Сначала создаем store БЕЗ middleware, который зависит от RootState
-//    Или просто определяем RootState на основе rootReducer
 export type RootState = ReturnType<typeof rootReducer>;
 
-// 2. Теперь создаем store
 export const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
@@ -48,7 +63,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(websocketMiddleware as any), // as any спасет от ошибки типизации middleware
+        }).concat(websocketMiddleware as any),
 });
 
 export const persistor = persistStore(store);

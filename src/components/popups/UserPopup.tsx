@@ -1,6 +1,7 @@
 // --- File: src/components/popups/UserPopup.tsx ---
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, logoutUser } from "../../store/slices/authSlice";
@@ -16,14 +17,13 @@ interface UserPopupProps {
 const UserPopup: React.FC<UserPopupProps> = ({ hide, handleOpenAuthModal, onClosePopup }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { user, isAuthenticated, isLoading } = useSelector((state: RootState) => state.auth);
 
   const handleLogout = () => {
-    // --- ИСПРАВЛЕНИЕ: Асинхронный выход ---
     dispatch(logoutUser()).then(() => {
       onClosePopup();
-      navigate('/');
+      router.push('/');
     });
   };
 
@@ -56,11 +56,11 @@ const UserPopup: React.FC<UserPopupProps> = ({ hide, handleOpenAuthModal, onClos
               </div>
             </div>
 
-            <Link to="/cabinet" className={style.popupLink} onClick={onClosePopup}>
+            <Link href="/cabinet" className={style.popupLink} onClick={onClosePopup}>
               {t("cabinet.title", "Личный кабинет")}
             </Link>
-            <Link to="/help" className={style.popupLink} onClick={onClosePopup}>
-              {t("profile.help", "Помощь и поддержка")}
+            <Link href="/help" className={style.popupLink} onClick={onClosePopup}>
+              {t("profile.help", "Помощь")}
             </Link>
 
             <hr className={style.separator} />
@@ -78,10 +78,10 @@ const UserPopup: React.FC<UserPopupProps> = ({ hide, handleOpenAuthModal, onClos
                 {t("profile.logIn", "Войти")}
               </button>
               <hr className={style.separator} />
-              <Link to="/become-a-sitter" className={style.popupLink} onClick={onClosePopup}>
+              <Link href="/become-a-sitter" className={style.popupLink} onClick={onClosePopup}>
                 {t("header.becomeSitter", "Стать ситтером")}
               </Link>
-              <Link to="/help" className={style.popupLink} onClick={onClosePopup}>
+              <Link href="/help" className={style.popupLink} onClick={onClosePopup}>
                 {t("header.help", "Помощь")}
               </Link>
             </>

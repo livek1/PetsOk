@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import '../../style/components/becomeASitter/ToolsToSucceedSection.scss';
+import '@/style/components/becomeASitter/ToolsToSucceedSection.scss';
 
 // Иконки
 const IconZeroPercent: React.FC = () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM10.87 14.53H8v-2h2.87c.22 0 .42-.1.57-.27.15-.17.23-.39.23-.63s-.08-.46-.23-.63c-.15-.17-.35-.27-.57-.27H8v-2h2.87c.89 0 1.63.29 2.13.87.5.58.75 1.33.75 2.25s-.25 1.67-.75 2.25c-.5.58-1.24.87-2.13.87z" /></svg>;

@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { QRCodeCanvas } from 'qrcode.react';
 import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { config as defaultConfig } from '../../config/appConfig';
-import style from '../../style/components/modals/OrderCreatedModal.module.scss';
-import { getReferralCode } from '../../App';
+import { RootState } from '@/store';
+import { config as defaultConfig } from '@/config/appConfig';
+import style from '@/style/components/modals/OrderCreatedModal.module.scss';
+import { getReferralCode } from '@/App';
 
 // Логотипы
 import AppleLogo from '../logos/AppleLogo';

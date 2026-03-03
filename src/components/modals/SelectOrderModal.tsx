@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import 'moment/locale/ru';
-import style from '../../style/components/modals/SelectOrderModal.module.scss';
+import style from '@/style/components/modals/SelectOrderModal.module.scss';
 
 // Иконки
 import BoardingIcon from '../icons/BoardingIcon';

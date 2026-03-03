@@ -44,17 +44,21 @@ export interface AuthState {
     redirectPath: string | null; // <--- НОВОЕ ПОЛЕ
 }
 
+// Безопасное получение токенов
+const getInitialToken = () => typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+const getInitialRefreshToken = () => typeof window !== 'undefined' ? localStorage.getItem('refreshToken') : null;
+
 const initialState: AuthState = {
     user: null,
-    token: localStorage.getItem('authToken'),
-    refreshToken: localStorage.getItem('refreshToken'),
-    isAuthenticated: !!localStorage.getItem('authToken'),
+    token: getInitialToken(),
+    refreshToken: getInitialRefreshToken(),
+    isAuthenticated: !!getInitialToken(),
     isLoading: false,
     status: 'idle',
     error: null,
     contactCheckError: null,
     otpError: null,
-    redirectPath: null, // <--- ИНИЦИАЛИЗАЦИЯ
+    redirectPath: null,
 };
 
 interface RegisterThunkArg {
@@ -67,9 +71,11 @@ interface SendOtpThunkArg { contactValue: string; contactType: 'phone' | 'email'
 interface VerifyOtpThunkArg { contactValue: string; contactType: 'phone' | 'email'; code: string; operation: 'register' | 'reset'; }
 
 const fetchProfileAfterAuth = async (authResponse: AuthApiResponse) => {
-    localStorage.setItem('authToken', authResponse.accessToken);
-    if (authResponse.refreshToken) {
-        localStorage.setItem('refreshToken', authResponse.refreshToken);
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('authToken', authResponse.accessToken);
+        if (authResponse.refreshToken) {
+            localStorage.setItem('refreshToken', authResponse.refreshToken);
+        }
     }
 
     try {
@@ -207,8 +213,10 @@ export const loadUser = createAsyncThunk<User, void, { rejectValue: string; stat
         try {
             return await fetchUserProfileApi();
         } catch (error: any) {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('refreshToken');
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('refreshToken');
+            }
             return rejectWithValue(error.response?.data?.message || 'Failed to load user');
         }
     }
@@ -223,7 +231,10 @@ const authSlice = createSlice({
             state.isLoading = false; state.status = 'idle'; state.error = null;
             state.contactCheckError = null; state.otpError = null;
             state.redirectPath = null;
-            localStorage.removeItem('authToken'); localStorage.removeItem('refreshToken');
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('refreshToken');
+            }
         },
         clearAuthErrors: (state) => {
             state.error = null; state.contactCheckError = null; state.otpError = null;

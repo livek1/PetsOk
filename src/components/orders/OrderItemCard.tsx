@@ -1,17 +1,17 @@
+// --- File: src/components/orders/OrderItemCard.tsx ---
 import React, { useMemo, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import style from '../../style/pages/cabinet/CabinetOrders.module.scss';
-import { useNavigate } from 'react-router-dom';
+import style from '@/style/pages/cabinet/CabinetOrders.module.scss';
+import { useRouter } from 'next/navigation';
 
-// --- ИМПОРТ ФИРМЕННЫХ ИКОНОК ---
 import BoardingIcon from '../icons/BoardingIcon';
 import DogWalkingIcon from '../icons/DogWalkingIcon';
 import DropInVisitsIcon from '../icons/DropInVisitsIcon';
 import DoggyDayCareIcon from '../icons/DoggyDayCareIcon';
 import HouseSittingIcon from '../icons/HouseSittingIcon';
 
-// Стандартные SVG иконки для UI
+// ... иконки и константы ...
 const HourglassIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 2v20h16V2H4zm8 9l-4 4h8l-4-4zm0-9l4 4H8l4-4z" /></svg>;
 const CheckIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>;
 const CardIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>;
@@ -24,12 +24,10 @@ const WalletIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="n
 const ListIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
 const StarIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
 const ChevronRight = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"></polyline></svg>;
-// Новая иконка для редактирования/продолжения
 const EditIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
 
-// --- CONSTANTS ---
 const ORDER_STATUS = {
-    DRAFT: 'draft', // <<< ДОБАВЛЕНО
+    DRAFT: 'draft',
     PENDING_WORKER: 'pending_worker',
     PENDING_PLATFORM_PAYMENT: 'pending_platform_payment',
     PENDING_PLATFORM_FEE: 'pending_platform_fee',
@@ -71,14 +69,13 @@ const REQUEST_STATUS = {
     AWAITING_CLIENT: 'awaiting_client_confirmation'
 };
 
-// --- Helpers ---
 const formatDate = (dateStr: string | undefined | null): string => { moment.locale('ru'); return dateStr ? moment(dateStr).format('D MMM YYYY') : ''; }
 const formatFullDate = (dateStr: string | undefined | null): string => { moment.locale('ru'); return dateStr ? moment(dateStr).format('LL') : ''; }
 const formatPrice = (amount: string | number | null | undefined, currency: string | null | undefined): string | null => { if (amount === null || amount === undefined) return null; const num = parseFloat(String(amount)); if (isNaN(num)) return null; const symbol = currency === 'RUB' ? '₽' : (currency || ''); const formattedNum = num.toFixed(2).replace(/\.00$/, ''); return `${formattedNum} ${symbol} `.trim(); };
 
 const getStatusInfo = (status?: string) => {
     switch (status) {
-        case ORDER_STATUS.DRAFT: return { textKey: 'orderStatus.draft', className: style.statusDefault, Icon: EditIcon }; // Черновик
+        case ORDER_STATUS.DRAFT: return { textKey: 'orderStatus.draft', className: style.statusDefault, Icon: EditIcon };
         case ORDER_STATUS.PENDING_WORKER: return { textKey: 'orderStatus.new', className: style.statusWarning, Icon: HourglassIcon };
         case ORDER_STATUS.CONFIRMED: return { textKey: 'orderStatus.confirmed', className: style.statusSuccess, Icon: CheckIcon };
         case ORDER_STATUS.IN_PROGRESS: return { textKey: 'orderStatus.inProgress', className: style.statusInfo, Icon: PlayIcon };
@@ -109,13 +106,13 @@ interface OrderItemCardProps {
     order: any;
     onPay: (order: any) => void;
     onDetails: (orderId: string) => void;
-    onContinueDraft?: (order: any) => void; // Новый проп
+    onContinueDraft?: (order: any) => void;
     onReview: (order: any) => void;
 }
 
 const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDetails, onContinueDraft, onReview }) => {
     const { t, i18n } = useTranslation();
-    const navigate = useNavigate();
+    const router = useRouter();
     const [timeLeftString, setTimeLeftString] = useState<string | null>(null);
     const [isExpired, setIsExpired] = useState(false);
 
@@ -176,7 +173,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
     }, [isRecurring, item.start_date_local, item.end_date_local, i18n.language]);
 
     const paymentDisplayInfo = useMemo(() => {
-        // ... (логика paymentDisplayInfo без изменений, для драфтов она вернет дефолты или пустые строки, что ок)
         let { payment_flow_type } = item;
         if (!payment_flow_type) { payment_flow_type = item.status === ORDER_STATUS.PENDING_PLATFORM_FEE ? PAYMENT_FLOW.PLATFORM_FEE_ONLY : PAYMENT_FLOW.PLATFORM_PREPAY; }
         const { currency, start_date_local } = item;
@@ -214,9 +210,7 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
         return { infoLines: infoLines.filter(l => l.labelKey || l.textKey), paymentButtonTextKey, paymentButtonAmountForDisplay: paymentDueToPlatformNowNum };
     }, [item, isAwaitingPaymentStatus, unpaidPeriod, billingPeriods, i18n.language]);
 
-    // --- Smart Banners ---
     const renderSmartBanner = () => {
-        // Для черновиков свой баннер
         if (item.status === ORDER_STATUS.DRAFT) {
             return (
                 <div className={`${style.smartBanner} ${style.bannerGrey}`} onClick={() => onContinueDraft && onContinueDraft(item)}>
@@ -237,7 +231,7 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
         const readyToConfirmAdmin = requests.filter((r: any) => r.request_type === REQUEST_TYPE.ADMIN_SUGGESTION && r.status === REQUEST_STATUS.AWAITING_CLIENT);
         const readyToConfirmInvite = requests.filter((r: any) => r.request_type === REQUEST_TYPE.CLIENT_INVITE && r.status === REQUEST_STATUS.AWAITING_CLIENT);
 
-        const goToResponses = () => navigate(`/cabinet/orders/${item.id}/responses`);
+        const goToResponses = () => router.push(`/cabinet/orders/${item.id}/responses`);
 
         if (readyToConfirmAdmin.length > 0) return (<div className={`${style.smartBanner} ${style.bannerPurple}`} onClick={goToResponses}><div className={`${style.bannerIcon} ${style.purple}`}><CheckIcon /></div><div className={style.bannerContent}><span className={style.bannerTitle}>{t('orders.banner.adminSuggestionTitle', 'Рекомендация сервиса')}</span><span className={style.bannerText}>{t('orders.banner.adminSuggestionBodyDetailed', 'Мы подобрали отличного ситтера.')}</span></div><ChevronRight /></div>);
         if (readyToConfirmInvite.length > 0) { const workerName = readyToConfirmInvite[0].recipient?.data?.first_name || 'Ситтер'; return (<div className={`${style.smartBanner} ${style.bannerGreen}`} onClick={goToResponses}><div className={`${style.bannerIcon} ${style.green}`}><CheckIcon /></div><div className={style.bannerContent}><span className={style.bannerTitle}>{t('orders.banner.workerAcceptedTitle', 'Ура! Есть согласие.')}</span><span className={style.bannerText}>{t('orders.banner.workerAcceptedChoiceBody', { name: workerName, defaultValue: `${workerName} готов выполнить заказ.` })}</span></div><ChevronRight /></div>); }
@@ -248,7 +242,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
     };
 
     const renderActionButtons = () => {
-        // --- ДЛЯ ЧЕРНОВИКА: КНОПКА "ПРОДОЛЖИТЬ" ---
         if (item.status === ORDER_STATUS.DRAFT) {
             return (
                 <button className={`${style.actionButton} ${style.btnPrimary}`} onClick={() => onContinueDraft && onContinueDraft(item)}>
@@ -260,11 +253,10 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
         const paymentDue = (paymentDisplayInfo?.paymentButtonAmountForDisplay ?? 0) > 0.001;
         const offersAvailable = pendingOffersCount > 0;
 
-        // Если заказ новый (Pending Worker)
         if (item.status === ORDER_STATUS.PENDING_WORKER) {
             if (offersAvailable) {
                 return (
-                    <button className={`${style.actionButton} ${style.btnPrimary}`} onClick={() => navigate(`/cabinet/orders/${item.id}/responses`)}>
+                    <button className={`${style.actionButton} ${style.btnPrimary}`} onClick={() => router.push(`/cabinet/orders/${item.id}/responses`)}>
                         <ListIcon /> {t('orders.viewAndSelectOfferButtonCount', { count: pendingOffersCount })}
                     </button>
                 );
@@ -277,7 +269,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
             }
         }
 
-        // Если ожидается оплата (Pending Payment)
         if (isAwaitingPaymentStatus && paymentDue) {
             const formattedPaymentAmount = formatPrice(paymentDisplayInfo!.paymentButtonAmountForDisplay, item.currency);
             return (
@@ -307,7 +298,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
     return (
         <div className={style.orderCard} onClick={() => onDetails(item.id)}>
             <div className={style.cardHeader}>
-                {/* Для черновика текст берется из getStatusInfo ('Черновик') */}
                 <div className={`${style.statusBadge} ${statusInfo.className}`}>
                     {t(statusInfo.textKey)}
                 </div>
@@ -340,7 +330,6 @@ const OrderItemCard: React.FC<OrderItemCardProps> = ({ order: item, onPay, onDet
                     <div className={`${style.infoBlock} ${style.withBorder}`} style={{ padding: '12px 16px' }}>
                         {renderSmartBanner()}
 
-                        {/* Показываем воркера только если заказ НЕ черновик */}
                         {item.status !== ORDER_STATUS.DRAFT && (
                             <>
                                 {workerName ? (

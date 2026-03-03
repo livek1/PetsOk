@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import '../../style/components/becomeASitter/SupportAndSafetySection.scss';
+import '@/style/components/becomeASitter/SupportAndSafetySection.scss';
 // Предположим, у вас есть изображение
 import sitterSafetyImage from '../../assets/sitter_safety.jpg';
 

@@ -2,10 +2,10 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { RootState } from "../store";
-import { enabledServicesForSearch } from "../config/appConfig"; // Убрали comingSoonServices из импорта
+import { RootState } from "@/store";
+import { enabledServicesForSearch } from "@/config/appConfig"; // Убрали comingSoonServices из импорта
 import SearchSitterItem from "./search/SearchSitterItem";
-import style from '../style/components/SearchSitter.module.scss';
+import style from '@/style/components/SearchSitter.module.scss';
 
 const SearchSitter = () => {
   const [activeIndex, setActiveIndex] = useState(0);

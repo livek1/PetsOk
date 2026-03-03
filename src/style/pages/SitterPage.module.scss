@@ -1,10 +1,18 @@
+// --- File: src/style/pages/SitterPage.module.scss ---
 @use '../variables' as *;
 
 .pageWrapper {
     background-color: #f7f9fc;
     padding-bottom: 120px;
-    padding-top: 24px;
+
+    // ИСПРАВЛЕНИЕ: Добавляем отступ, равный высоте хедера (90px) + желаемый зазор (24px)
+    padding-top: 114px;
     min-height: 100vh;
+
+    // Для мобилок хедер 70px + 16px зазор
+    @media (max-width: $breakpoint-md) {
+        padding-top: 86px;
+    }
 }
 
 .container {
@@ -1049,6 +1057,23 @@
     text-align: center;
     animation: fadeIn 0.2s ease-out;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+    .infoModalIcon {
+        width: 72px;
+        height: 72px;
+        background-color: #F0F9FF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px auto;
+
+        img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+    }
 
     h3 {
         font-family: $font-family-headings;

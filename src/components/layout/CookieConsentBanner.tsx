@@ -1,6 +1,6 @@
 import { useState, useEffect, FC } from 'react';
 import Cookies from 'js-cookie';
-import style from '../../style/components/layout/CookieConsentBanner.module.scss'; // Стили будут созданы ниже
+import style from '@/style/components/layout/CookieConsentBanner.module.scss'; // Стили будут созданы ниже
 import { useTranslation } from 'react-i18next';
 
 const COOKIE_CONSENT_KEY = 'cookie_consent_given';
@@ -28,9 +28,9 @@ const CookieConsentBanner: FC = () => {
     return (
         <div className={style.cookieConsentBanner}>
             <p className={style.cookieText}>
-                {t('cookieConsent.text', 'Мы используем файлы cookie, чтобы улучшить ваш опыт на нашем сайте. Оставаясь на сайте, вы соглашаетесь с нашей ')}
+                {t('cookieConsent.text', 'Мы используем файлы куки (cookie), чтобы улучшить ваш опыт на нашем сайте. Оставаясь на сайте, вы соглашаетесь с нашей ')}
                 <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className={style.cookieLink}>
-                    {t('cookieConsent.policyLink', 'Политикой конфиденциальности и использования cookie')}
+                    {t('cookieConsent.policyLink', 'Политикой конфиденциальности и использования куки (cookie)')}
                 </a>.
             </p>
             <button onClick={handleAccept} className={style.acceptButton}>

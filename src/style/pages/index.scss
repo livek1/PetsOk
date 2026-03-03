@@ -10,7 +10,6 @@
   justify-content: flex-end;
   align-items: center;
 
-  // Отступы для десктопа
   padding-top: 180px;
   padding-bottom: 180px;
 
@@ -18,7 +17,6 @@
 
   @media (max-width: $breakpoint-md) {
     min-height: auto;
-    // Уменьшенные отступы для мобильных, чтобы контент был выше
     padding-top: 110px;
     padding-bottom: 80px;
     justify-content: center;
@@ -47,7 +45,6 @@
   z-index: 1;
   will-change: transform;
 
-  // Улучшенный градиент для читаемости текста на любом фото
   &::after {
     content: '';
     position: absolute;
@@ -57,12 +54,8 @@
     bottom: 0;
     background: linear-gradient(to bottom,
         rgba(0, 0, 0, 0.4) 0%,
-        /* Сверху темнее для меню */
         rgba(0, 0, 0, 0.2) 40%,
-        /* Середина светлее */
-        rgba(0, 0, 0, 0.7) 100%
-        /* Снизу темно для текста */
-      );
+        rgba(0, 0, 0, 0.7) 100%);
   }
 }
 
@@ -80,7 +73,103 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 30px; // Чуть меньше отступ
+  gap: 30px;
+
+  /* --- СТИЛИ БЕЙДЖА ДОВЕРИЯ --- */
+  .hero__trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 8px 24px 8px 8px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: -10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: $breakpoint-md) {
+      padding: 6px 16px 6px 6px;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+
+    .avatars-group {
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #2D3748;
+        margin-right: -12px;
+        object-fit: cover;
+        position: relative;
+
+        @media (max-width: $breakpoint-md) {
+          width: 28px;
+          height: 28px;
+          margin-right: -10px;
+        }
+      }
+
+      .avatar-more {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #38A169;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #2D3748;
+        position: relative;
+        z-index: 4;
+
+        @media (max-width: $breakpoint-md) {
+          width: 28px;
+          height: 28px;
+
+          svg {
+            width: 14px;
+            height: 14px;
+          }
+        }
+      }
+    }
+
+    .trust-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      .stars {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 800;
+        font-size: 16px;
+        color: #fff;
+        line-height: 1;
+
+        @media (max-width: $breakpoint-md) {
+          font-size: 14px;
+        }
+      }
+
+      .subtitle {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+
+        @media (max-width: $breakpoint-md) {
+          font-size: 10px;
+        }
+      }
+    }
+  }
 
   h1 {
     font-family: $font-family-headings;
@@ -88,7 +177,6 @@
     font-size: 4rem;
     line-height: 1.1;
     color: $white;
-    // Тень для максимального контраста
     text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
     max-width: 950px;
     letter-spacing: -0.02em;
@@ -99,7 +187,7 @@
     }
 
     @media (max-width: $breakpoint-md) {
-      font-size: 2rem; // Крупно, но влазит в экран
+      font-size: 2rem;
       padding: 0 10px;
     }
   }
@@ -111,13 +199,39 @@
     max-width: 700px;
     font-weight: 500;
     margin: 0;
-    // Тень для описания
     text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
 
     @media (max-width: $breakpoint-md) {
       font-size: 1rem;
       max-width: 100%;
       padding: 0 10px;
+    }
+  }
+
+  .hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: -10px;
+
+    .tag {
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      svg {
+        color: #4CAF50;
+      }
     }
   }
 }
@@ -131,7 +245,6 @@
   margin-top: 20px;
 }
 
-// --- СТИЛИ ДЛЯ КНОПКИ "СОЗДАТЬ ЗАЯВКУ" ---
 .hero__alternative-cta {
   margin-top: 24px;
   width: 100%;
@@ -165,15 +278,12 @@
 
   .btn-create-request {
     width: 100%;
-    // Glassmorphism эффект
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 20px;
     padding: 16px 20px;
-
     display: flex;
     align-items: center;
     gap: 16px;
@@ -247,6 +357,96 @@
 
     &:hover .arrow-wrapper {
       transform: translateX(4px);
+    }
+  }
+}
+
+/* --- СТИЛИ ДЛЯ НОВЫХ БЛОКОВ (Статистика и SEO) --- */
+.stats-section {
+  background-color: $white;
+  padding: 40px 20px;
+  border-bottom: 1px solid $border-color-light;
+  position: relative;
+  z-index: 20;
+
+  .stats-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    text-align: center;
+
+    @media (max-width: $breakpoint-md) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .stat-value {
+        display: flex;
+        align-items: baseline;
+        font-family: $font-family-headings;
+        font-size: 48px;
+        font-weight: 900;
+        color: $primary-color;
+        margin: 0 0 8px 0;
+        line-height: 1;
+
+        h2 {
+          margin: 0;
+          font-size: inherit;
+          font-weight: inherit;
+        }
+
+        @media (max-width: $breakpoint-md) {
+          font-size: 36px;
+        }
+      }
+
+      span {
+        font-size: 15px;
+        color: $text-color-secondary;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+}
+
+/* Изменили фон на белый */
+.seo-section {
+  background-color: $white;
+  padding: 60px 20px;
+  border-top: 1px solid $border-color-light;
+
+  .seo-container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+
+    h2 {
+      font-family: $font-family-headings;
+      font-size: 24px;
+      font-weight: 800;
+      color: $text-color-base;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: $text-color-secondary;
+      margin-bottom: 16px;
+
+      strong {
+        color: $text-color-base;
+      }
     }
   }
 }

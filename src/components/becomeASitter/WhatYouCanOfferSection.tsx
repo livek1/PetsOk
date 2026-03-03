@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import '../../style/components/becomeASitter/WhatYouCanOfferSection.scss';
+import '@/style/components/becomeASitter/WhatYouCanOfferSection.scss';
 
 // Иконки остаются те же
 const IconDogBoarding: React.FC = () => <svg viewBox="0 0 24 24" width="36" height="36"><path d="M19 5H5c-1.103 0-2 .897-2 2v10c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2zm-8 10H9v-2h2v2zm0-4H9V9h2v2zm4 4h-2v-2h2v2zm0-4h-2V9h2v2z" fill="currentColor" /></svg>;

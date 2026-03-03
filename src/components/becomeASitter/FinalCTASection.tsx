@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import '../../style/components/becomeASitter/FinalCTASection.scss';
+import '@/style/components/becomeASitter/FinalCTASection.scss';
 
 const FinalCTASection: React.FC = () => {
     const { t } = useTranslation();

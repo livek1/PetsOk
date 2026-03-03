@@ -1,7 +1,7 @@
 // --- File: src/components/layout/Preloader.tsx (НОВАЯ ВЕРСИЯ) ---
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import "../../style/components/Preloader.scss";
+import "@/style/components/Preloader.scss";
 
 const pawPrints = [
   { x: -150, y: -25, rotate: 95 },

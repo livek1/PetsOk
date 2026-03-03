@@ -201,9 +201,12 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-        const token = localStorage.getItem('authToken');
-        if (token && config.headers) {
-            config.headers.Authorization = `Bearer ${token}`;
+        // ПРОВЕРКА НА БРАУЗЕР
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('authToken');
+            if (token && config.headers) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
         }
         return config;
     },
@@ -215,9 +218,12 @@ apiClient.interceptors.response.use(
     (error: AxiosError) => {
         if (error.response) {
             if (error.response.status === 401) {
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('refreshToken');
-                window.dispatchEvent(new CustomEvent('authError401'));
+                // ПРОВЕРКА НА БРАУЗЕР
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('refreshToken');
+                    window.dispatchEvent(new CustomEvent('authError401'));
+                }
             }
         }
         return Promise.reject(error);

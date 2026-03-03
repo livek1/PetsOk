@@ -1,5 +1,5 @@
 /* --- File: src/style/layouts/Header.module.scss --- */
-@use '../../style/variables' as *;
+@use '@/style/variables' as *;
 @use 'sass:color';
 
 .visuallyHidden {
@@ -508,4 +508,42 @@
   a {
     color: $text-color-base !important;
   }
+}
+
+.mobileDropdown {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+.mobileSubMenu {
+  list-style: none;
+  padding-left: 16px !important;
+  width: 100%;
+  background-color: #F8FAFC;
+  border-radius: 8px;
+  margin-bottom: 10px;
+
+  li {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    a {
+      display: block;
+      padding: 12px 0;
+      font-size: 15px;
+      color: $text-color-secondary;
+      text-decoration: none;
+
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+.rotated {
+  transform: rotate(180deg);
 }

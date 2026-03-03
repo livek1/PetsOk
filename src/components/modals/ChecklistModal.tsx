@@ -1,8 +1,8 @@
 // --- File: src/components/modals/ChecklistModal.tsx ---
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import { useTranslation } from 'react-i18next';
-import style from '../../style/components/modal/ChecklistModal.module.scss';
+import style from '@/style/components/modal/ChecklistModal.module.scss';
 
 // Иконки
 const CheckIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;
@@ -13,12 +13,19 @@ interface ChecklistModalProps {
     onClose: () => void;
 }
 
-const modalRoot = document.getElementById('modal-root');
-
 const ChecklistModal: React.FC<ChecklistModalProps> = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
+    const [mounted, setMounted] = useState(false);
 
-    if (!isOpen || !modalRoot) return null;
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Не рендерим во время SSR или если окно закрыто
+    if (!mounted || !isOpen) return null;
+
+    const modalRoot = document.getElementById('modal-root');
+    if (!modalRoot) return null;
 
     const items = [
         t('checklist.food', 'Корм и лакомства'),

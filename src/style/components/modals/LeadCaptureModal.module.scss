@@ -1,4 +1,6 @@
-@use '../../../style/variables' as *;
+/* --- File: src/style/components/modals/LeadCaptureModal.module.scss --- */
+@use '@/style/variables' as *;
+@use 'sass:color';
 
 .overlay {
     position: fixed;
@@ -166,7 +168,6 @@
 }
 
 /* --- ЖЕСТКАЯ СТИЛИЗАЦИЯ PHONE INPUT --- */
-// (Оставляем как было, код сокращен для читаемости в ответе)
 :global(.react-tel-input) {
     width: 100% !important;
     font-family: $font-family-base !important;
@@ -277,7 +278,7 @@
     z-index: 1;
 
     &:hover {
-        background: darken($primary-color, 5%);
+        background: color.adjust($primary-color, $lightness: -5%);
         transform: translateY(-2px);
         box-shadow: 0 12px 25px rgba(53, 152, 254, 0.35);
     }

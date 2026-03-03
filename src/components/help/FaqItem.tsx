@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import style from '../../style/pages/HelpPage.module.scss';
+import style from '@/style/pages/HelpPage.module.scss';
 
 // Иконка стрелочки
 const ChevronIcon = ({ className }: { className?: string }) => (

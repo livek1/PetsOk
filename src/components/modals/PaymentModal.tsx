@@ -3,10 +3,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from "react-dom";
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { initiateOrderPayment, getVerificationUrl } from '../../services/api';
-import style from '../../style/components/modals/PaymentModal.module.scss';
-import { AppDispatch, RootState } from '../../store';
-import { fetchPaymentMethodsAction, selectActivePaymentMethods } from '../../store/slices/paymentSlice';
+import { initiateOrderPayment, getVerificationUrl } from '@/services/api';
+import style from '@/style/components/modals/PaymentModal.module.scss';
+import { AppDispatch, RootState } from '@/store';
+import { fetchPaymentMethodsAction, selectActivePaymentMethods } from '@/store/slices/paymentSlice';
 
 // Иконки
 const CloseIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;

@@ -1,13 +1,13 @@
 // --- File: src/components/search/SearchSitterItem.tsx ---
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { fetchAddressSuggestions } from "../../services/api";
-import style from '../../style/components/search/SearchSitterItem.module.scss';
+import { useRouter } from "next/navigation";
+import { fetchAddressSuggestions } from "@/services/api";
+import { getCitySlugFromName, SERVICE_KEYS_TO_SLUGS } from "@/config/seoConfig";
+import style from '@/style/components/search/SearchSitterItem.module.scss';
 import LocationPinIcon from '../icons/LocationPinIcon';
 import SearchIcon from '../icons/SearchIcon';
 
-// Иконка навигации (стрелка)
 const NavigationIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
 );
@@ -21,23 +21,23 @@ const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) =
     });
 };
 
-// Список популярных городов для быстрого старта
 const POPULAR_CITIES = [
   "Москва",
   "Санкт-Петербург",
   "Краснодар",
   "Новосибирск",
   "Екатеринбург",
-  "Казань"
+  "Казань",
+  "Алматы" // Добавили Алматы для примера
 ];
 
 interface SearchSitterItemProp {
-  serviceType: string;
+  serviceType: string; // 'boarding', 'walking' и т.д.
 }
 
 const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -47,15 +47,14 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
   const [isActive, setIsActive] = useState(false);
   const [isLoadingGeo, setIsLoadingGeo] = useState(false);
 
-  // --- ЛОГИКА ДИНАМИЧЕСКОГО ПЛЕЙСХОЛДЕРА ---
   const getPlaceholder = (service: string) => {
     switch (service) {
-      case 'boarding': return t('search.placeholders.boarding', 'В каком районе искать ситтера?');
-      case 'walking': return t('search.placeholders.walking', 'В каком районе нужен выгул?');
+      case 'boarding': return t('search.placeholders.boarding', 'В каком городе искать ситтера?');
+      case 'walking': return t('search.placeholders.walking', 'В каком городе нужен выгул?');
       case 'doggy_day_care': return t('search.placeholders.doggy_day_care', 'Где нужна дневная няня?');
       case 'drop_in_visit': return t('search.placeholders.drop_in_visit', 'Куда должен приехать ситтер?');
       case 'house_sitting': return t('search.placeholders.house_sitting', 'Где требуется присмотр?');
-      default: return t('search.location_placeholder', 'Поиск по району или адресу');
+      default: return t('search.location_placeholder', 'Поиск по городу или адресу');
     }
   };
 
@@ -70,30 +69,38 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
     } catch (e) { setSuggestions([]); }
   }, 400), []);
 
-  // --- ГЛАВНАЯ ЛОГИКА ПОИСКА ---
+  // УМНЫЙ РОУТИНГ
+  const navigateToSearch = (addressQuery: string) => {
+    const citySlug = getCitySlugFromName(addressQuery);
+    const serviceSlug = SERVICE_KEYS_TO_SLUGS[serviceType];
+
+    if (citySlug && serviceSlug) {
+      // Если это базовый город из нашего SEO-конфига -> Идем на красивый URL
+      router.push(`/${citySlug}/${serviceSlug}`);
+    } else {
+      // Если это точный адрес (ул. Ленина 10) -> Идем на стандартный поиск
+      const params = new URLSearchParams();
+      params.append('address', addressQuery);
+      params.append('service_key', serviceType);
+      router.push(`/search?${params.toString()}`);
+    }
+  };
+
   const handleSearch = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-
-    // 1. Если поле пустое — не переходим, а фокусируем и показываем подсказки
     if (!locationInput.trim()) {
       setIsActive(true);
       inputRef.current?.focus();
       return;
     }
-
-    // 2. Если заполнено — переходим
-    const params = new URLSearchParams();
-    params.append('address', locationInput);
-    params.append('service_key', serviceType);
-    navigate(`/search?${params.toString()}`);
+    navigateToSearch(locationInput);
   };
 
   const handleSuggestionClick = (s: string) => {
     setLocationInput(s);
     setSuggestions([]);
     setIsActive(false);
-    // Сразу переходим при клике на подсказку
-    navigate(`/search?address=${s}&service_key=${serviceType}`);
+    navigateToSearch(s);
   };
 
   const handleContainerClick = () => {
@@ -101,7 +108,6 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
     inputRef.current?.focus();
   };
 
-  // --- ОПРЕДЕЛЕНИЕ ГЕОПОЗИЦИИ ---
   const handleGeoClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!navigator.geolocation) return alert("Геолокация не поддерживается вашим браузером");
@@ -110,14 +116,12 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        // Переходим на поиск по координатам
-        navigate(`/search?lat=${latitude}&lon=${longitude}&service_key=${serviceType}`);
+        router.push(`/search?lat=${latitude}&lon=${longitude}&service_key=${serviceType}`);
         setIsLoadingGeo(false);
       },
       (error) => {
         console.error(error);
         setIsLoadingGeo(false);
-        // Если ошибка, просто фокусируем поле, чтобы ввел вручную
         inputRef.current?.focus();
       }
     );
@@ -127,14 +131,12 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
     const clickOut = (e: MouseEvent) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setIsActive(false);
-        // Не очищаем suggestions, чтобы они появились снова при фокусе
       }
     };
     document.addEventListener('mousedown', clickOut);
     return () => document.removeEventListener('mousedown', clickOut);
   }, []);
 
-  // Определяем, что показывать в выпадающем списке
   const showSuggestionsList = isActive;
   const listContent = suggestions.length > 0 ? suggestions : POPULAR_CITIES;
   const isShowingPopular = suggestions.length === 0 && !locationInput;
@@ -164,7 +166,6 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
 
         <div className={style.searchBtnWrapper}>
           <button type="submit" className={style.searchBtn} onClick={(e) => {
-            // Если пусто, стопаем всплытие, чтобы сработал handleSearch с валидацией
             if (!locationInput) e.stopPropagation();
           }}>
             <SearchIcon width={24} height={24} />
@@ -172,11 +173,8 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
           </button>
         </div>
 
-        {/* --- ВЫПАДАЮЩИЙ СПИСОК --- */}
         {showSuggestionsList && (
           <div className={style.dropdownMenu}>
-
-            {/* 1. Кнопка "Рядом со мной" (Только если нет ввода) */}
             {!locationInput && (
               <div className={style.dropdownItem} onClick={handleGeoClick}>
                 <div className={style.iconCircle} style={{ color: '#3598FE', backgroundColor: '#EBF8FF' }}>
@@ -190,14 +188,12 @@ const SearchSitterItem: React.FC<SearchSitterItemProp> = ({ serviceType }) => {
               </div>
             )}
 
-            {/* 2. Заголовок для популярных городов */}
             {isShowingPopular && !isLoadingGeo && (
               <div style={{ padding: '8px 28px 4px', fontSize: '12px', color: '#A0AEC0', fontWeight: 600 }}>
                 ПОПУЛЯРНЫЕ ГОРОДА
               </div>
             )}
 
-            {/* 3. Список (Результаты поиска ИЛИ Популярные) */}
             {listContent.map((s, i) => (
               <div key={i} className={style.dropdownItem} onClick={(e) => { e.stopPropagation(); handleSuggestionClick(s); }}>
                 <div className={style.iconCircle}>

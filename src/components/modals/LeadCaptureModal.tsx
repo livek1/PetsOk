@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import Cookies from 'js-cookie';
-import style from '../../style/components/modals/LeadCaptureModal.module.scss';
+import style from '@/style/components/modals/LeadCaptureModal.module.scss';
 import { useTranslation } from 'react-i18next';
-import { createLead } from '../../services/api';
-import { config as appConfig } from '../../config/appConfig';
+import { createLead } from '@/services/api';
+import { config as appConfig } from '@/config/appConfig';
 
 // Иконка "Пёс-оператор поддержки" (для первого экрана)
 const SupportDogIcon = () => (

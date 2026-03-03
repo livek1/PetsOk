@@ -1,5 +1,5 @@
 import React from "react";
-import "../../style/components/modal/Registration.scss";
+import "@/style/components/modal/Registration.scss";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 

@@ -1,0 +1,696 @@
+/* --- File: src/style/components/home/LandingAddons.module.scss --- */
+@use '../../variables' as *;
+
+.section {
+    padding: 100px 20px;
+    background-color: $white;
+    overflow: hidden;
+
+    @media (max-width: $breakpoint-md) {
+        padding: 60px 16px;
+    }
+
+    &.bgLight {
+        background-color: $white;
+    }
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 50px;
+
+    h2 {
+        font-family: $font-family-headings;
+        font-size: 38px;
+        font-weight: 800;
+        color: $text-color-base;
+        margin-bottom: 16px;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+
+        @media (max-width: $breakpoint-md) {
+            font-size: 28px;
+        }
+    }
+
+    p {
+        font-size: 18px;
+        color: $text-color-secondary;
+        max-width: 650px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+}
+
+// --- СРАВНЕНИЕ (PetsOk vs Зоогостиницы) ---
+.comparisonGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+
+    @media (max-width: $breakpoint-md) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.compareCard {
+    background: $white;
+    border-radius: 24px;
+    padding: 40px 30px;
+    position: relative;
+
+    h3 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 24px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        font-size: 16px;
+        line-height: 1.4;
+        color: $text-color-secondary;
+
+        strong {
+            color: $text-color-base;
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
+    }
+
+    &.bad {
+        border: 1px solid #E2E8F0;
+        background: #F8FAFC;
+
+        h3 {
+            color: $text-color-muted;
+        }
+
+        svg {
+            color: #EF4444;
+        }
+    }
+
+    &.good {
+        border: 2px solid $primary-color;
+        box-shadow: 0 10px 40px rgba($primary-color, 0.15);
+        transform: scale(1.05);
+        z-index: 2;
+
+        @media (max-width: $breakpoint-md) {
+            transform: none;
+        }
+
+        .recommendedBadge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: $primary-color;
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        h3 {
+            color: $primary-color;
+        }
+
+        svg {
+            color: #10B981;
+        }
+    }
+}
+
+// --- ЭКСПЕРТЫ (КАТЕГОРИИ СПЕЦИАЛИСТОВ) ---
+.expertsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Сетка из трех колонок, выравниваем карточки по высоте
+.expertsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: stretch; // Карточки будут одинаковой высоты
+
+    @media (max-width: $breakpoint-lg) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// Сама карточка
+.expertCategoryCard {
+    background: $white;
+    border-radius: 24px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border: 1px solid $border-color-light;
+
+    // Включаем Flexbox для расположения: иконка слева, текст справа
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; // Прижимаем элементы к верхнему краю
+    gap: 20px; // Расстояние между картинкой и текстом
+
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        border-color: $primary-color-lighter;
+
+        .expertLink {
+            color: $primary-color-darker;
+
+            svg {
+                transform: translateX(4px);
+            }
+        }
+    }
+
+    // Адаптив: на телефонах возвращаем классический вид (иконка сверху)
+    @media (max-width: 600px) {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+// Обертка для иконки
+.expertIconWrapper {
+    flex-shrink: 0; // ЗАПРЕЩАЕМ иконке сжиматься, если текста много
+    display: flex;
+    align-items: flex-start;
+    padding-top: 4px; // Чуть опускаем иконку, чтобы она визуально совпала с 1-й строкой заголовка
+}
+
+// Обертка для всего текста
+.expertTextContent {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; // Заставляем блок занять все оставшееся место
+    height: 100%; // Растягиваем на всю высоту карточки
+}
+
+.expertTextContent h3 {
+    font-family: $font-family-headings;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 12px 0;
+    color: $text-color-base;
+    line-height: 1.3;
+}
+
+.painPoints {
+    font-size: 15px;
+    color: $text-color-secondary;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    // Убрал font-style: italic; для лучшей читаемости
+}
+
+.featureList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 14px;
+        color: $text-color-base;
+        font-weight: 500;
+        line-height: 1.4;
+
+        svg {
+            width: 18px;
+            height: 18px;
+            color: #10B981; // Зеленая галочка
+            flex-shrink: 0;
+            margin-top: 1px; // Выравниваем галочку по тексту
+        }
+    }
+}
+
+.expertLink {
+    margin-top: auto; // МАГИЯ FLEXBOX: прибиваем ссылку к самому низу!
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: $primary-color;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    svg {
+        transition: transform 0.2s ease;
+    }
+}
+
+// --- ЧАТ И ФОТООТЧЕТЫ ---
+.chatSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+
+    @media (max-width: $breakpoint-md) {
+        flex-direction: column;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .textContent {
+        flex: 1;
+        max-width: 500px;
+
+        h2 {
+            font-family: $font-family-headings;
+            font-size: 38px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: $text-color-base;
+
+            @media (max-width: $breakpoint-md) {
+                font-size: 28px;
+            }
+        }
+
+        p {
+            font-size: 18px;
+            color: $text-color-secondary;
+            line-height: 1.6;
+            margin-bottom: 30px;
+
+            @media (max-width: $breakpoint-md) {
+                font-size: 16px;
+            }
+        }
+
+        // --- Вкладки (Tabs) для переключения ---
+        .featureTabs {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+            li {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+                display: flex;
+                align-items: flex-start;
+                text-align: left;
+                gap: 16px;
+                padding: 16px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                border: 2px solid transparent;
+                background: #F8FAFC;
+                transition: all 0.3s ease;
+                font-family: inherit;
+
+                .tabIcon {
+                    width: 48px;
+                    height: 48px;
+                    background: $white;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: $text-color-muted;
+                    flex-shrink: 0;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+                    transition: all 0.3s;
+                }
+
+                .tabTextCol {
+                    display: flex;
+                    flex-direction: column;
+
+                    strong {
+                        color: $text-color-base;
+                        display: block;
+                        margin-bottom: 4px;
+                        font-size: 16px;
+                        font-weight: 800;
+                    }
+
+                    span {
+                        font-size: 14px;
+                        color: $text-color-secondary;
+                        line-height: 1.4;
+                    }
+                }
+
+                &:hover {
+                    background: #F1F5F9;
+
+                    .tabIcon {
+                        color: $primary-color;
+                    }
+                }
+
+                // Активное состояние кнопки-таба
+                &.activeTab {
+                    background: $white;
+                    border-color: $primary-color;
+                    box-shadow: 0 10px 30px rgba(53, 152, 254, 0.15);
+
+                    .tabIcon {
+                        background: $primary-color;
+                        color: $white;
+                        box-shadow: 0 4px 15px rgba(53, 152, 254, 0.3);
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Макет телефона ---
+    .phoneMockupContainer {
+        flex-shrink: 0;
+    }
+
+    .phoneMockup {
+        width: 300px;
+        height: 600px;
+        background: #EFEAE2; // Базовый цвет (под чат WhatsApp)
+        border: 12px solid #1A202C;
+        border-radius: 40px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+
+        // "Челка" айфона
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #1A202C;
+            border-radius: 0 0 12px 12px;
+            z-index: 10;
+        }
+
+        .chatHeader {
+            background: $white;
+            padding: 35px 15px 15px; // Отступ под челку
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            z-index: 2;
+            color: $text-color-base;
+        }
+
+        // Обертка для сменяющихся экранов (анимация Framer Motion)
+        .mockupWrapper {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        // Экран 1: Обычный Чат
+        .chatBody {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: flex-end;
+            background: #EFEAE2; // Характерный цвет мессенджера
+
+            .message {
+                background: $white;
+                padding: 10px 14px;
+                border-radius: 16px 16px 16px 4px;
+                font-size: 14px;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+                max-width: 85%;
+                line-height: 1.4;
+                color: $text-color-base;
+
+                &.me {
+                    background: #DCF8C6; // Цвет отправленного сообщения
+                    align-self: flex-end;
+                    border-radius: 16px 16px 4px 16px;
+                }
+
+                img {
+                    width: 100%;
+                    border-radius: 8px;
+                    margin-bottom: 8px;
+                    display: block;
+                }
+
+                .time {
+                    display: block;
+                    text-align: right;
+                    font-size: 10px;
+                    color: #999;
+                    margin-top: 4px;
+                }
+            }
+        }
+
+        // Экран 2 и 3: Отчеты платформы (светлый фон)
+        .mockupBody {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            background: #F7FAFC;
+            overflow-y: auto;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            // Карта (для выгула)
+            .reportMap {
+                height: 160px;
+                background: #E2E8F0;
+                border-radius: 16px;
+                position: relative;
+                overflow: hidden;
+                margin-bottom: 16px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+                .mapLabel {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(255, 255, 255, 0.9);
+                    padding: 4px 8px;
+                    border-radius: 8px;
+                    font-size: 10px;
+                    font-weight: 800;
+                    color: $text-color-base;
+                    text-transform: uppercase;
+                }
+            }
+
+            // Статистика (Время, Дистанция)
+            .reportStats {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 16px;
+
+                .statBox {
+                    flex: 1;
+                    background: $white;
+                    padding: 12px;
+                    border-radius: 16px;
+                    text-align: center;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+                    border: 1px solid #EDF2F7;
+                }
+
+                .statVal {
+                    font-size: 20px;
+                    font-weight: 800;
+                    color: $primary-color;
+                    margin-bottom: 2px;
+                }
+
+                .statLbl {
+                    font-size: 11px;
+                    color: $text-color-secondary;
+                    text-transform: uppercase;
+                    font-weight: 600;
+                }
+            }
+
+            // Теги событий (туалет)
+            .reportEvents {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 16px;
+                flex-wrap: wrap;
+
+                .eventTag {
+                    background: $white;
+                    border: 1px solid #E2E8F0;
+                    padding: 8px 12px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: $text-color-base;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+                }
+            }
+
+            // Фото для отчета о прогулке (маленькое)
+            .reportPhoto {
+                width: 100%;
+                height: 140px;
+                object-fit: cover;
+                border-radius: 16px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            // Фото для отчета о визите (большое)
+            .reportPhotoBig {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 16px;
+                margin-bottom: 16px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            // Чеклист (для визита)
+            .reportChecklist {
+                background: #F0FFF4;
+                border: 1px solid #C6F6D5;
+                border-radius: 16px;
+                padding: 16px;
+                margin-bottom: 16px;
+
+                .checkItem {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #276749;
+                    margin-bottom: 12px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    svg {
+                        color: #38A169;
+                        flex-shrink: 0;
+                    }
+                }
+            }
+
+            // Комментарий ситтера
+            .reportNote {
+                background: $white;
+                border: 1px solid #EDF2F7;
+                padding: 16px;
+                border-radius: 16px;
+                font-size: 13px;
+                font-style: italic;
+                color: $text-color-secondary;
+                line-height: 1.5;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            }
+        }
+    }
+}
+
+// --- ЛИПКАЯ КНОПКА (Мобилка) ---
+.stickyMobileBar {
+    display: none;
+
+    @media (max-width: $breakpoint-md) {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 12px 20px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        z-index: 999;
+    }
+
+    .stickyBtn {
+        width: 100%;
+        background-color: $primary-color;
+        color: $white;
+        border: none;
+        padding: 16px 0;
+        border-radius: 16px;
+        font-size: 16px;
+        font-weight: 800;
+        box-shadow: 0 4px 15px rgba($primary-color, 0.4);
+        cursor: pointer;
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+}

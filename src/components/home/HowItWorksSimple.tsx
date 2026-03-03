@@ -1,18 +1,35 @@
-import React from "react";
+// --- File: src/components/home/HowItWorksSimple.tsx ---
+'use client'; // Обязательно для использования useState и useEffect
+
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import "../../style/components/HowItWorksSimple.scss";
-import Imagestep1 from '../../assets/step1.png';
-import Imagestep2 from '../../assets/step2.png';
-import Imagestep3 from '../../assets/step3.png';
+import "@/style/components/HowItWorksSimple.scss";
 
 const HowItWorksSimple: React.FC = () => {
     const { t } = useTranslation();
 
+    // Состояние для определения мобильного экрана
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        // Эта функция выполнится только в браузере
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        // Устанавливаем начальное значение
+        checkMobile();
+
+        // Слушаем изменение размера окна
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     const steps = [
-        { id: "step1", imageUrl: Imagestep1, titleKey: "howItWorksSimple.step1.title", descriptionKey: "howItWorksSimple.step1.desc" },
-        { id: "step2", imageUrl: Imagestep2, titleKey: "howItWorksSimple.step2.title", descriptionKey: "howItWorksSimple.step2.desc" },
-        { id: "step3", imageUrl: Imagestep3, titleKey: "howItWorksSimple.step3.title", descriptionKey: "howItWorksSimple.step3.desc" },
+        { id: "step1", imageUrl: "/images/step1.png", titleKey: "howItWorksSimple.step1.title", descriptionKey: "howItWorksSimple.step1.desc" },
+        { id: "step2", imageUrl: "/images/step2.png", titleKey: "howItWorksSimple.step2.title", descriptionKey: "howItWorksSimple.step2.desc" },
+        { id: "step3", imageUrl: "/images/step3.png", titleKey: "howItWorksSimple.step3.title", descriptionKey: "howItWorksSimple.step3.desc" },
     ];
 
     const stepVariants = {
@@ -24,13 +41,14 @@ const HowItWorksSimple: React.FC = () => {
         hidden: { scaleX: 0, opacity: 0, originX: 0 },
         visible: { scaleX: 1, opacity: 1, transition: { duration: 0.4, ease: "circOut" } },
     };
+
     const connectorVariantsVertical = {
         hidden: { scaleY: 0, opacity: 0, originY: 0 },
         visible: { scaleY: 1, opacity: 1, transition: { duration: 0.4, ease: "circOut" } },
     };
 
     return (
-        <section className="how-it-works-simple"> {/* Убрали wrapper */}
+        <section className="how-it-works-simple">
             <div className="wrapper">
                 <motion.h2
                     initial={{ opacity: 0, y: -20 }}
@@ -62,7 +80,8 @@ const HowItWorksSimple: React.FC = () => {
                                     whileInView="visible"
                                     viewport={{ once: true, amount: 0.2 }}
                                     transition={{ delay: index * 0.2 + 0.25, duration: 0.5, ease: "easeOut" }}
-                                    variants={window.innerWidth > 768 ? connectorVariants : connectorVariantsVertical}
+                                    // Теперь используем стейт isMobile вместо прямого обращения к window
+                                    variants={isMobile ? connectorVariantsVertical : connectorVariants}
                                 />
                             )}
                         </React.Fragment>

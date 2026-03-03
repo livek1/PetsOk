@@ -1,7 +1,11 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow: /cabinet/
+Disallow: /api/
+Disallow: /*?*
+Disallow: /terms
+Disallow: /privacy-policy
+Disallow: /cookie-policy
 Allow: /
 
-# Укажите путь к вашей карте сайта
 Sitemap: https://petsok.ru/sitemap.xml

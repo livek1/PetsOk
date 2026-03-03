@@ -6,9 +6,12 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: '*',
             allow: '/',
             disallow: [
-                '/cabinet/', // Закрываем личный кабинет от индексации
+                '/cabinet/',
                 '/api/',
-                '/search?*', // Закрываем параметрические поиски, чтобы не плодить дубли
+                '/search?*',
+                '/terms',           // Закрываем Условия использования
+                '/privacy-policy',  // Закрываем Политику конфиденциальности
+                '/cookie-policy',   // Закрываем Политику Cookie
             ],
         },
         sitemap: 'https://petsok.ru/sitemap.xml',

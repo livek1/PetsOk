@@ -1,18 +1,15 @@
-'use client'; // Добавляем первой строкой!
+'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import style from '@/style/pages/cabinet/CabinetPetForm.module.scss';
 import {
     createPet,
-    updatePet,
-    getPetById,
     fetchBreeds,
     addBreed,
     deletePetPhoto,
-    setPetAvatar,
     PetFile,
     Breed
 } from '@/services/api';
@@ -29,17 +26,13 @@ const PlusIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="non
 const DogIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 4.916-5 7 6.667-1.333 9 0 9 0" /><path d="M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 4.916 5 7-6.667-1.333-9 0-9 0" /><path d="M12 22v-3" /><path d="M8 8.5C8 8.5 7 11 6 13c-2.5 5 1 9 6 9s8.5-4 6-9c-1-2-2-4.5-2-4.5" /></svg>;
 const CatIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21S3 17.9 3 13.44c0-1.2.43-2.37 1-3.44 0 0-1.82-6.42-.42-7 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z" /></svg>;
 
-
-const CabinetPetForm: React.FC = () => {
-    // Явно указываем тип:
-    const mode: 'create' | 'edit' = 'edit';
+export default function AddPetPage() {
     const { t } = useTranslation();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const params = useParams();
-    const id = params.id as string;
-    const returnToOrderUuid = searchParams.get('returnToOrderUuid'); // Получаем из URL
-    const [loading, setLoading] = useState(mode === 'edit');
+    const returnToOrderUuid = searchParams.get('returnToOrderUuid');
+
+    const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     // Медиа
@@ -76,61 +69,6 @@ const CabinetPetForm: React.FC = () => {
     });
 
     const typeId = watch('type_id');
-
-    // --- 1. ЗАГРУЗКА ДАННЫХ ---
-    useEffect(() => {
-        if (mode === 'edit' && id) {
-            getPetById(id).then(response => {
-                const pet = response.data || response;
-
-                const safeTypeId = pet.type?.data?.id || pet.type_id || 1;
-                const safeBreedId = pet.breed?.data?.id || pet.breed_id || '';
-                const safeSizeId = pet.size?.data?.id || pet.size_id || 3;
-
-                // Gender: backend might return 'male'/'female' or 0/1
-                const isMale =
-                    (pet.gender_value && String(pet.gender_value).toLowerCase() === 'male') ||
-                    pet.gender === 0 ||
-                    pet.gender === '0';
-
-                const safeGender = isMale ? '0' : '1';
-
-                setValue('name', pet.name);
-                setValue('type_id', String(safeTypeId));
-                setValue('breed_id', String(safeBreedId));
-                setBreedQuery(pet.breed?.data?.name || pet.breed?.name || '');
-
-                setValue('gender', safeGender);
-                setValue('year', String(pet.year || ''));
-                setValue('month', String(pet.month || ''));
-                setValue('size_id', String(safeSizeId));
-
-                // Helper to map values to '0'|'1'|'2'
-                const mapBool = (val: any) => val !== undefined && val !== null ? String(val) : '0';
-
-                setValue('sterilized', mapBool(pet.sterilized_value ?? pet.sterilized));
-                setValue('vaccinated', mapBool(pet.vaccinated_value ?? pet.vaccinated));
-                setValue('staying_home_alone', mapBool(pet.staying_home_alone_value ?? pet.staying_home_alone));
-                setValue('kids_friendly', mapBool(pet.kids_friendly_value ?? pet.kids_friendly));
-                setValue('dogs_friendly', mapBool(pet.dogs_friendly_value ?? pet.dogs_friendly));
-                setValue('cats_friendly', mapBool(pet.cats_friendly_value ?? pet.cats_friendly));
-
-                setValue('info_for_sitting', pet.info_for_sitting || '');
-                setValue('info_for_walking', pet.info_for_walking || '');
-
-                const files = pet.files?.data || pet.media?.data || [];
-                setExistingFiles(files);
-                const currentAvatarId = pet.avatar?.data?.id || pet.avatar_id;
-                if (currentAvatarId) setAvatarId(currentAvatarId);
-
-                setLoading(false);
-            }).catch((err) => {
-                console.error(err);
-                alert('Ошибка загрузки данных');
-                router.push('/cabinet/pets');
-            });
-        }
-    }, [mode, id, setValue, router]);
 
     // --- 2. ПОИСК ПОРОД ---
     useEffect(() => {
@@ -174,17 +112,7 @@ const CabinetPetForm: React.FC = () => {
     };
 
     const handleSetAvatar = async (fileId: number) => {
-        if (mode === 'edit' && id) {
-            try {
-                await setPetAvatar(id, fileId);
-                setAvatarId(fileId);
-            } catch (e) { alert('Ошибка установки аватара'); }
-        } else {
-            // В режиме создания просто отмечаем локально, реальная привязка будет после сохранения
-            // (Зависит от вашего API createPet, поддерживает ли оно выбор аватара сразу. 
-            // Если нет — показываем алерт)
-            alert('Сначала сохраните питомца, чтобы выбрать главное фото.');
-        }
+        alert('Сначала сохраните питомца, чтобы выбрать главное фото.');
     };
 
     // --- 4. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
@@ -232,15 +160,9 @@ const CabinetPetForm: React.FC = () => {
         setSubmitting(true);
         try {
             const payload = { ...data, breed_id: data.breed_id || null };
-            if (mode === 'create') {
-                await createPet(payload, newFiles);
-            } else {
-                await updatePet(id!, payload, newFiles);
-            }
+            await createPet(payload, newFiles);
 
-            // --- ЛОГИКА ВОЗВРАТА ---
             if (returnToOrderUuid) {
-                // Если мы пришли из заказа, возвращаемся в него
                 router.push(`/cabinet/orders/create?uuid=${returnToOrderUuid}`);
             } else {
                 router.push('/cabinet/pets');
@@ -264,7 +186,7 @@ const CabinetPetForm: React.FC = () => {
 
             <div className={style.headerBlock}>
                 <h1 className={style.pageTitle}>
-                    {mode === 'create' ? t('petForm.titleAdd', 'Кого добавляем?') : t('petForm.titleEdit', 'Редактирование')}
+                    {t('petForm.titleAdd', 'Кого добавляем?')}
                 </h1>
                 <p className={style.pageSubtitle}>
                     {t('petForm.subtitle', 'Заполните анкету, чтобы ситтер знал об особенностях вашего любимца.')}
@@ -537,7 +459,7 @@ const CabinetPetForm: React.FC = () => {
             </form>
         </div>
     );
-};
+}
 
 // Компонент переключателя (Да/Нет/Не знаю)
 const SegmentedControl = ({ label, sub, name, control, t }: any) => (
@@ -577,5 +499,3 @@ const SegmentedControl = ({ label, sub, name, control, t }: any) => (
         />
     </div>
 );
-
-export default CabinetPetForm;

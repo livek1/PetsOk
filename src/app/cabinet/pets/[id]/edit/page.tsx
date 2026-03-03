@@ -6,7 +6,6 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import style from '@/style/pages/cabinet/CabinetPetForm.module.scss';
 import {
-    createPet,
     updatePet,
     getPetById,
     fetchBreeds,
@@ -29,17 +28,15 @@ const PlusIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="non
 const DogIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 4.916-5 7 6.667-1.333 9 0 9 0" /><path d="M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 4.916 5 7-6.667-1.333-9 0-9 0" /><path d="M12 22v-3" /><path d="M8 8.5C8 8.5 7 11 6 13c-2.5 5 1 9 6 9s8.5-4 6-9c-1-2-2-4.5-2-4.5" /></svg>;
 const CatIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21S3 17.9 3 13.44c0-1.2.43-2.37 1-3.44 0 0-1.82-6.42-.42-7 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z" /></svg>;
 
-
 const CabinetPetForm: React.FC = () => {
-    // Явно указываем тип:
-    const mode: 'create' | 'edit' = 'edit';
     const { t } = useTranslation();
     const router = useRouter();
     const searchParams = useSearchParams();
     const params = useParams();
     const id = params.id as string;
     const returnToOrderUuid = searchParams.get('returnToOrderUuid');
-    const [loading, setLoading] = useState(mode === 'edit');
+
+    const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
 
     // Медиа
@@ -79,7 +76,7 @@ const CabinetPetForm: React.FC = () => {
 
     // --- 1. ЗАГРУЗКА ДАННЫХ ---
     useEffect(() => {
-        if (mode === 'edit' && id) {
+        if (id) {
             getPetById(id).then(response => {
                 const pet = response.data || response;
 
@@ -87,7 +84,6 @@ const CabinetPetForm: React.FC = () => {
                 const safeBreedId = pet.breed?.data?.id || pet.breed_id || '';
                 const safeSizeId = pet.size?.data?.id || pet.size_id || 3;
 
-                // Gender: backend might return 'male'/'female' or 0/1
                 const isMale =
                     (pet.gender_value && String(pet.gender_value).toLowerCase() === 'male') ||
                     pet.gender === 0 ||
@@ -105,7 +101,6 @@ const CabinetPetForm: React.FC = () => {
                 setValue('month', String(pet.month || ''));
                 setValue('size_id', String(safeSizeId));
 
-                // Helper to map values to '0'|'1'|'2'
                 const mapBool = (val: any) => val !== undefined && val !== null ? String(val) : '0';
 
                 setValue('sterilized', mapBool(pet.sterilized_value ?? pet.sterilized));
@@ -130,7 +125,7 @@ const CabinetPetForm: React.FC = () => {
                 router.push('/cabinet/pets');
             });
         }
-    }, [mode, id, setValue, router]);
+    }, [id, setValue, router]);
 
     // --- 2. ПОИСК ПОРОД ---
     useEffect(() => {
@@ -174,16 +169,11 @@ const CabinetPetForm: React.FC = () => {
     };
 
     const handleSetAvatar = async (fileId: number) => {
-        if (mode === 'edit' && id) {
+        if (id) {
             try {
                 await setPetAvatar(id, fileId);
                 setAvatarId(fileId);
             } catch (e) { alert('Ошибка установки аватара'); }
-        } else {
-            // В режиме создания просто отмечаем локально, реальная привязка будет после сохранения
-            // (Зависит от вашего API createPet, поддерживает ли оно выбор аватара сразу. 
-            // Если нет — показываем алерт)
-            alert('Сначала сохраните питомца, чтобы выбрать главное фото.');
         }
     };
 
@@ -232,20 +222,13 @@ const CabinetPetForm: React.FC = () => {
         setSubmitting(true);
         try {
             const payload = { ...data, breed_id: data.breed_id || null };
-            if (mode === 'create') {
-                await createPet(payload, newFiles);
-            } else {
-                await updatePet(id!, payload, newFiles);
-            }
+            await updatePet(id, payload, newFiles);
 
-            // --- ЛОГИКА ВОЗВРАТА ---
             if (returnToOrderUuid) {
-                // Если мы пришли из заказа, возвращаемся в него
                 router.push(`/cabinet/orders/create?uuid=${returnToOrderUuid}`);
             } else {
                 router.push('/cabinet/pets');
             }
-
         } catch (e: any) {
             console.error(e);
             alert('Ошибка сохранения. Проверьте обязательные поля.');
@@ -263,9 +246,7 @@ const CabinetPetForm: React.FC = () => {
             </button>
 
             <div className={style.headerBlock}>
-                <h1 className={style.pageTitle}>
-                    {mode === 'create' ? t('petForm.titleAdd', 'Кого добавляем?') : t('petForm.titleEdit', 'Редактирование')}
-                </h1>
+                <h1 className={style.pageTitle}>{t('petForm.titleEdit', 'Редактирование')}</h1>
                 <p className={style.pageSubtitle}>
                     {t('petForm.subtitle', 'Заполните анкету, чтобы ситтер знал об особенностях вашего любимца.')}
                 </p>
@@ -463,31 +444,12 @@ const CabinetPetForm: React.FC = () => {
                     <p className={style.sectionSubtitle}>{t('petForm.behaviorSubtitle', 'Честные ответы помогут подобрать идеального ситтера.')}</p>
 
                     <div className={style.behaviorGrid}>
-                        <SegmentedControl
-                            label={t('petForm.labelSterilized', 'Стерилизован?')}
-                            name="sterilized" control={control} t={t}
-                        />
-                        <SegmentedControl
-                            label={t('petForm.labelVaccinated', 'Вакцинирован?')}
-                            name="vaccinated" control={control} t={t}
-                        />
-                        <SegmentedControl
-                            label={t('petForm.labelHomeAlone', 'Остается один дома?')}
-                            name="staying_home_alone" control={control} t={t}
-                            sub={t('petForm.homeAloneSub', 'Не воет и не портит вещи')}
-                        />
-                        <SegmentedControl
-                            label={t('petForm.labelKidsFriendly', 'Ладит с детьми?')}
-                            name="kids_friendly" control={control} t={t}
-                        />
-                        <SegmentedControl
-                            label={t('petForm.labelDogsFriendly', 'Дружелюбен к собакам?')}
-                            name="dogs_friendly" control={control} t={t}
-                        />
-                        <SegmentedControl
-                            label={t('petForm.labelCatsFriendly', 'Дружелюбен к кошкам?')}
-                            name="cats_friendly" control={control} t={t}
-                        />
+                        <SegmentedControl label={t('petForm.labelSterilized', 'Стерилизован?')} name="sterilized" control={control} t={t} />
+                        <SegmentedControl label={t('petForm.labelVaccinated', 'Вакцинирован?')} name="vaccinated" control={control} t={t} />
+                        <SegmentedControl label={t('petForm.labelHomeAlone', 'Остается один дома?')} name="staying_home_alone" control={control} t={t} sub={t('petForm.homeAloneSub', 'Не воет и не портит вещи')} />
+                        <SegmentedControl label={t('petForm.labelKidsFriendly', 'Ладит с детьми?')} name="kids_friendly" control={control} t={t} />
+                        <SegmentedControl label={t('petForm.labelDogsFriendly', 'Дружелюбен к собакам?')} name="dogs_friendly" control={control} t={t} />
+                        <SegmentedControl label={t('petForm.labelCatsFriendly', 'Дружелюбен к кошкам?')} name="cats_friendly" control={control} t={t} />
                     </div>
                 </div>
 
@@ -539,7 +501,6 @@ const CabinetPetForm: React.FC = () => {
     );
 };
 
-// Компонент переключателя (Да/Нет/Не знаю)
 const SegmentedControl = ({ label, sub, name, control, t }: any) => (
     <div className={style.segmentRow}>
         <div className={style.segmentLabel}>
@@ -551,27 +512,9 @@ const SegmentedControl = ({ label, sub, name, control, t }: any) => (
             control={control}
             render={({ field }) => (
                 <div className={style.segmentedControl}>
-                    <button
-                        type="button"
-                        className={field.value === '1' ? style.yes : ''}
-                        onClick={() => field.onChange('1')}
-                    >
-                        {t('common.yes', 'Да')}
-                    </button>
-                    <button
-                        type="button"
-                        className={field.value === '2' ? style.no : ''}
-                        onClick={() => field.onChange('2')}
-                    >
-                        {t('common.no', 'Нет')}
-                    </button>
-                    <button
-                        type="button"
-                        className={field.value === '0' ? style.unknown : ''}
-                        onClick={() => field.onChange('0')}
-                    >
-                        {t('common.unknown', 'Не знаю')}
-                    </button>
+                    <button type="button" className={field.value === '1' ? style.yes : ''} onClick={() => field.onChange('1')}>{t('common.yes', 'Да')}</button>
+                    <button type="button" className={field.value === '2' ? style.no : ''} onClick={() => field.onChange('2')}>{t('common.no', 'Нет')}</button>
+                    <button type="button" className={field.value === '0' ? style.unknown : ''} onClick={() => field.onChange('0')}>{t('common.unknown', 'Не знаю')}</button>
                 </div>
             )}
         />

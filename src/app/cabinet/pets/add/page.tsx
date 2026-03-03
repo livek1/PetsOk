@@ -132,7 +132,7 @@ const CabinetPetForm: React.FC<PetFormProps> = ({ mode }) => {
                 router.push('/cabinet/pets');
             });
         }
-    }, [mode, id, setValue, navigate]);
+    }, [mode, id, setValue, router]);
 
     // --- 2. ПОИСК ПОРОД ---
     useEffect(() => {

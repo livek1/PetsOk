@@ -152,7 +152,7 @@ $warning-text: #B7791F;
     }
 
     &:hover {
-        border-color: lighten($primary-color, 20%);
+        border-color: color.adjust($primary-color, $lightness: 20%);
         background: #FDFDFD;
 
         svg {
@@ -228,7 +228,7 @@ $warning-text: #B7791F;
     box-sizing: border-box;
 
     &:hover {
-        border-color: darken($border-color, 15%);
+        border-color: color.adjust($border-color, $lightness: -15%);
     }
 
     &:focus {
@@ -353,7 +353,7 @@ $warning-text: #B7791F;
 
         &.yes {
             background: rgba($success-color, 0.1);
-            color: darken($success-color, 5%);
+            color: color.adjust($success-color, $lightness: -5%);
             border-color: rgba($success-color, 0.3);
 
             &:hover {
@@ -363,7 +363,7 @@ $warning-text: #B7791F;
 
         &.no {
             background: rgba($error-color, 0.1);
-            color: darken($error-color, 5%);
+            color: color.adjust($error-color, $lightness: -5%);
             border-color: rgba($error-color, 0.3);
 
             &:hover {
@@ -860,7 +860,7 @@ $warning-text: #B7791F;
         }
 
         .statusValue {
-            color: darken($success-color, 10%);
+            color: color.adjust($success-color, $lightness: -10%);
         }
     }
 

@@ -81,7 +81,7 @@ $white: #FFFFFF !default;
     transition: background 0.2s;
 
     &:hover {
-        background: darken(#EBF4FF, 5%);
+        background: color.adjust(#EBF4FF, $lightness: -5%);
     }
 }
 
@@ -380,7 +380,7 @@ $white: #FFFFFF !default;
     border-radius: 12px;
 
     &:hover {
-        border-color: darken(#F3F4F6, 10%);
+        border-color: color.adjust(#F3F4F6, $lightness: -10%);
     }
 }
 
@@ -480,7 +480,7 @@ $white: #FFFFFF !default;
         }
 
         .chipDesc {
-            color: darken($primary-color, 10%);
+            color: color.adjust($primary-color, $lightness: -10%);
         }
     }
 }
@@ -512,7 +512,7 @@ $white: #FFFFFF !default;
     box-shadow: 0 4px 10px rgba($primary-color, 0.3);
 
     &:hover {
-        background-color: darken($primary-color, 5%);
+        background-color: color.adjust($primary-color, $lightness: -5%);
         transform: translateY(-2px);
     }
 

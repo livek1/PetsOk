@@ -271,7 +271,7 @@
     transition: background 0.2s;
 
     &:hover {
-        background-color: darken(#EFF6FF, 5%);
+        background-color: color.adjust(#EFF6FF, $lightness: -5%);
     }
 }
 

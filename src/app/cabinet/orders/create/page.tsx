@@ -786,9 +786,7 @@ const CreateOrder: React.FC = () => {
                                     <p>{t('bookingScreen.noPets', 'У вас пока нет добавленных питомцев.')}</p>
                                     <button
                                         className={style.addPetBigBtn}
-                                        onClick={() => router.push('/cabinet/pets/add', {
-                                            state: { returnToOrderUuid: orderUuid }
-                                        })}
+                                        onClick={() => router.push(`/cabinet/pets/add?returnToOrderUuid=${orderUuid}`)}
                                     >
                                         {t('bookingScreen.addPet', '+ Добавить питомца')}
                                     </button>
@@ -825,9 +823,7 @@ const CreateOrder: React.FC = () => {
                                     })}
                                     <div
                                         className={`${style.petCard} ${style.addNewPetCard}`}
-                                        onClick={() => router.push('/cabinet/pets/add', {
-                                            state: { returnToOrderUuid: orderUuid }
-                                        })}
+                                        onClick={() => router.push(`/cabinet/pets/add?returnToOrderUuid=${orderUuid}`)}
                                     >
                                         <div className={style.petAvatar}>+</div>
                                         <span className={style.petName}>{t('common.add', 'Добавить')}</span>

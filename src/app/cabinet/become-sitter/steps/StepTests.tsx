@@ -212,7 +212,7 @@ const StepTests = ({ onNext }: { onNext: () => void }) => {
         setIsSubmitting(true);
         const payload = questions.map((q: any) => ({
             question_id: q.id,
-            selected_answer_option_id: Array.isArray(userAnswers[q.id]) ? userAnswers[q.id][0] : userAnswers[q.id]
+            selected_answer_option_id: Array.isArray(userAnswers[q.id]) ? (userAnswers[q.id] as number[])[0] : userAnswers[q.id]
         }));
 
         try {

@@ -41,7 +41,7 @@ const SupportAndSafetySection: React.FC = () => {
             variants={sectionVariants}
         >
             <motion.div className="support-safety-section__image-block" variants={imageVariants}>
-                <img src={sitterSafetyImage} alt={t('supportSafety.imageAlt')} />
+                <img src={sitterSafetyImage.src} alt={t('supportSafety.imageAlt')} />
             </motion.div>
             <div className="support-safety-section__content-block">
                 <motion.h2 className="support-safety-section__title" variants={itemVariants}>

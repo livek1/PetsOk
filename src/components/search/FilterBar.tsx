@@ -267,7 +267,7 @@ const FilterBar: React.FC = () => {
     };
 
     return (
-        <div className={style.filterBarWrapper} ref={wrapperRef}>
+        <div className={style.filterBarWrapper} ref={wrapperRef} style={{ zIndex: activeSection && isMobile ? 3000 : 100 }}>
             <div className={style.container}>
 
                 {/* --- ДЕСКТОПНАЯ ВЕРСИЯ ПАНЕЛИ --- */}

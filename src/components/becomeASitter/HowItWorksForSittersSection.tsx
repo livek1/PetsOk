@@ -36,12 +36,12 @@ const HowItWorksForSittersSection: React.FC = () => {
         },
     ];
 
-    const sectionVariants = {
+    const sectionVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
     };
 
-    const stepVariants = {
+    const stepVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, y: 20 },
         visible: (i: number) => ({
             opacity: 1,

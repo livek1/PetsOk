@@ -102,22 +102,22 @@ const MobileAppPromoSection: React.FC = () => {
         { icon: <BookingManageIcon />, titleKey: "mobileAppPromo.features.manage" },
     ];
 
-    const sectionVariants = {
+    const sectionVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
     };
 
-    const itemVariantsLeft = {
+    const itemVariantsLeft: import("framer-motion").Variants = {
         hidden: { opacity: 0, x: -20 },
         visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
     };
 
-    const videoVariants = {
+    const videoVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, x: 20, scale: 0.95 },
         visible: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut", delay: 0.1 } },
     };
 
-    const qrVariants = {
+    const qrVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, scale: 0.8, y: 10 },
         visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: "easeOut", delay: 0.2 } },
     };

@@ -22,22 +22,22 @@ const SafetyFirstSection: React.FC = () => {
         { icon: <IconEducation />, textKey: "sitterSafety.education", defaultText: "Постоянное обучение и ресурсы по уходу за питомцами для ситтеров." },
     ];
 
-    const sectionVariants = {
+    const sectionVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.15 } },
     };
 
-    const textContentVariants = {
+    const textContentVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, x: -30 },
         visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } },
     };
 
-    const imageVariants = {
+    const imageVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, x: 30, scale: 0.95 },
         visible: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut", delay: 0.2 } },
     };
 
-    const listItemVariants = {
+    const listItemVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, x: -20 },
         visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
     };

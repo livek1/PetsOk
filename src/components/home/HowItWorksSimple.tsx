@@ -32,17 +32,17 @@ const HowItWorksSimple: React.FC = () => {
         { id: "step3", imageUrl: "/images/step3.png", titleKey: "howItWorksSimple.step3.title", descriptionKey: "howItWorksSimple.step3.desc" },
     ];
 
-    const stepVariants = {
+    const stepVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, y: 25 },
         visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.2, duration: 0.55, ease: "easeOut" } }),
     };
 
-    const connectorVariants = {
+    const connectorVariants: import("framer-motion").Variants = {
         hidden: { scaleX: 0, opacity: 0, originX: 0 },
         visible: { scaleX: 1, opacity: 1, transition: { duration: 0.4, ease: "circOut" } },
     };
 
-    const connectorVariantsVertical = {
+    const connectorVariantsVertical: import("framer-motion").Variants = {
         hidden: { scaleY: 0, opacity: 0, originY: 0 },
         visible: { scaleY: 1, opacity: 1, transition: { duration: 0.4, ease: "circOut" } },
     };

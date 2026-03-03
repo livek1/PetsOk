@@ -7,17 +7,17 @@ import '@/style/components/becomeASitter/FinalCTASection.scss';
 const FinalCTASection: React.FC = () => {
     const { t } = useTranslation();
 
-    const sectionVariants = {
+    const sectionVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, y: 50 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
     };
 
-    const itemVariants = {
+    const itemVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", delay: 0.2 } },
     };
 
-    const buttonVariants = {
+    const buttonVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, scale: 0.8 },
         visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "backOut", delay: 0.4 } },
     };

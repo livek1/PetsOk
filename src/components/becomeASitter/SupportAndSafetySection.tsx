@@ -19,15 +19,15 @@ const SupportAndSafetySection: React.FC = () => {
         { id: 'community', icon: <IconCommunity />, titleKey: 'supportSafety.community.title', descriptionKey: 'supportSafety.community.desc' },
     ];
 
-    const sectionVariants = {
+    const sectionVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
     };
-    const itemVariants = {
+    const itemVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, x: -20 },
         visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } },
     };
-    const imageVariants = {
+    const imageVariants: import("framer-motion").Variants = {
         hidden: { opacity: 0, scale: 0.9 },
         visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut", delay: 0.2 } },
     };

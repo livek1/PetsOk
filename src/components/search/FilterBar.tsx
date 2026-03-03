@@ -79,7 +79,6 @@ const FilterBar: React.FC = () => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // СИНХРОНИЗАЦИЯ: Если есть координаты, очищаем строку города
     useEffect(() => {
         const urlAddress = searchParamsHook?.get('address');
         const urlLat = searchParamsHook?.get('lat');
@@ -110,10 +109,10 @@ const FilterBar: React.FC = () => {
     }, [searchParams.address, searchParams.searchReason, searchParams.service_key, searchParamsHook, pathname]);
 
     useEffect(() => {
-        if (activeSection === 'location' && inputRef.current) {
+        if (activeSection === 'location' && inputRef.current && !isMobile) {
             inputRef.current.focus();
         }
-    }, [activeSection]);
+    }, [activeSection, isMobile]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -192,7 +191,6 @@ const FilterBar: React.FC = () => {
         let finalReason: any = searchParams.searchReason;
         let targetPath = pathname;
 
-        // Логика 1: Пользователь ввел новый текстовый адрес
         if (isAddressFilled && addressInput !== searchParams.address) {
             urlP.delete('lat');
             urlP.delete('lon');
@@ -213,7 +211,6 @@ const FilterBar: React.FC = () => {
                 urlP.set('service_key', selectedService);
             }
         }
-        // Логика 2: Адрес не меняли (просто применили фильтры или поменяли услугу)
         else {
             if (searchParamsHook.get('lat') && searchParamsHook.get('lon')) {
                 finalReason = 'coordinates';
@@ -273,6 +270,7 @@ const FilterBar: React.FC = () => {
         <div className={style.filterBarWrapper} ref={wrapperRef}>
             <div className={style.container}>
 
+                {/* --- ДЕСКТОПНАЯ ВЕРСИЯ ПАНЕЛИ --- */}
                 <div className={style.unifiedSearchBar}>
                     <div className={`${style.searchSection} ${activeSection === 'location' ? style.active : ''}`} onClick={() => setActiveSection('location')}>
                         <span className={style.sectionLabel}>Где ищем?</span>
@@ -286,7 +284,7 @@ const FilterBar: React.FC = () => {
                             autoComplete="off"
                         />
                         <AnimatePresence>
-                            {activeSection === 'location' && suggestions.length > 0 && (
+                            {activeSection === 'location' && suggestions.length > 0 && !isMobile && (
                                 <motion.div
                                     className={style.dropdownPanel}
                                     variants={dropdownVariants} initial="hidden" animate="visible" exit="exit"
@@ -310,7 +308,7 @@ const FilterBar: React.FC = () => {
                         <span className={style.sectionValue}>{activeServiceConfig ? t(activeServiceConfig.nameKey) : 'Выбрать'}</span>
 
                         <AnimatePresence>
-                            {activeSection === 'service' && (
+                            {activeSection === 'service' && !isMobile && (
                                 <motion.div
                                     className={style.dropdownPanel} onClick={e => e.stopPropagation()}
                                     variants={dropdownVariants} initial="hidden" animate="visible" exit="exit"
@@ -343,7 +341,7 @@ const FilterBar: React.FC = () => {
                         <span className={style.sectionValue}>{getPetsSummary()}</span>
 
                         <AnimatePresence>
-                            {activeSection === 'pets' && (
+                            {activeSection === 'pets' && !isMobile && (
                                 <motion.div
                                     className={`${style.dropdownPanel} ${style.rightAlign}`} onClick={e => e.stopPropagation()}
                                     variants={dropdownVariants} initial="hidden" animate="visible" exit="exit"
@@ -405,7 +403,8 @@ const FilterBar: React.FC = () => {
                     </button>
                 </div>
 
-                {/* МОБИЛКА */}
+
+                {/* --- МОБИЛЬНЫЕ КНОПКИ (Круглые теги) --- */}
                 <div className={style.mobileFiltersScroll}>
                     <div className={`${style.mobileChip} ${activeSection === 'location' ? style.active : ''}`} onClick={() => setActiveSection('location')}>
                         <LocationPinIcon width={16} />
@@ -431,6 +430,120 @@ const FilterBar: React.FC = () => {
                     )}
                 </AnimatePresence>
 
+
+                {/* --- МОБИЛЬНЫЕ ВЫПАДАЮЩИЕ ПАНЕЛИ (BOTTOM SHEETS) --- */}
+                <AnimatePresence>
+                    {activeSection && isMobile && (
+                        <motion.div
+                            className={style.dropdownPanel}
+                            variants={dropdownVariants} initial="hidden" animate="visible" exit="exit"
+                        >
+                            {/* МЕНЮ: ЛОКАЦИЯ */}
+                            {activeSection === 'location' && (
+                                <>
+                                    <h4 className={style.dropdownTitle}>Где ищем?</h4>
+                                    <div style={{ marginBottom: '16px', background: '#F7FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '14px 16px' }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Введите город или адрес"
+                                            value={addressInput}
+                                            onChange={handleLocationChange}
+                                            autoComplete="off"
+                                            autoFocus
+                                            style={{ width: '100%', border: 'none', background: 'transparent', outline: 'none', fontSize: '16px', color: '#1A202C' }}
+                                        />
+                                    </div>
+                                    {suggestions.length > 0 && (
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            {suggestions.map((s, i) => (
+                                                <div key={i} className={style.suggestionItem} onClick={(e) => { e.stopPropagation(); handleSuggestionClick(s); }}>
+                                                    <div className={style.iconBox}><LocationPinIcon width={18} /></div>
+                                                    <span>{s}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* МЕНЮ: УСЛУГА */}
+                            {activeSection === 'service' && (
+                                <>
+                                    <h4 className={style.dropdownTitle}>Какая услуга нужна?</h4>
+                                    <div className={style.servicesGrid}>
+                                        {displayedServices.map(s => (
+                                            <div
+                                                key={s.id}
+                                                className={`${style.serviceItem} ${selectedService === s.id ? style.selected : ''}`}
+                                                onClick={(e) => { e.stopPropagation(); setSelectedService(s.id); }}
+                                            >
+                                                <div className={style.serviceIcon}><s.IconComponent width={24} height={24} /></div>
+                                                <div className={style.serviceTexts}>
+                                                    <span className={style.serviceName}>{t(s.nameKey)}</span>
+                                                    {s.descriptionKey && <span className={style.serviceDesc}>{t(s.descriptionKey)}</span>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+
+                            {/* МЕНЮ: ПИТОМЕЦ */}
+                            {activeSection === 'pets' && (
+                                <>
+                                    <h4 className={style.dropdownTitle}>Кого оставляем?</h4>
+                                    <div className={style.petTypeSection}>
+                                        <div className={style.petTypeHeader} onClick={(e) => { e.stopPropagation(); togglePetType(1); }}>
+                                            <div className={`${style.checkbox} ${petTypeIds.includes(1) ? style.checked : ''}`}>
+                                                {petTypeIds.includes(1) && <CheckIcon />}
+                                            </div>
+                                            <span className={style.petName}>Собака</span>
+                                        </div>
+                                        {petTypeIds.includes(1) && (
+                                            <div className={style.sizesGrid}>
+                                                {PET_SIZES.map(size => (
+                                                    <div
+                                                        key={`dog-${size.id}`}
+                                                        className={`${style.sizeChip} ${dogSizeIds.includes(size.id) ? style.selected : ''}`}
+                                                        onClick={(e) => { e.stopPropagation(); toggleSize(size.id, 'dog'); }}
+                                                    >
+                                                        <span>{size.name}</span>
+                                                        <span className={style.sizeKg}>({size.desc})</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className={style.petTypeSection}>
+                                        <div className={style.petTypeHeader} onClick={(e) => { e.stopPropagation(); togglePetType(2); }}>
+                                            <div className={`${style.checkbox} ${petTypeIds.includes(2) ? style.checked : ''}`}>
+                                                {petTypeIds.includes(2) && <CheckIcon />}
+                                            </div>
+                                            <span className={style.petName}>Кошка</span>
+                                        </div>
+                                        {petTypeIds.includes(2) && (
+                                            <div className={style.sizesGrid}>
+                                                {PET_SIZES.map(size => (
+                                                    <div
+                                                        key={`cat-${size.id}`}
+                                                        className={`${style.sizeChip} ${catSizeIds.includes(size.id) ? style.selected : ''}`}
+                                                        onClick={(e) => { e.stopPropagation(); toggleSize(size.id, 'cat'); }}
+                                                    >
+                                                        <span>{size.name}</span>
+                                                        <span className={style.sizeKg}>({size.desc})</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </>
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* МОБИЛЬНАЯ КНОПКА ПОИСКА ПО ПОВЕРХ ПАНЕЛЕЙ */}
                 <AnimatePresence>
                     {activeSection && isMobile && (
                         <motion.button

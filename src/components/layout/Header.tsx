@@ -72,7 +72,7 @@ const Header: FC<HeaderProps> = ({ onAuthClick }) => {
     return () => window.removeEventListener('scroll', updateHeaderState);
   }, [pathname]);
 
-  const calculateDropdownPosition = (buttonRef: React.RefObject<HTMLButtonElement>, align: 'left' | 'right' = 'left', minWidth?: number): DropdownPosition | null => {
+  const calculateDropdownPosition = (buttonRef: React.RefObject<HTMLButtonElement | null>, align: 'left' | 'right' = 'left', minWidth?: number): DropdownPosition | null => {
     if (buttonRef.current && headerRef.current) {
       const buttonRect = buttonRef.current.getBoundingClientRect();
       const headerBottom = headerRef.current.getBoundingClientRect().bottom;

@@ -2,7 +2,7 @@
 User-agent: *
 Disallow: /cabinet/
 Disallow: /api/
-Disallow: /*?*
+Disallow: /search?*
 Disallow: /terms
 Disallow: /privacy-policy
 Disallow: /cookie-policy

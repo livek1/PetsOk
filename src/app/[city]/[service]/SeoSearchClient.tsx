@@ -376,6 +376,34 @@ export default function SeoSearchClient({
                                     <button onClick={handleCreateOrderClick} className={style.createRequestBtn}>Создать заказ</button>
                                 </div>
                             )}
+
+                            {/* --- НОВЫЙ БЛОК SEO-ПАГИНАЦИИ --- */}
+                            {!isLoading && displayPagination && displayPagination.total_pages > 1 && (
+                                <nav aria-label="Пагинация каталога" style={{ width: '100%', padding: '20px 0', textAlign: 'center', marginTop: '10px' }}>
+                                    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', gap: '24px', padding: 0, margin: 0 }}>
+                                        {Number(displayPagination.current_page) > 1 && (
+                                            <li>
+                                                <a
+                                                    href={`${pathname}?page=${Number(displayPagination.current_page) - 1}`}
+                                                    style={{ color: '#3598FE', textDecoration: 'none', fontWeight: 600, fontSize: '15px' }}
+                                                >
+                                                    &larr; Предыдущая страница
+                                                </a>
+                                            </li>
+                                        )}
+                                        {Number(displayPagination.current_page) < displayPagination.total_pages && (
+                                            <li>
+                                                <a
+                                                    href={`${pathname}?page=${Number(displayPagination.current_page) + 1}`}
+                                                    style={{ color: '#3598FE', textDecoration: 'none', fontWeight: 600, fontSize: '15px' }}
+                                                >
+                                                    Следующая страница &rarr;
+                                                </a>
+                                            </li>
+                                        )}
+                                    </ul>
+                                </nav>
+                            )}
                         </div>
                     </div>
 

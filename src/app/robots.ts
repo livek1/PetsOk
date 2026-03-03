@@ -8,10 +8,10 @@ export default function robots(): MetadataRoute.Robots {
             disallow: [
                 '/cabinet/',
                 '/api/',
-                '/search?*',
-                '/terms',           // Закрываем Условия использования
-                '/privacy-policy',  // Закрываем Политику конфиденциальности
-                '/cookie-policy',   // Закрываем Политику Cookie
+                '/search?*',       // Запрещаем системный поиск с 1000 фильтров
+                '/terms',
+                '/privacy-policy',
+                '/cookie-policy',
             ],
         },
         sitemap: 'https://petsok.ru/sitemap.xml',

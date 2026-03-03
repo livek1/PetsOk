@@ -17,11 +17,11 @@ type Props = {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-async function getCatalogData(citySlug: string, serviceSlug: string) {
+async function getCatalogData(citySlug: string, serviceSlug: string, page: number) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://petsok.ru/api/v1';
 
     try {
-        const url = `${apiUrl}/seo/catalog?city_slug=${citySlug}&service_slug=${serviceSlug}&limit=30&page=1`;
+        const url = `${apiUrl}/seo/catalog?city_slug=${citySlug}&service_slug=${serviceSlug}&limit=30&page=${page}`;
         const res = await fetch(url, {
             next: { revalidate: 3600 }
         });
@@ -33,14 +33,16 @@ async function getCatalogData(citySlug: string, serviceSlug: string) {
     }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
     const resolvedParams = await params;
+    const resolvedSearchParams = await searchParams;
     const { city, service } = resolvedParams;
+    const page = Number(resolvedSearchParams?.page) || 1;
 
     const backendCitySlug = FRONT_TO_BACK_CITY[city] || city;
     const backendServiceSlug = FRONT_TO_BACK_SERVICE[service] || service;
 
-    const data = await getCatalogData(backendCitySlug, backendServiceSlug);
+    const data = await getCatalogData(backendCitySlug, backendServiceSlug, page);
 
     if (!data || !data.meta?.seo) {
         return { title: 'Поиск ситтеров | PetsOk' };
@@ -48,31 +50,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     const seo = data.meta.seo;
 
+    // Уникализируем title и canonical для страниц пагинации
+    const pageTitle = page > 1 ? `${seo.title} - Страница ${page}` : seo.title;
+    const canonicalUrl = page > 1
+        ? `https://petsok.ru/${city}/${service}?page=${page}`
+        : `https://petsok.ru/${city}/${service}`;
+
     return {
-        title: seo.title,
+        title: pageTitle,
         description: seo.description,
         openGraph: {
-            title: seo.title,
+            title: pageTitle,
             description: seo.description,
-            url: `https://petsok.ru/${city}/${service}`,
+            url: canonicalUrl,
             siteName: 'PetsOk',
             type: 'website',
             images: [{ url: '/images/social-preview-home.jpg' }],
         },
         alternates: {
-            canonical: `https://petsok.ru/${city}/${service}`
+            canonical: canonicalUrl
         }
     };
 }
 
-export default async function CityServicePage({ params }: Props) {
+export default async function CityServicePage({ params, searchParams }: Props) {
     const resolvedParams = await params;
+    const resolvedSearchParams = await searchParams;
     const { city, service } = resolvedParams;
+    const page = Number(resolvedSearchParams?.page) || 1;
 
     const backendCitySlug = FRONT_TO_BACK_CITY[city] || city;
     const backendServiceSlug = FRONT_TO_BACK_SERVICE[service] || service;
 
-    const data = await getCatalogData(backendCitySlug, backendServiceSlug);
+    const data = await getCatalogData(backendCitySlug, backendServiceSlug, page);
     const cityName = getCityNameFromSlug(backendCitySlug);
     const reduxServiceKey = BACK_TO_REDUX_SERVICE[backendServiceSlug] || backendServiceSlug;
 
@@ -94,7 +104,7 @@ export default async function CityServicePage({ params }: Props) {
 
     const seo = data.meta.seo;
     const initialSitters = data.data || [];
-    const initialPagination = data.meta.pagination || { total: 0, current_page: 1, total_pages: 1 };
+    const initialPagination = data.meta.pagination || { total: 0, current_page: page, total_pages: 1 };
 
     const serviceJsonLd = {
         "@context": "https://schema.org",

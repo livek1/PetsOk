@@ -31,7 +31,7 @@ const CatIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none
 
 
 const CabinetPetForm: React.FC = () => {
-    const mode = 'edit'; // Жестко задаем режим для страницы редактирования
+    const mode: 'create' | 'edit' = 'edit';
     const { t } = useTranslation();
     const router = useRouter();
     const searchParams = useSearchParams();

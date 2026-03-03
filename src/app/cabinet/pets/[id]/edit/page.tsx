@@ -31,6 +31,7 @@ const CatIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none
 
 
 const CabinetPetForm: React.FC = () => {
+    // Явно указываем тип:
     const mode: 'create' | 'edit' = 'edit';
     const { t } = useTranslation();
     const router = useRouter();

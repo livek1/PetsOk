@@ -1,7 +1,7 @@
 'use client';
 
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -59,7 +59,7 @@ const DURATIONS = [
 
 const TIMES = Array.from({ length: 17 }, (_, i) => `${String(i + 7).padStart(2, '0')}:00`);
 
-const CreateOrder: React.FC = () => {
+const CreateOrderContent: React.FC = () => {
     const { t, i18n } = useTranslation();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -928,5 +928,11 @@ const CreateOrder: React.FC = () => {
         </div>
     );
 };
+
+const CreateOrder: React.FC = () => (
+    <Suspense fallback={<div style={{ padding: '50px', textAlign: 'center' }}>Загрузка формы...</div>}>
+        <CreateOrderContent />
+    </Suspense>
+);
 
 export default CreateOrder;

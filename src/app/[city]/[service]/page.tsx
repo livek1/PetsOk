@@ -1,6 +1,7 @@
 // --- File: src/app/[city]/[service]/page.tsx ---
 import { Metadata } from 'next';
 import SeoSearchClient from './SeoSearchClient';
+import { Suspense } from 'react';
 import {
     FRONT_TO_BACK_CITY,
     FRONT_TO_BACK_SERVICE,
@@ -124,13 +125,15 @@ export default async function CityServicePage({ params }: Props) {
     return (
         <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
-            <SeoSearchClient
-                cityName={cityName}
-                reduxServiceKey={reduxServiceKey}
-                seoData={seo}
-                initialSitters={initialSitters}
-                initialPagination={initialPagination}
-            />
+            <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0' }}>Загрузка...</div>}>
+                <SeoSearchClient
+                    cityName={cityName}
+                    reduxServiceKey={reduxServiceKey}
+                    seoData={seo}
+                    initialSitters={initialSitters}
+                    initialPagination={initialPagination}
+                />
+            </Suspense>
         </>
     );
 }

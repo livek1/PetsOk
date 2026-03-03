@@ -1,5 +1,7 @@
 // --- File: src/app/search/page.tsx ---
 import { Metadata } from 'next';
+
+import { Suspense } from 'react';
 import SeoSearchClient from '../[city]/[service]/SeoSearchClient';
 
 // Закрываем системный поиск от индексации ботами. 
@@ -14,8 +16,10 @@ export const metadata: Metadata = {
 
 export default function GeneralSearchPage() {
     return (
-        <SeoSearchClient
-            isGeneralSearch={true}
-        />
+        <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0' }}>Загрузка поиска...</div>}>
+            <SeoSearchClient
+                isGeneralSearch={true}
+            />
+        </Suspense>
     );
 }

@@ -25,8 +25,11 @@ const StarIcon = ({ filled }: { filled?: boolean }) => <svg width="18" height="1
 const InfoIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3598FE" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>;
 const ChevronDown = ({ className }: IconProps) => <svg className={className} width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="#718096" strokeWidth="2"><path d="M1 1.5L6 6.5L11 1.5" /></svg>;
 const PlusIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-const DogIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 4.916-5 7 6.667-1.333 9 0 9 0" /><path d="M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 4.916 5 7-6.667-1.333-9 0-9 0" /><path d="M12 22v-3" /><path d="M8 8.5C8 8.5 7 11 6 13c-2.5 5 1 9 6 9s8.5-4 6-9c-1-2-2-4.5-2-4.5" /></svg>;
-const CatIcon = () => <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21S3 17.9 3 13.44c0-1.2.43-2.37 1-3.44 0 0-1.82-6.42-.42-7 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z" /></svg>;
+const CheckIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>;
+
+// Более аккуратные иконки питомцев
+const DogIcon = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 4.916-5 7 6.667-1.333 9 0 9 0" /><path d="M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 4.916 5 7-6.667-1.333-9 0-9 0" /><path d="M12 22v-3" /><path d="M8 8.5C8 8.5 7 11 6 13c-2.5 5 1 9 6 9s8.5-4 6-9c-1-2-2-4.5-2-4.5" /></svg>;
+const CatIcon = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5c.67 0 1.35.09 2 .26 1.78-2 5.03-2.84 6.42-2.26 1.4.58-.42 7-.42 7 .57 1.07 1 2.24 1 3.44C21 17.9 16.97 21 12 21S3 17.9 3 13.44c0-1.2.43-2.37 1-3.44 0 0-1.82-6.42-.42-7 1.39-.58 4.64.26 6.42 2.26.65-.17 1.33-.26 2-.26z" /></svg>;
 
 const CabinetPetForm: React.FC = () => {
     const { t } = useTranslation();
@@ -73,6 +76,7 @@ const CabinetPetForm: React.FC = () => {
     });
 
     const typeId = watch('type_id');
+    const currentBreedId = watch('breed_id');
 
     // --- 1. ЗАГРУЗКА ДАННЫХ ---
     useEffect(() => {
@@ -189,11 +193,15 @@ const CabinetPetForm: React.FC = () => {
         setAddingBreed(true);
         try {
             const res = await addBreed({ query: breedQuery, typeId: parseInt(typeId) });
-            const newBreed = res.data;
+            // Обрабатываем формат ответа API
+            const newBreed = res?.data?.data || res?.data;
+
             if (newBreed && newBreed.id) {
                 setValue('breed_id', String(newBreed.id));
                 setBreedQuery(newBreed.name);
                 setShowBreeds(false);
+            } else {
+                alert('Не удалось получить ID новой породы');
             }
         } catch (e) {
             console.error(e);
@@ -247,9 +255,20 @@ const CabinetPetForm: React.FC = () => {
 
             <div className={style.headerBlock}>
                 <h1 className={style.pageTitle}>{t('petForm.titleEdit', 'Редактирование')}</h1>
-                <p className={style.pageSubtitle}>
-                    {t('petForm.subtitle', 'Заполните анкету, чтобы ситтер знал об особенностях вашего любимца.')}
-                </p>
+            </div>
+
+            {/* Блок с объяснением важности формы */}
+            <div style={{
+                display: 'flex', gap: '12px', background: '#F0F7FF', padding: '16px', borderRadius: '12px', marginBottom: '24px', color: '#1A202C'
+            }}>
+                <div style={{ flexShrink: 0, marginTop: '2px' }}><InfoIcon /></div>
+                <div style={{ fontSize: '14px', lineHeight: '1.5' }}>
+                    <strong>Почему анкета такая подробная?</strong>
+                    <p style={{ marginTop: '4px', margin: 0, color: '#4A5568' }}>
+                        Форма может показаться объемной, но, пожалуйста, заполните её максимально честно.
+                        Эти данные критически важны для ситтера — они помогут найти правильный подход к вашему любимцу и сделать его пребывание по-настоящему комфортным и безопасным.
+                    </p>
+                </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -262,7 +281,7 @@ const CabinetPetForm: React.FC = () => {
                             onClick={() => handleTypeChange('1')}
                         >
                             <DogIcon />
-                            <span>{t('petTypes.dog', 'Собака')}</span>
+                            <span style={{ marginTop: '8px' }}>{t('petTypes.dog', 'Собака')}</span>
                             <input type="hidden" value="1" {...register('type_id')} />
                         </div>
                         <div
@@ -270,7 +289,7 @@ const CabinetPetForm: React.FC = () => {
                             onClick={() => handleTypeChange('2')}
                         >
                             <CatIcon />
-                            <span>{t('petTypes.cat', 'Кошка')}</span>
+                            <span style={{ marginTop: '8px' }}>{t('petTypes.cat', 'Кошка')}</span>
                         </div>
                     </div>
                 </div>
@@ -345,23 +364,33 @@ const CabinetPetForm: React.FC = () => {
                             {errors.name && <span className={style.errorText}>Укажите кличку</span>}
                         </div>
 
-                        {/* Порода с автокомплитом */}
+                        {/* Порода с автокомплитом и улучшенным UX */}
                         <div className={style.formGroup} style={{ position: 'relative' }}>
                             <label>{t('petForm.labelBreed', 'Порода')} <span className={style.required}>*</span></label>
-                            <input
-                                ref={breedInputRef}
-                                className={style.input}
-                                value={breedQuery}
-                                onChange={e => {
-                                    setBreedQuery(e.target.value);
-                                    setValue('breed_id', '');
-                                    setShowBreeds(true);
-                                }}
-                                onFocus={() => setShowBreeds(true)}
-                                onBlur={() => setTimeout(() => setShowBreeds(false), 200)}
-                                placeholder={t('petForm.placeholderBreed', 'Начните вводить (например: Корги)')}
-                                autoComplete="off"
-                            />
+                            <div style={{ position: 'relative' }}>
+                                <input
+                                    ref={breedInputRef}
+                                    className={`${style.input} ${errors.breed_id ? style.errorInput : ''}`}
+                                    style={{ paddingRight: '40px' }}
+                                    value={breedQuery}
+                                    onChange={e => {
+                                        setBreedQuery(e.target.value);
+                                        setValue('breed_id', ''); // Сбрасываем id, если текст меняется
+                                        setShowBreeds(true);
+                                    }}
+                                    onFocus={() => setShowBreeds(true)}
+                                    onBlur={() => setTimeout(() => setShowBreeds(false), 200)}
+                                    placeholder={t('petForm.placeholderBreed', 'Начните вводить...')}
+                                    autoComplete="off"
+                                />
+                                {/* Индикатор успешного выбора породы */}
+                                {currentBreedId && breedQuery && (
+                                    <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)' }}>
+                                        <CheckIcon />
+                                    </div>
+                                )}
+                            </div>
+
                             {showBreeds && breedQuery.length > 0 && (
                                 <ul className={style.suggestionsList}>
                                     {loadingBreeds ? (
@@ -375,7 +404,10 @@ const CabinetPetForm: React.FC = () => {
                                             ))}
                                             {!loadingBreeds && (
                                                 <li className={style.addItem} onMouseDown={(e) => { e.preventDefault(); handleAddCustomBreed(); }}>
-                                                    <PlusIcon /> {t('common.add', 'Добавить')} "{breedQuery}" {t('petForm.asNewBreed', 'как новую')}
+                                                    <PlusIcon />
+                                                    <span style={{ marginLeft: '8px' }}>
+                                                        {addingBreed ? 'Добавляем...' : `Добавить породу "${breedQuery}"`}
+                                                    </span>
                                                 </li>
                                             )}
                                         </>
@@ -383,7 +415,11 @@ const CabinetPetForm: React.FC = () => {
                                 </ul>
                             )}
                             <input type="hidden" {...register('breed_id', { required: true })} />
-                            {errors.breed_id && <span className={style.errorText}>{t('petForm.errorBreedRequired', 'Выберите породу из списка или добавьте новую')}</span>}
+                            {errors.breed_id && (
+                                <span className={style.errorText}>
+                                    Пожалуйста, выберите породу из выпадающего списка или нажмите "Добавить породу".
+                                </span>
+                            )}
                             <span className={style.helperText}>{t('petForm.breedHelp', 'Если беспородный, напишите "Метис"')}</span>
                         </div>
                     </div>
@@ -412,11 +448,11 @@ const CabinetPetForm: React.FC = () => {
                             <label>{t('petForm.labelSize', 'Размер')} <span className={style.required}>*</span></label>
                             <div className={style.selectWrapper}>
                                 <select className={style.select} {...register('size_id')}>
-                                    <option value="1">Мини (до 5 кг) — Чихуахуа, Йорк</option>
-                                    <option value="2">Маленький (5-10 кг) — Мопс, Такса</option>
-                                    <option value="3">Средний (10-20 кг) — Корги, Бигль</option>
-                                    <option value="4">Большой (20-40 кг) — Лабрадор, Хаски</option>
-                                    <option value="5">Гигант (40+ кг) — Дог, Мастиф</option>
+                                    <option value="1">Мини (до 5 кг)</option>
+                                    <option value="2">Маленький (5-10 кг)</option>
+                                    <option value="3">Средний (10-20 кг)</option>
+                                    <option value="4">Большой (20-40 кг)</option>
+                                    <option value="5">Гигант (40+ кг)</option>
                                 </select>
                                 <ChevronDown className={style.selectArrow} />
                             </div>

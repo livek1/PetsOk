@@ -1,3 +1,5 @@
+'use client'; // <--- ДОБАВИТЬ ЭТУ СТРОКУ
+
 import { useState, useEffect, FC } from 'react';
 import Cookies from 'js-cookie';
 import style from '@/style/components/layout/CookieConsentBanner.module.scss'; // Стили будут созданы ниже

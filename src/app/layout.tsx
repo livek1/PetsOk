@@ -4,6 +4,7 @@ import Providers from '../components/Providers';
 import { raleway } from '../fonts';
 import '@/style/globals/resets.scss';
 import '@/style/globals/global.scss';
+import CookieConsentBanner from '@/components/layout/CookieConsentBanner';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://petsok.ru'),
@@ -50,7 +51,7 @@ export default function RootLayout({
           <main>
             {children}
           </main>
-
+          <CookieConsentBanner />
           <div id="modal-root"></div>
           <div id="dropdown-root"></div>
         </Providers>

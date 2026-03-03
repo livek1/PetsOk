@@ -10,7 +10,7 @@ import { getWorkerStatus } from '@/services/api';
 import { config as appConfig } from '@/config/appConfig';
 import { RootState } from '@/store';
 import { getReferralCode } from '@/App';
-import style from './BecomeSitterWizard.module.scss';
+import style from '@/style/pages/cabinet/becomeSitter/BecomeSitterWizard.module.scss';
 
 // Импорт шагов
 import StepLocation from './steps/StepLocation';

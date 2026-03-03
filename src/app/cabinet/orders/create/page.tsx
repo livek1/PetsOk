@@ -40,6 +40,7 @@ const InfoIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="non
 
 const SERVICE_TYPES = {
     BOARDING: 'boarding',
+    HOUSE_SITTING: 'house_sitting',
     DROP_IN_VISIT: 'drop_in_visit',
     DOGGY_DAY_CARE: 'doggy_day_care',
     WALKING: 'walking'

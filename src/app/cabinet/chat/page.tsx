@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useParams, useRouter } from 'next/navigation';
-// import { RootState, AppDispatch } from '../../store';
+import { RootState, AppDispatch } from '@/store';
 import { WEBSOCKET_CONNECT } from '@/store/middleware/websocketMiddleware';
 import { fetchDialogues, setCurrentChatGroupId, clearCurrentChatGroupId } from '@/store/slices/dialoguesSlice';
 import style from '@/style/pages/cabinet/Chat.module.scss';

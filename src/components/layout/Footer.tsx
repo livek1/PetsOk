@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
 
         {/* --- НОВАЯ КОЛОНКА: УСЛУГИ (ДЛЯ SEO) --- */}
         <div className={style.centerColumn}>
-          <h4 className={style.columnTitle}>Наши услуги</h4>
+          <h2 className={style.columnTitle}>Наши услуги</h2>
           <ul className={style.popularCitiesList} style={{ gridTemplateColumns: '1fr' }}>
             <li><Link href="/services/pet-boarding">Передержка</Link></li>
             <li><Link href="/services/dog-walking">Выгул собак</Link></li>
@@ -52,7 +52,7 @@ const Footer: React.FC = () => {
 
         {/* --- 2. ЦЕНТРАЛЬНАЯ КОЛОНКА (Города - SEO Ссылки) --- */}
         <div className={style.centerColumn}>
-          <h4 className={style.columnTitle}>Передержка по городам</h4>
+          <h2 className={style.columnTitle}>Передержка по городам</h2>
           <ul className={style.popularCitiesList}>
             {FRONTEND_CITY_SLUGS.map((slug) => (
               <li key={slug}>

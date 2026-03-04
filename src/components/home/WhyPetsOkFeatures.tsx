@@ -138,7 +138,7 @@ const WhyPetsOkFeatures: React.FC<WhyPetsOkFeaturesProps> = ({ onCreateOrderClic
                                 <div className="icon-circle">
                                     {service.icon}
                                 </div>
-                                <h4>{t(service.titleKey)}</h4>
+                                <h3>{t(service.titleKey)}</h3>
                                 <p>{t(service.descriptionKey)}</p>
                             </motion.div>
                         ))}

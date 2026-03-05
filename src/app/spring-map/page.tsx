@@ -19,23 +19,24 @@ const COLORS = {
 };
 
 export default function SpringViralMap() {
-    const [center, setCenter] = useState<[number, number]>([55.751574, 37.573856]); // По умолчанию Москва (или ваш город)
+    const [center, setCenter] = useState<[number, number]>([55.751574, 37.573856]);
     const [zoom, setZoom] = useState(16);
     const [ymapsNamespace, setYmapsNamespace] = useState<any>(null);
-    const [mapInstance, setMapInstance] = useState<any>(null); // Ссылка на инстанс карты
 
     const [mines, setMines] = useState<{ lat: number, lon: number, emoji: string }[]>([]);
     const [route, setRoute] = useState<number[][]>([]);
 
     const [simState, setSimState] = useState<'idle' | 'scanning' | 'done'>('idle');
     const [snowOpacity, setSnowOpacity] = useState(0.95);
+
+    // Состояние для управления видимостью нижней карточки с результатами
     const [isResultOpen, setIsResultOpen] = useState(false);
 
     // Данные для вирусной карточки
-    const [addressName, setAddressName] = useState<string>("Загрузка адреса...");
+    const [addressName, setAddressName] = useState<string>("Ваш секретный двор");
     const [fakeStats, setFakeStats] = useState({ count: 0, survival: 100 });
 
-    // 1. Попытка получить геолокацию при загрузке
+    // 1. Геолокация
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -43,16 +44,13 @@ export default function SpringViralMap() {
                     setCenter([pos.coords.latitude, pos.coords.longitude]);
                     setZoom(17);
                 },
-                (err) => {
-                    console.warn("Геолокация недоступна", err);
-                    setAddressName("Наведи прицел на нужный двор");
-                },
-                { enableHighAccuracy: true, timeout: 5000 }
+                (err) => console.warn("Геолокация недоступна", err),
+                { enableHighAccuracy: true }
             );
         }
     }, []);
 
-    // 2. Обратное геокодирование: определяем улицу по центру (срабатывает при загрузке и после перетаскивания)
+    // 2. Обратное геокодирование (получаем улицу)
     useEffect(() => {
         if (ymapsNamespace && simState === 'idle') {
             ymapsNamespace.geocode(center).then((res: any) => {
@@ -60,20 +58,10 @@ export default function SpringViralMap() {
                 if (firstGeoObject) {
                     const name = firstGeoObject.getThoroughfare() || firstGeoObject.getName();
                     if (name) setAddressName(name);
-                } else {
-                    setAddressName("Секретный двор");
                 }
             });
         }
     }, [ymapsNamespace, center, simState]);
-
-    // Обработчик окончания движения карты (когда юзер отпускает палец/мышь)
-    const handleMapBoundsChange = () => {
-        if (mapInstance && simState === 'idle') {
-            const newCenter = mapInstance.getCenter();
-            setCenter(newCenter);
-        }
-    };
 
     const customIconLayout = useMemo(() => {
         if (!ymapsNamespace) return null;
@@ -92,7 +80,6 @@ export default function SpringViralMap() {
         // Снег тает
         const snowInterval = setInterval(() => setSnowOpacity(prev => Math.max(0, prev - 0.04)), 150);
 
-        // Явная типизация массива
         const generatedMines: { lat: number, lon: number, emoji: string }[] = [];
         const emojis = ['💩', '💩', '💩', '☢️', '🥾', '💩', '⚠️', '💩'];
         for (let i = 0; i < 75; i++) {
@@ -151,31 +138,17 @@ export default function SpringViralMap() {
                 @keyframes radarSweep { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
                 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
                 @keyframes slideUp { 0% { transform: translateY(100%); } 100% { transform: translateY(0); } }
-                @keyframes pulseCrosshair { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
                 .camera-corners::before { content: ''; position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; border-top: 4px solid ${COLORS.error}; border-left: 4px solid ${COLORS.error}; z-index: 50; pointer-events: none; }
                 .camera-corners::after { content: ''; position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-top: 4px solid ${COLORS.error}; border-right: 4px solid ${COLORS.error}; z-index: 50; pointer-events: none; }
                 .camera-bottom::before { content: ''; position: absolute; bottom: 20px; left: 20px; width: 40px; height: 40px; border-bottom: 4px solid ${COLORS.error}; border-left: 4px solid ${COLORS.error}; z-index: 50; pointer-events: none; }
                 .camera-bottom::after { content: ''; position: absolute; bottom: 20px; right: 20px; width: 40px; height: 40px; border-bottom: 4px solid ${COLORS.error}; border-right: 4px solid ${COLORS.error}; z-index: 50; pointer-events: none; }
             `}} />
 
-            {/* ИНТЕРАКТИВНЫЙ ПРИЦЕЛ (Показывается только до старта) */}
-            {simState === 'idle' && (
-                <div style={{
-                    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                    pointerEvents: 'none', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    animation: 'pulseCrosshair 2s infinite ease-in-out'
-                }}>
-                    <div style={{ width: 8, height: 8, backgroundColor: COLORS.error, borderRadius: '50%', position: 'absolute' }} />
-                    <div style={{ width: 40, height: 40, border: `2px solid ${COLORS.error}`, borderRadius: '50%', position: 'absolute' }} />
-                    <div style={{ width: 60, height: 2, backgroundColor: COLORS.error, position: 'absolute' }} />
-                    <div style={{ width: 2, height: 60, backgroundColor: COLORS.error, position: 'absolute' }} />
-                </div>
-            )}
-
-            {/* Рамка "Спутника" для готового результата */}
+            {/* Рамка "Спутника" */}
             {simState === 'done' && (
                 <>
                     <div className="camera-corners" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 40 }} />
+                    {/* Если карточка открыта, нижняя рамка поднимается на 40vh, если закрыта - опускается в самый низ (0) */}
                     <div className="camera-bottom" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: isResultOpen ? '40vh' : 0, pointerEvents: 'none', zIndex: 40 }} />
                     <div style={{ position: 'absolute', top: 30, left: '50%', transform: 'translateX(-50%)', backgroundColor: COLORS.error, color: COLORS.white, padding: '6px 16px', borderRadius: 20, fontWeight: 900, fontSize: 14, letterSpacing: 2, zIndex: 50, animation: 'blink 1s infinite' }}>
                         TARGET LOCKED
@@ -186,10 +159,9 @@ export default function SpringViralMap() {
             <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU', load: 'package.full' }}>
                 <Map
                     state={{ center, zoom }}
+                    // Если результаты открыты, карта занимает 60% высоты, если свернуты - 100%
                     width="100%" height={simState === 'done' && isResultOpen ? "60vh" : "100%"}
                     onLoad={(ymaps) => setYmapsNamespace(ymaps)}
-                    instanceRef={(ref) => setMapInstance(ref)}
-                    onActionEnd={handleMapBoundsChange} // Триггер после перетаскивания карты
                     options={{ suppressMapOpenBlock: true }}
                 >
                     <GeolocationControl options={{ position: { right: 10, top: 100 } }} />
@@ -218,7 +190,7 @@ export default function SpringViralMap() {
                 <div style={{ position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)', width: 'calc(100% - 40px)', maxWidth: 400, backgroundColor: COLORS.white, borderRadius: 24, padding: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', zIndex: 100 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                         <div>
-                            <div style={{ color: COLORS.neutral700, fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>{simState === 'idle' ? 'Цель:' : 'Локация:'} {addressName}</div>
+                            <div style={{ color: COLORS.neutral700, fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1 }}>Локация: {addressName}</div>
                             <div style={{ fontWeight: 800, fontSize: 24, color: COLORS.neutral900, lineHeight: 1.1, marginTop: 4 }}>PetsOk AI Radar 📡</div>
                         </div>
                         {simState === 'scanning' && (
@@ -227,16 +199,16 @@ export default function SpringViralMap() {
                     </div>
 
                     <p style={{ fontSize: 15, color: COLORS.neutral700, margin: '0 0 20px 0', lineHeight: 1.5 }}>
-                        {simState === 'idle' ? 'Наведи прицел на любой двор и нажми кнопку, чтобы узнать страшную правду о том, что под снегом.' : 'Искусственный интеллект в панике считает мины...'}
+                        {simState === 'idle' ? 'Снег тает. Мы просканировали город, чтобы узнать страшную правду о том, что под ним.' : 'Искусственный интеллект в панике считает мины...'}
                     </p>
 
                     <button onClick={handleStartSimulation} disabled={simState !== 'idle'} style={{ width: '100%', padding: '18px', background: simState === 'idle' ? `linear-gradient(135deg, ${COLORS.primary} 0%, #1E75D6 100%)` : COLORS.neutral200, color: simState === 'idle' ? COLORS.white : COLORS.neutral700, border: 'none', borderRadius: 16, fontWeight: 800, fontSize: 16, cursor: simState === 'idle' ? 'pointer' : 'default', transition: 'all 0.3s', boxShadow: simState === 'idle' ? `0 12px 24px rgba(53, 152, 254, 0.3)` : 'none' }}>
-                        {simState === 'idle' ? 'Сканировать территорию ☢️' : 'Анализ био-угрозы...'}
+                        {simState === 'idle' ? 'Узнать правду о своем дворе ❄️🔥' : 'Анализ био-угрозы...'}
                     </button>
                 </div>
             )}
 
-            {/* ПЛАВАЮЩАЯ КНОПКА ВОЗВРАТА */}
+            {/* ПЛАВАЮЩАЯ КНОПКА ВОЗВРАТА (показывается, если пользователь скрыл карточку) */}
             {simState === 'done' && !isResultOpen && (
                 <button
                     onClick={() => setIsResultOpen(true)}
@@ -261,9 +233,11 @@ export default function SpringViralMap() {
                     animation: 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 20px 30px'
                 }}>
+                    {/* Ползунок "Шторки" */}
                     <div style={{ width: 40, height: 5, backgroundColor: COLORS.neutral200, borderRadius: 10, margin: '12px 0 20px' }} />
 
                     <div style={{ width: '100%', maxWidth: 440 }}>
+                        {/* ЗАГОЛОВОК СКРИНШОТА */}
                         <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 20 }}>
                             <div style={{ fontSize: 40, background: '#FFF0F0', width: 64, height: 64, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>☢️</div>
                             <div>
@@ -272,6 +246,7 @@ export default function SpringViralMap() {
                             </div>
                         </div>
 
+                        {/* СТАТИСТИКА */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
                             <div style={{ backgroundColor: COLORS.bg, padding: '16px', borderRadius: 20, border: `1px solid ${COLORS.neutral200}` }}>
                                 <div style={{ fontSize: 36, fontWeight: 900, color: COLORS.neutral900, lineHeight: 1 }}>{fakeStats.count}</div>
@@ -283,6 +258,7 @@ export default function SpringViralMap() {
                             </div>
                         </div>
 
+                        {/* НАТИВНАЯ ИНТЕГРАЦИЯ БРЕНДА */}
                         <div style={{ backgroundColor: COLORS.neutral900, padding: '16px 20px', borderRadius: '20px', marginBottom: 24 }}>
                             <p style={{ color: COLORS.white, fontSize: 14, lineHeight: 1.5, margin: 0 }}>
                                 <b>PetsOk</b> составили эту карту для статистики. <br />
@@ -290,6 +266,7 @@ export default function SpringViralMap() {
                             </p>
                         </div>
 
+                        {/* ДЕЙСТВИЯ */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                             <Link href="/cabinet/" style={{
                                 display: 'block', width: '100%', textAlign: 'center',

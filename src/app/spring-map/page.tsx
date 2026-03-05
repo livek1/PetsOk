@@ -77,7 +77,8 @@ export default function SpringViralMap() {
         // Снег тает
         const snowInterval = setInterval(() => setSnowOpacity(prev => Math.max(0, prev - 0.04)), 150);
 
-        const generatedMines = [];
+        // ИСПРАВЛЕНИЕ: Явная типизация массива
+        const generatedMines: { lat: number, lon: number, emoji: string }[] = [];
         const emojis = ['💩', '💩', '💩', '☢️', '🥾', '💩', '⚠️', '💩'];
         for (let i = 0; i < 75; i++) {
             generatedMines.push({

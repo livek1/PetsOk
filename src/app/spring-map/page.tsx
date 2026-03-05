@@ -29,6 +29,9 @@ export default function SpringViralMap() {
     const [simState, setSimState] = useState<'idle' | 'scanning' | 'done'>('idle');
     const [snowOpacity, setSnowOpacity] = useState(0.95);
 
+    // Состояние для управления видимостью нижней карточки с результатами
+    const [isResultOpen, setIsResultOpen] = useState(false);
+
     // Данные для вирусной карточки
     const [addressName, setAddressName] = useState<string>("Ваш секретный двор");
     const [fakeStats, setFakeStats] = useState({ count: 0, survival: 100 });
@@ -77,7 +80,6 @@ export default function SpringViralMap() {
         // Снег тает
         const snowInterval = setInterval(() => setSnowOpacity(prev => Math.max(0, prev - 0.04)), 150);
 
-        // ИСПРАВЛЕНИЕ: Явная типизация массива
         const generatedMines: { lat: number, lon: number, emoji: string }[] = [];
         const emojis = ['💩', '💩', '💩', '☢️', '🥾', '💩', '⚠️', '💩'];
         for (let i = 0; i < 75; i++) {
@@ -118,24 +120,13 @@ export default function SpringViralMap() {
                 }
                 setRoute(generatedRoute);
 
-                // Конец симуляции
-                setTimeout(() => setSimState('done'), 1000);
+                // Конец симуляции и открытие результатов
+                setTimeout(() => {
+                    setSimState('done');
+                    setIsResultOpen(true);
+                }, 1000);
             }
         }, 120);
-    };
-
-    // 4. Генерация текста для шеринга
-    const handleShareText = async () => {
-        const shareText = `🚨 Срочно! Улица ${addressName} признана зоной весеннего бедствия! ☢️\n\n💩 Найдено "сюрпризов": ${fakeStats.count}\n👟 Шанс спасти белые кроссовки: ${fakeStats.survival}%\n\n👆 Смотри скриншот карты!\n\nА какой статус у твоего двора? Проверь на радаре от PetsOk (кстати, их выгульщики убирают за собаками): https://petsok.ru`;
-
-        if (navigator.share) {
-            try {
-                await navigator.share({ title: 'PetsOk Radar', text: shareText });
-            } catch (err) { console.log('Шеринг отменен'); }
-        } else {
-            navigator.clipboard.writeText(shareText);
-            alert('Смешной текст скопирован! Делай скриншот карты и отправляй соседям 🏢📲');
-        }
     };
 
     return (
@@ -153,11 +144,12 @@ export default function SpringViralMap() {
                 .camera-bottom::after { content: ''; position: absolute; bottom: 20px; right: 20px; width: 40px; height: 40px; border-bottom: 4px solid ${COLORS.error}; border-right: 4px solid ${COLORS.error}; z-index: 50; pointer-events: none; }
             `}} />
 
-            {/* Рамка "Спутника" для красивого скриншота */}
+            {/* Рамка "Спутника" */}
             {simState === 'done' && (
                 <>
                     <div className="camera-corners" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 40 }} />
-                    <div className="camera-bottom" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: '40vh', pointerEvents: 'none', zIndex: 40 }} />
+                    {/* Если карточка открыта, нижняя рамка поднимается на 40vh, если закрыта - опускается в самый низ (0) */}
+                    <div className="camera-bottom" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: isResultOpen ? '40vh' : 0, pointerEvents: 'none', zIndex: 40 }} />
                     <div style={{ position: 'absolute', top: 30, left: '50%', transform: 'translateX(-50%)', backgroundColor: COLORS.error, color: COLORS.white, padding: '6px 16px', borderRadius: 20, fontWeight: 900, fontSize: 14, letterSpacing: 2, zIndex: 50, animation: 'blink 1s infinite' }}>
                         TARGET LOCKED
                     </div>
@@ -167,7 +159,8 @@ export default function SpringViralMap() {
             <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU', load: 'package.full' }}>
                 <Map
                     state={{ center, zoom }}
-                    width="100%" height={simState === 'done' ? "60vh" : "100%"} // Карта сжимается, чтобы оставить место карточке
+                    // Если результаты открыты, карта занимает 60% высоты, если свернуты - 100%
+                    width="100%" height={simState === 'done' && isResultOpen ? "60vh" : "100%"}
                     onLoad={(ymaps) => setYmapsNamespace(ymaps)}
                     options={{ suppressMapOpenBlock: true }}
                 >
@@ -215,8 +208,23 @@ export default function SpringViralMap() {
                 </div>
             )}
 
-            {/* ВИРУСНАЯ КАРТОЧКА (BOTTOM SHEET), ИДЕАЛЬНАЯ ДЛЯ СКРИНШОТА */}
-            {simState === 'done' && (
+            {/* ПЛАВАЮЩАЯ КНОПКА ВОЗВРАТА (показывается, если пользователь скрыл карточку) */}
+            {simState === 'done' && !isResultOpen && (
+                <button
+                    onClick={() => setIsResultOpen(true)}
+                    style={{
+                        position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)',
+                        backgroundColor: COLORS.white, color: COLORS.neutral900,
+                        padding: '16px 24px', borderRadius: 16, fontWeight: 800, fontSize: 16,
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.2)', border: 'none', cursor: 'pointer', zIndex: 100
+                    }}
+                >
+                    📊 Показать сводку
+                </button>
+            )}
+
+            {/* ВИРУСНАЯ КАРТОЧКА (BOTTOM SHEET) */}
+            {simState === 'done' && isResultOpen && (
                 <div style={{
                     position: 'absolute', bottom: 0, left: 0, right: 0,
                     backgroundColor: COLORS.white,
@@ -258,17 +266,8 @@ export default function SpringViralMap() {
                             </p>
                         </div>
 
-                        {/* ДЕЙСТВИЯ (Вирусность + Конверсия) */}
+                        {/* ДЕЙСТВИЯ */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            {/* Главная подсказка про скриншот */}
-                            <button onClick={handleShareText} style={{
-                                width: '100%', backgroundColor: COLORS.bg, color: COLORS.neutral900,
-                                padding: '18px', borderRadius: 16, fontWeight: 800, fontSize: 16,
-                                border: `2px dashed ${COLORS.neutral700}`, cursor: 'pointer', transition: 'transform 0.1s',
-                            }}>
-                                📸 Делай скриншот и жми сюда (текст для чата)
-                            </button>
-
                             <Link href="/cabinet/" style={{
                                 display: 'block', width: '100%', textAlign: 'center',
                                 background: `linear-gradient(135deg, ${COLORS.primary} 0%, #1E75D6 100%)`,
@@ -278,6 +277,14 @@ export default function SpringViralMap() {
                             }}>
                                 Спасти обувь — зарегистрироваться
                             </Link>
+
+                            <button onClick={() => setIsResultOpen(false)} style={{
+                                width: '100%', background: 'none', color: COLORS.neutral700,
+                                padding: '14px', borderRadius: 16, fontWeight: 700, fontSize: 15,
+                                border: 'none', cursor: 'pointer', transition: 'background 0.2s'
+                            }}>
+                                Свернуть и посмотреть карту
+                            </button>
                         </div>
                     </div>
                 </div>

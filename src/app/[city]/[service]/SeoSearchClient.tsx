@@ -22,6 +22,23 @@ const ListIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="non
 const CROWN_SVG_STRING = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5ZM19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z" fill="currentColor"/></svg>`;
 const DEBOUNCE_DELAY = 600;
 
+// --- ИСПРАВЛЕНИЕ ВАЛЮТЫ НА КАРТЕ ---
+// Хелпер для определения правильного символа валюты
+const getCurrencySymbol = (code?: string) => {
+    if (!code) return '₽';
+    switch (code.toUpperCase()) {
+        case 'KZT': return '₸';
+        case 'BYN': return 'Br';
+        case 'GEL': return '₾';
+        case 'AMD': return '֏';
+        case 'EUR': return '€';
+        case 'USD': return '$';
+        case 'RUB': return '₽';
+        default: return '₽';
+    }
+};
+// -----------------------------------
+
 const DogDetectiveIcon = () => (
     <svg width="240" height="240" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="100" cy="100" r="96" fill="#FFF8E1" />
@@ -81,8 +98,6 @@ export default function SeoSearchClient({
     const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
     const [hoveredSitterId, setHoveredSitterId] = useState<number | null>(null);
-
-    // --- НОВЫЙ СТЕЙТ ДЛЯ ФЛАГА ПОИСКА ---
     const [searchAsMapMoves, setSearchAsMapMoves] = useState(true);
 
     const defaultCenter = useMemo(() => {
@@ -109,7 +124,6 @@ export default function SeoSearchClient({
     const listContainerRef = useRef<HTMLDivElement>(null);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
-    // Флаг защиты от программного смещения (чтобы авто-зум не вызывал поиск)
     const isProgrammaticMove = useRef(true);
 
     const displaySitters = isGeneralSearch || searchResults.length > 0 ? searchResults : initialSitters;
@@ -189,7 +203,7 @@ export default function SeoSearchClient({
             });
 
             if (validMarkersCount > 0) {
-                isProgrammaticMove.current = true; // Блокируем onBoundsChange при автозуме
+                isProgrammaticMove.current = true;
 
                 if (validMarkersCount === 1) {
                     mapRef.current.setCenter([minLat, minLon], 14);
@@ -209,7 +223,6 @@ export default function SeoSearchClient({
                 mapRef.current.setCenter([reduxParams.latitude, reduxParams.longitude], 11);
                 setTimeout(() => { isProgrammaticMove.current = false; }, 800);
             } else {
-                // Если нет ни маркеров, ни координат, просто снимаем блокировку
                 isProgrammaticMove.current = false;
             }
         }
@@ -217,16 +230,12 @@ export default function SeoSearchClient({
 
 
     // =========================================================================
-    // 3. ДВИЖЕНИЕ КАРТЫ ПОЛЬЗОВАТЕЛЕМ (ИСПРАВЛЕНО)
+    // 3. ДВИЖЕНИЕ КАРТЫ ПОЛЬЗОВАТЕЛЕМ
     // =========================================================================
     const onBoundsChange = () => {
-        // Игнорируем авто-сдвиги скриптом
         if (isProgrammaticMove.current) return;
-
-        // Если галочка снята - не ищем
         if (!searchAsMapMoves) return;
 
-        // Debounce (задержка перед отправкой запроса)
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
         debounceTimer.current = setTimeout(() => {
@@ -237,12 +246,11 @@ export default function SeoSearchClient({
             const center = mapInstance.getCenter();
             const zoom = mapInstance.getZoom();
 
-            // Обновляем URL
             const newUrlParams = new URLSearchParams(searchParamsHook.toString());
             newUrlParams.set('lat', center[0].toFixed(6));
             newUrlParams.set('lon', center[1].toFixed(6));
             newUrlParams.set('zoom', zoom.toString());
-            newUrlParams.delete('address'); // Убираем адрес, ищем по области
+            newUrlParams.delete('address');
 
             router.replace(`${pathname}?${newUrlParams.toString()}`, { scroll: false });
 
@@ -432,7 +440,6 @@ export default function SeoSearchClient({
 
                     <div className={`${style.mapColumn} ${viewMode === 'list' ? style.hiddenOnMobile : ''}`} style={{ position: 'relative' }}>
 
-                        {/* --- ИСПРАВЛЕНИЕ: ПЛАВАЮЩИЙ ФЛАГ ПОИСКА ПОВЕРХ КАРТЫ --- */}
                         <div style={{
                             position: 'absolute',
                             top: '20px',
@@ -453,13 +460,13 @@ export default function SeoSearchClient({
                             userSelect: 'none',
                             border: '1px solid #eaeaea'
                         }}
-                            onClick={() => setSearchAsMapMoves(!searchAsMapMoves)} // Клик по всей плашке
+                            onClick={() => setSearchAsMapMoves(!searchAsMapMoves)}
                         >
                             <input
                                 type="checkbox"
                                 checked={searchAsMapMoves}
                                 onChange={(e) => setSearchAsMapMoves(e.target.checked)}
-                                onClick={(e) => e.stopPropagation()} // Чтобы не было двойного триггера
+                                onClick={(e) => e.stopPropagation()}
                                 style={{
                                     width: '18px',
                                     height: '18px',
@@ -470,7 +477,6 @@ export default function SeoSearchClient({
                             />
                             <span>Искать при перемещении карты</span>
                         </div>
-                        {/* --- КОНЕЦ ИСПРАВЛЕНИЯ --- */}
 
                         <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU', load: 'package.full' }}>
                             <div style={{ width: '100%', height: '100%' }}>
@@ -499,8 +505,13 @@ export default function SeoSearchClient({
                                             const isPremium = sitter.is_premium;
                                             const price = Math.round(sitter.service_price || 0);
 
+                                            // --- ИСПРАВЛЕНИЕ: ДИНАМИЧЕСКАЯ ВАЛЮТА ДЛЯ МАРКЕРА ---
+                                            const currencySymbol = sitter.currency_symbol || getCurrencySymbol(sitter.currency) || '₽';
+
                                             let markerClass = isPremium ? 'is-premium' : '';
-                                            let innerHtml = isPremium ? `<span class="marker-icon">${CROWN_SVG_STRING}</span>${price}₽` : `${price}₽`;
+                                            let innerHtml = isPremium
+                                                ? `<span class="marker-icon">${CROWN_SVG_STRING}</span>${price}${currencySymbol}`
+                                                : `${price}${currencySymbol}`;
 
                                             let finalHtml = `<div data-id="${sitter.id}" class="petsok-map-marker ${markerClass}">${innerHtml}</div>`;
 

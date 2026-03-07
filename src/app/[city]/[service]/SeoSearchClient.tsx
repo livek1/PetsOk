@@ -82,7 +82,9 @@ export default function SeoSearchClient({
 
     const [hoveredSitterId, setHoveredSitterId] = useState<number | null>(null);
 
-    // --- ИСПРАВЛЕНИЕ КАРТЫ: Умное определение стартовых координат ---
+    // --- НОВЫЙ СТЕЙТ ДЛЯ ФЛАГА ПОИСКА ---
+    const [searchAsMapMoves, setSearchAsMapMoves] = useState(true);
+
     const defaultCenter = useMemo(() => {
         const latStr = searchParamsHook.get('lat');
         const lonStr = searchParamsHook.get('lon');
@@ -107,9 +109,8 @@ export default function SeoSearchClient({
     const listContainerRef = useRef<HTMLDivElement>(null);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
-    // Флаги контроля карты
-    const isProgrammaticMove = useRef(true); // Защита от авто-сдвигов
-    const isUserDraggingMap = useRef(false); // Детектор касания человека
+    // Флаг защиты от программного смещения (чтобы авто-зум не вызывал поиск)
+    const isProgrammaticMove = useRef(true);
 
     const displaySitters = isGeneralSearch || searchResults.length > 0 ? searchResults : initialSitters;
     const displayPagination = isGeneralSearch || pagination ? pagination : initialPagination;
@@ -169,12 +170,9 @@ export default function SeoSearchClient({
     // 2. АВТО-МАСШТАБИРОВАНИЕ КАРТЫ ПОД МАРКЕРЫ ИЛИ ПУСТОЙ ГОРОД
     // =========================================================================
     useEffect(() => {
-        // --- ИСПРАВЛЕНИЕ: Ждем пока isMapReady станет true ---
         if (!isMapReady || !mapRef.current) return;
 
-        // Выполняем автоматическое центрирование ТОЛЬКО если пользователь не двигает карту руками
         if (reduxParams.searchReason !== 'map_bounds') {
-
             let minLat = 90, maxLat = -90, minLon = 180, maxLon = -180;
             let validMarkersCount = 0;
 
@@ -191,17 +189,15 @@ export default function SeoSearchClient({
             });
 
             if (validMarkersCount > 0) {
-                isProgrammaticMove.current = true; // Блокируем onBoundsChange!
+                isProgrammaticMove.current = true; // Блокируем onBoundsChange при автозуме
 
                 if (validMarkersCount === 1) {
-                    // Если ситтер один, просто центрируем на нем
                     mapRef.current.setCenter([minLat, minLon], 14);
                     setTimeout(() => { isProgrammaticMove.current = false; }, 800);
                 } else {
-                    // Если ситтеров много, отдаляем карту, чтобы влезли все
                     mapRef.current.setBounds(
                         [[minLat, minLon], [maxLat, maxLon]],
-                        { checkZoomRange: true, zoomMargin: 40 } // zoomMargin - отступы от краев карты
+                        { checkZoomRange: true, zoomMargin: 40 }
                     ).then(() => {
                         setTimeout(() => { isProgrammaticMove.current = false; }, 800);
                     }).catch(() => {
@@ -209,22 +205,28 @@ export default function SeoSearchClient({
                     });
                 }
             } else if (reduxParams.latitude && reduxParams.longitude) {
-                // Если ситтеров нет, но API вернуло нам координаты города (reduxParams.latitude/longitude)
                 isProgrammaticMove.current = true;
                 mapRef.current.setCenter([reduxParams.latitude, reduxParams.longitude], 11);
                 setTimeout(() => { isProgrammaticMove.current = false; }, 800);
+            } else {
+                // Если нет ни маркеров, ни координат, просто снимаем блокировку
+                isProgrammaticMove.current = false;
             }
         }
     }, [displaySitters, reduxParams.searchReason, reduxParams.latitude, reduxParams.longitude, isMapReady]);
 
 
     // =========================================================================
-    // 3. ДВИЖЕНИЕ КАРТЫ ПОЛЬЗОВАТЕЛЕМ
+    // 3. ДВИЖЕНИЕ КАРТЫ ПОЛЬЗОВАТЕЛЕМ (ИСПРАВЛЕНО)
     // =========================================================================
     const onBoundsChange = () => {
-        // Игнорируем изменения границ, вызванные инициализацией или Auto-Fit
-        if (isProgrammaticMove.current || !isUserDraggingMap.current) return;
+        // Игнорируем авто-сдвиги скриптом
+        if (isProgrammaticMove.current) return;
 
+        // Если галочка снята - не ищем
+        if (!searchAsMapMoves) return;
+
+        // Debounce (задержка перед отправкой запроса)
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
         debounceTimer.current = setTimeout(() => {
@@ -235,12 +237,12 @@ export default function SeoSearchClient({
             const center = mapInstance.getCenter();
             const zoom = mapInstance.getZoom();
 
-            // Жестко перезаписываем URL: добавляем координаты и УДАЛЯЕМ адрес
+            // Обновляем URL
             const newUrlParams = new URLSearchParams(searchParamsHook.toString());
             newUrlParams.set('lat', center[0].toFixed(6));
             newUrlParams.set('lon', center[1].toFixed(6));
             newUrlParams.set('zoom', zoom.toString());
-            newUrlParams.delete('address');
+            newUrlParams.delete('address'); // Убираем адрес, ищем по области
 
             router.replace(`${pathname}?${newUrlParams.toString()}`, { scroll: false });
 
@@ -260,9 +262,6 @@ export default function SeoSearchClient({
 
             dispatch(setSearchParams(newParams));
             dispatch(performSearch({ params: newParams, page: 1, isNewSearch: true }));
-
-            // Сбрасываем флаг драга
-            isUserDraggingMap.current = false;
         }, DEBOUNCE_DELAY);
     };
 
@@ -402,7 +401,6 @@ export default function SeoSearchClient({
                                 </div>
                             )}
 
-                            {/* --- НОВЫЙ БЛОК SEO-ПАГИНАЦИИ --- */}
                             {!isLoading && displayPagination && displayPagination.total_pages > 1 && (
                                 <nav aria-label="Пагинация каталога" style={{ width: '100%', padding: '20px 0', textAlign: 'center', marginTop: '10px' }}>
                                     <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center', gap: '24px', padding: 0, margin: 0 }}>
@@ -432,16 +430,51 @@ export default function SeoSearchClient({
                         </div>
                     </div>
 
-                    <div className={`${style.mapColumn} ${viewMode === 'list' ? style.hiddenOnMobile : ''}`}>
+                    <div className={`${style.mapColumn} ${viewMode === 'list' ? style.hiddenOnMobile : ''}`} style={{ position: 'relative' }}>
+
+                        {/* --- ИСПРАВЛЕНИЕ: ПЛАВАЮЩИЙ ФЛАГ ПОИСКА ПОВЕРХ КАРТЫ --- */}
+                        <div style={{
+                            position: 'absolute',
+                            top: '20px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            zIndex: 1000,
+                            background: '#ffffff',
+                            padding: '10px 20px',
+                            borderRadius: '24px',
+                            boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            cursor: 'pointer',
+                            fontWeight: 600,
+                            fontSize: '14px',
+                            color: '#333',
+                            userSelect: 'none',
+                            border: '1px solid #eaeaea'
+                        }}
+                            onClick={() => setSearchAsMapMoves(!searchAsMapMoves)} // Клик по всей плашке
+                        >
+                            <input
+                                type="checkbox"
+                                checked={searchAsMapMoves}
+                                onChange={(e) => setSearchAsMapMoves(e.target.checked)}
+                                onClick={(e) => e.stopPropagation()} // Чтобы не было двойного триггера
+                                style={{
+                                    width: '18px',
+                                    height: '18px',
+                                    cursor: 'pointer',
+                                    accentColor: '#3598FE',
+                                    margin: 0
+                                }}
+                            />
+                            <span>Искать при перемещении карты</span>
+                        </div>
+                        {/* --- КОНЕЦ ИСПРАВЛЕНИЯ --- */}
+
                         <YMaps query={{ apikey: config.yandexMapsApiKey, lang: 'ru_RU', load: 'package.full' }}>
-                            {/* Обертка для отлова человеческого касания/клика */}
-                            <div
-                                style={{ width: '100%', height: '100%' }}
-                                onPointerDown={() => { isUserDraggingMap.current = true; }}
-                                onWheel={() => { isUserDraggingMap.current = true; }}
-                            >
+                            <div style={{ width: '100%', height: '100%' }}>
                                 <Map
-                                    // Убрали prop 'state', используем только defaultState и imperative команды через mapRef
                                     defaultState={{ center: mapState.center, zoom: mapState.zoom, behaviors: ['default', '!scrollZoom'], controls: [] }}
                                     options={{ suppressMapOpenBlock: true, minZoom: 3, maxZoom: 18 }}
                                     instanceRef={(ref) => {

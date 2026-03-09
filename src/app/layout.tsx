@@ -45,26 +45,29 @@ export default function RootLayout({
     <html lang="ru">
       <head>
         <link rel="preload" href="/fonts/raleway-v37-cyrillic_latin-700.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+
+        {/* ============================================================ */}
+        {/* ИСПРАВЛЕНИЕ: Google Tag принудительно вынесен в <head>       */}
+        {/* Это гарантирует успешную проверку ботом Google Ads           */}
+        {/* ============================================================ */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18003469103"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer ||[];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18003469103');
+            `,
+          }}
+        />
       </head>
 
       <body className={raleway.variable} suppressHydrationWarning>
-        {/* ============================================================ */}
-        {/* АНАЛИТИКА: Google, Yandex Metrika, Top.Mail.Ru               */}
-        {/* ============================================================ */}
 
-        {/* Google Analytics (gtag) */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-18003469103"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer ||[];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-18003469103');
-          `}
-        </Script>
+        {/* ============================================================ */}
+        {/* АНАЛИТИКА: Yandex.Metrika и Top.Mail.Ru                      */}
+        {/* ============================================================ */}
 
         {/* Yandex.Metrika */}
         <Script id="yandex-metrika" strategy="afterInteractive">
@@ -101,7 +104,7 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Noscript Fallbacks (Для тех, у кого отключен JS) */}
+        {/* Noscript Fallbacks (Для пользователей с отключенным JS) */}
         <noscript>
           <div>
             <img src="https://mc.yandex.ru/watch/83993986" style={{ position: 'absolute', left: '-9999px' }} alt="" />

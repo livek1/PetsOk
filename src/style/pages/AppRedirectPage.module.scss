@@ -1,328 +1,502 @@
-@use '../variables' as *;
-@use 'sass:color';
+/* --- Глобальные переменные для этого экрана --- */
+$brand-color: #3598fe;
+$brand-dark: #1e66c2;
+$bg-color: #f4f8fc;
+$text-dark: #1a202c;
+$text-light: #64748b;
 
-.pageWrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $white;
-    overflow: hidden;
-    position: relative;
-    padding: 40px 20px;
-}
-
-// Экран загрузки/редиректа
-.redirectContainer {
+/* --- Экран редиректа (первая секунда) --- */
+.redirectingFullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    gap: 20px;
+    z-index: 9999;
 
-    .loader {
-        width: 50px;
-        height: 50px;
-        border: 4px solid $neutral-200;
-        border-top-color: $primary-color;
+    .pulsingLogo {
+        font-size: 80px;
+        margin-bottom: 24px;
+        filter: drop-shadow(0 10px 20px rgba($brand-color, 0.4));
+    }
+
+    .redirectingText {
+        font-size: 24px;
+        font-weight: 700;
+        color: $text-dark;
+        font-family: inherit;
+    }
+}
+
+/* --- Основной лэйаут --- */
+.pageWrapper {
+    min-height: 100vh;
+    width: 100%;
+    background-color: $bg-color;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Фоновые градиентные пятна для красоты */
+.backgroundGlow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+
+    .glowBlob1 {
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 60vw;
+        height: 60vw;
+        background: radial-gradient(circle, rgba($brand-color, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
         border-radius: 50%;
-        animation: spin 1s linear infinite;
     }
 
-    p {
-        color: $text-color-secondary;
-        font-size: 1.1rem;
-    }
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+    .glowBlob2 {
+        position: absolute;
+        bottom: -20%;
+        left: -10%;
+        width: 50vw;
+        height: 50vw;
+        background: radial-gradient(circle, rgba(#9333ea, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+        border-radius: 50%;
     }
 }
 
-// Основной контейнер
 .container {
+    position: relative;
+    z-index: 1;
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
+    padding: 40px 20px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
     align-items: center;
 
-    @media (max-width: $breakpoint-lg) {
+    @media (max-width: 992px) {
         grid-template-columns: 1fr;
-        text-align: center;
         gap: 40px;
+        padding: 40px 20px 80px;
     }
 }
 
-// Левая колонка (Текст)
+/* --- Левая часть (Контент) --- */
 .contentSide {
-    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
-    @media (max-width: $breakpoint-lg) {
-        display: flex;
-        flex-direction: column;
+    @media (max-width: 992px) {
+        text-align: center;
         align-items: center;
     }
 }
 
-.logoBadge {
-    display: inline-block;
-    background: rgba($primary-color, 0.1);
-    color: $primary-color;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.title {
-    font-family: $font-family-headings;
-    font-size: 3.5rem;
-    font-weight: 800;
-    line-height: 1.1;
-    color: $text-color-base;
-    margin-bottom: 20px;
-
-    @media (max-width: $breakpoint-md) {
-        font-size: 2.5rem;
-    }
-}
-
-.description {
-    font-size: 1.125rem;
-    color: $text-color-secondary;
-    line-height: 1.6;
-    margin-bottom: 40px;
+.contentBox {
     max-width: 500px;
 }
 
-.featuresList {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-bottom: 40px;
-
-    @media (max-width: $breakpoint-lg) {
-        align-items: flex-start;
-        text-align: left;
-    }
-}
-
-.featureItem {
-    display: flex;
+.appIconWrapper {
+    display: inline-flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+    background: white;
+    padding: 8px 16px 8px 8px;
+    border-radius: 100px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
 
-    .featureIcon {
-        width: 48px;
-        height: 48px;
-        background: $neutral-50;
-        border-radius: 12px;
+    .appIcon {
+        width: 40px;
+        height: 40px;
+        background: $brand-color;
+        color: white;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: $primary-color;
-        flex-shrink: 0;
+        font-size: 20px;
     }
 
-    .featureText {
+    .appName {
+        font-weight: 800;
+        font-size: 18px;
+        color: $text-dark;
+        letter-spacing: -0.5px;
+    }
+}
+
+.hugeTitle {
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1.1;
+    color: $text-dark;
+    margin: 0 0 20px 0;
+    letter-spacing: -1px;
+
+    @media (max-width: 768px) {
+        font-size: 36px;
+    }
+}
+
+.simpleSubtitle {
+    font-size: 20px;
+    color: $text-light;
+    line-height: 1.5;
+    margin: 0 0 40px 0;
+
+    @media (max-width: 768px) {
+        font-size: 18px;
+    }
+}
+
+/* --- Десктопный QR код (Для тупых на компе) --- */
+.desktopQrSection {
+    margin-top: 20px;
+}
+
+.qrCard {
+    position: relative;
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+
+    .qrArrow {
+        position: absolute;
+        top: -30px;
+        left: -30px;
+        color: $brand-color;
+        animation: bounceDiagonal 2s infinite ease-in-out;
+    }
+
+    .qrWrapper {
+        background: white;
+        padding: 10px;
+        border-radius: 16px;
+        border: 2px solid $bg-color;
+
+        canvas {
+            display: block;
+            border-radius: 8px;
+        }
+    }
+
+    .qrInstruction {
         display: flex;
         flex-direction: column;
+        gap: 8px;
 
         strong {
-            font-size: 1rem;
-            color: $text-color-base;
+            font-size: 22px;
+            color: $text-dark;
+            line-height: 1.2;
         }
 
         span {
-            font-size: 0.9rem;
-            color: $text-color-muted;
+            font-size: 16px;
+            color: $text-light;
         }
     }
 }
 
-// Блок загрузки (QR + Кнопки)
-.downloadBlock {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    padding-top: 20px;
-    border-top: 1px solid $border-color-light;
+@keyframes bounceDiagonal {
 
-    @media (max-width: $breakpoint-sm) {
-        flex-direction: column;
-        gap: 20px;
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(10px, 10px);
     }
 }
 
-.qrBlock {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-
-    .qrWrapper {
-        padding: 8px;
-        background: $white;
-        border: 1px solid $border-color-light;
-        border-radius: 12px;
-        box-shadow: $shadow-sm;
-    }
-
-    .qrLabel {
-        font-size: 0.85rem;
-        color: $text-color-secondary;
-        line-height: 1.4;
-    }
-
-    @media (max-width: $breakpoint-lg) {
-        display: none; // Скрываем QR на мобилках/планшетах если места мало
-    }
+/* --- Мобильные кнопки (Для тупых на телефоне) --- */
+.mobileButtonsSection {
+    width: 100%;
+    margin-top: 10px;
 }
 
-.storeButtons {
+.mobileInstruction {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: $text-light;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+.storeButtonsGroup {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-
-    @media (max-width: $breakpoint-sm) {
-        flex-direction: row;
-    }
+    gap: 16px;
+    width: 100%;
 }
 
-.storeBtn {
+.megaStoreBtn {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: $neutral-900;
-    color: $white;
-    padding: 10px 20px;
-    border-radius: 12px;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 20px;
     text-decoration: none;
+    color: white;
     transition: transform 0.2s, box-shadow 0.2s;
-    min-width: 180px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 
-    &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    &:hover,
+    &:active {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    &.appleBtn {
+        background-color: #000000;
+    }
+
+    &.googleBtn {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* Делаем кнопку нецелевой ОС визуально менее привлекательной */
+    &.secondaryBtn {
+        opacity: 0.6;
+        box-shadow: none;
+        transform: scale(0.95);
+
+        &:hover {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 
     .btnText {
         display: flex;
         flex-direction: column;
-        line-height: 1.1;
+        align-items: flex-start;
+        text-align: left;
 
-        small {
-            font-size: 0.7rem;
+        .btnSub {
+            font-size: 14px;
             opacity: 0.8;
+            line-height: 1;
+            margin-bottom: 2px;
         }
 
-        span {
-            font-size: 1.1rem;
-            font-weight: 600;
+        .btnMain {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.5px;
         }
     }
 }
 
-// Правая колонка (Визуал)
+/* --- Правая часть (Визуал: Телефон) --- */
 .visualSide {
     position: relative;
     display: flex;
     justify-content: center;
-    height: 600px;
+    align-items: center;
+    height: 100%;
 
-    @media (max-width: $breakpoint-lg) {
-        display: none; // Скрываем телефон на мобильных для компактности
+    @media (max-width: 992px) {
+        display: none; // Скрываем телефон на мобилках, чтобы сразу была кнопка скачивания
     }
 }
 
-.phoneMockup {
-    width: 300px;
-    height: 600px;
-    background: $neutral-900;
-    border-radius: 45px;
-    border: 8px solid $neutral-800;
+.phoneMockupContainer {
     position: relative;
+    width: 320px;
+    height: 650px;
     z-index: 2;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-
-    .screenContent {
-        background-color: #F3F4F6;
-        width: 100%;
-        height: 100%;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .appHeader {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-end;
-        margin-bottom: 20px;
-    }
-
-    .bubble {
-        background: $primary-color;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 16px 16px 0 16px;
-        font-size: 14px;
-        box-shadow: 0 4px 10px rgba($primary-color, 0.3);
-    }
-
-    .appCard {
-        background: white;
-        border-radius: 16px;
-        padding: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-
-        .cardMapPlaceholder {
-            height: 150px;
-            background: #E2E8F0;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: $text-color-muted;
-            font-weight: 600;
-        }
-    }
 }
 
-// Декоративные пятна
-.blob1,
-.blob2 {
+.phoneFrame {
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    border-radius: 48px;
+    padding: 12px;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        inset 0 0 0 2px #333333;
+    position: relative;
+}
+
+.phoneNotch {
     position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    z-index: 1;
-    opacity: 0.6;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 30px;
+    background-color: #000000;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    z-index: 10;
 }
 
-.blob1 {
-    width: 300px;
-    height: 300px;
-    background: #EBF8FF; // Light blue
-    top: 50px;
-    right: -50px;
+.phoneScreen {
+    width: 100%;
+    height: 100%;
+    background-color: #f8fafc;
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
-.blob2 {
-    width: 250px;
-    height: 250px;
-    background: #F0FFF4; // Light green
-    bottom: 50px;
-    left: 0;
+/* Фейковый UI приложения внутри телефона */
+.screenContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px; // под вырез
+}
+
+.mapHeader {
+    background: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 700;
+    color: $text-dark;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+
+    .statusDot {
+        width: 10px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulseDot 2s infinite;
+    }
+}
+
+@keyframes pulseDot {
+    0% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+
+.chatArea {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f1f5f9;
+}
+
+.chatBubble {
+    padding: 12px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    max-width: 85%;
+    line-height: 1.4;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+    &.bubbleLeft {
+        align-self: flex-end;
+        background: $brand-color;
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+
+    &.bubbleRight {
+        align-self: flex-start;
+        background: white;
+        color: $text-dark;
+        border-bottom-left-radius: 4px;
+    }
+}
+
+.photoMessage {
+    align-self: flex-start;
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: $text-light;
+    border-bottom-left-radius: 4px;
+}
+
+.fakeBottomBar {
+    background: white;
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+
+    .fakeInput {
+        background: #f1f5f9;
+        padding: 12px 20px;
+        border-radius: 100px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+}
+
+/* Плавающие плашки */
+.floatingBadge {
+    position: absolute;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 15px;
+    color: $text-dark;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    z-index: 20;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+
+    &.badge1 {
+        top: 20%;
+        right: -40px;
+    }
+
+    &.badge2 {
+        bottom: 25%;
+        left: -50px;
+    }
 }

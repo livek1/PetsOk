@@ -16,10 +16,22 @@ const getReferralCode = (): string | undefined => {
     return Cookies.get(defaultConfig.referralParamName);
 };
 
-// SVG Логотипы
-const AppleLogo = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C12 2 12 0 14 0C14 0 14 2 12 2ZM12 4C8.686 4 6 6.686 6 10C6 15.5 12 22 12 22C12 22 18 15.5 18 10C18 6.686 15.314 4 12 4Z" /></svg>;
-const GooglePlayLogo = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M3 2L21 12L3 22V2Z" /></svg>;
+// Оригинальный логотип Apple (белый, с правильными пропорциями)
+const AppleLogo = () => (
+    <svg width="38" height="38" viewBox="0 0 384 512" fill="currentColor">
+        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.3 48.6-.6 90.4-84.3 103.6-119.5-37.6-31.5-62.7-70.3-62.7-91.1zm-89.6-160.8C250.3 75.2 268 34.6 268 0c-35.5 1.5-76.8 24.3-99.7 53.9-19.8 26.6-38.3 67.2-34.9 99.8 39.4 3 71-21.7 95.7-45.8z" />
+    </svg>
+);
 
+// Оригинальный логотип Google Play (цветной, состоит из 4 цветных треугольников)
+const GooglePlayLogo = () => (
+    <svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.52 2.53C3.38 2.72 3.3 2.97 3.3 3.31V20.69C3.3 21.03 3.38 21.28 3.52 21.47L3.58 21.53L13.6 11.53V11.37L3.58 2.47L3.52 2.53Z" fill="#478ECC" />
+        <path d="M16.93 14.88L13.6 11.53V11.37L16.93 8.03L17 8.07L20.96 10.32C22.09 10.96 22.09 12.01 20.96 12.65L17 14.84L16.93 14.88Z" fill="#FFC107" />
+        <path d="M17 14.84L13.6 11.45L3.52 21.47C3.98 21.95 4.75 22.02 5.67 21.5L17 14.84Z" fill="#EA4335" />
+        <path d="M17 8.07L5.67 2.41C4.75 1.89 3.98 1.95 3.52 2.44L13.6 11.45L17 8.07Z" fill="#34A853" />
+    </svg>
+);
 const getMobileOperatingSystem = (): 'iOS' | 'Android' | 'unknown' => {
     if (typeof window === 'undefined') return 'unknown';
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
